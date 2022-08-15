@@ -1,0 +1,6 @@
+{
+  "jwtPrivateKey": "",
+  "db": "mongodb://localhost/damianlikus",
+  "public": "./public/default/",
+  "furgonetka": ""
+}

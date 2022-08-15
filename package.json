@@ -1,0 +1,38 @@
+{
+  "name": "server-dl",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "set NODE_ENV=test&set PORT=3001&jest --verbose --coverage --forceExit --watchAll --maxWorkers=1",
+    "dev": "set NODE_ENV=dev&nodemon index.js",
+    "test-os": "export NODE_ENV=test&&export PORT=3001&&jest --verbose --coverage --forceExit --watchAll --maxWorkers=1",
+    "dev-os": "export NODE_ENV=dev&&nodemon index.js"
+  },
+  "author": "github.com/blackydev",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.27.2",
+    "bcrypt": "^5.0.1",
+    "body-parser": "^1.20.0",
+    "config": "^3.3.7",
+    "debug": "^4.3.4",
+    "express": "^4.18.1",
+    "express-async-errors": "^3.1.1",
+    "fs": "^0.0.1-security",
+    "joi": "^17.6.0",
+    "joi-objectid": "^4.0.2",
+    "joi-password-complexity": "^5.1.0",
+    "jsonwebtoken": "^8.5.1",
+    "lodash": "^4.17.21",
+    "mongoose": "^6.5.0",
+    "multer": "^1.4.5-lts.1",
+    "path": "^0.12.7",
+    "winston": "^2.4.6"
+  },
+  "devDependencies": {
+    "jest": "^28.1.3",
+    "mock-req-res": "^1.2.1",
+    "supertest": "^6.2.4"
+  }
+}
