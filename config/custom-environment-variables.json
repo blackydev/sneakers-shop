@@ -1,3 +1,4 @@
 {
-  "jwtPrivateKey": "damianlikus_jwtPrivateKey"
+  "jwtPrivateKey": "damianlikus_jwtPrivateKey",
+  "db": "damianlikus_db"
 }

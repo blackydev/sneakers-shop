@@ -3833,3 +3833,10 @@
 {"level":"info","message":"Listening on port 3000...","timestamp":"2022-08-16T14:41:05.997Z"}
 {"level":"info","message":"Listening on port 3000...","timestamp":"2022-08-16T14:41:07.372Z"}
 {"level":"info","message":"Listening on port 3000...","timestamp":"2022-08-16T14:42:22.538Z"}
+{"level":"info","message":"Listening on port 3000...","timestamp":"2022-08-16T15:12:15.600Z"}
+{"level":"info","message":"Connected to mongodb+srv://HerokuServer:lD4CeljEbemvpAmd@production.wmnp7rj.mongodb.net/?retryWrites=true&w=majority...","timestamp":"2022-08-16T15:12:16.200Z"}
+{"level":"info","message":"Listening on port 3000...","timestamp":"2022-08-16T15:12:57.260Z"}
+{"level":"info","message":"Connected to mongodb+srv://HerokuServer:lD4CeljEbemvpAmd@production.wmnp7rj.mongodb.net/?retryWrites=true&w=majority...","timestamp":"2022-08-16T15:12:57.799Z"}
+{"level":"info","message":"Listening on port 3000...","timestamp":"2022-08-16T15:13:35.974Z"}
+{"level":"info","message":"Listening on port 3000...","timestamp":"2022-08-16T15:14:03.484Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_dev...","timestamp":"2022-08-16T15:14:03.503Z"}
