@@ -7,7 +7,10 @@
     "test": "set NODE_ENV=test&set PORT=3001&jest --verbose --coverage --forceExit --watchAll --maxWorkers=1",
     "dev": "set NODE_ENV=dev&nodemon index.js",
     "test-os": "export NODE_ENV=test&&export PORT=3001&&jest --verbose --coverage --forceExit --watchAll --maxWorkers=1",
-    "dev-os": "export NODE_ENV=dev&&nodemon index.js"
+    "dev-os": "export NODE_ENV=dev&&nodemon index.js",
+    "start": "node index.js"
+  }, "engines": {
+    "node": "16.16.0"
   },
   "author": "github.com/blackydev",
   "license": "ISC",
