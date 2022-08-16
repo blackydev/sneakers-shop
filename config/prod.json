@@ -1,5 +1,5 @@
 {
   "jwtPrivateKey": "",
-  "db": "mongodb://localhost/damianlikus",
+  "db": "",
   "public": "./prod/default/"
 }

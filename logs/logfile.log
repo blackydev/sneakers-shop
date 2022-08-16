@@ -3815,3 +3815,8 @@
 {"level":"info","message":"Connected to mongodb://localhost/damianlikus_dev...","timestamp":"2022-08-13T20:36:22.795Z"}
 {"level":"info","message":"Listening on port 3000...","timestamp":"2022-08-15T21:17:59.150Z"}
 {"level":"info","message":"Connected to mongodb://localhost/damianlikus_dev...","timestamp":"2022-08-15T21:17:59.173Z"}
+{"level":"info","message":"Listening on port 3000...","timestamp":"2022-08-16T14:23:07.175Z"}
+{"level":"info","message":"Listening on port 3000...","timestamp":"2022-08-16T14:24:16.670Z"}
+{"level":"info","message":"Connected to mongodb+srv://patryk:MH8Sp0tINJ3AVjUz@dl-project.lymabb1.mongodb.net/?retryWrites=true&w=majority...","timestamp":"2022-08-16T14:24:17.865Z"}
+{"level":"info","message":"Listening on port 3000...","timestamp":"2022-08-16T14:24:20.631Z"}
+{"level":"info","message":"Connected to mongodb+srv://patryk:MH8Sp0tINJ3AVjUz@dl-project.lymabb1.mongodb.net/?retryWrites=true&w=majority...","timestamp":"2022-08-16T14:24:21.006Z"}
