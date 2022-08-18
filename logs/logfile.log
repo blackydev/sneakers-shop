@@ -3840,3 +3840,19 @@
 {"level":"info","message":"Listening on port 3000...","timestamp":"2022-08-16T15:13:35.974Z"}
 {"level":"info","message":"Listening on port 3000...","timestamp":"2022-08-16T15:14:03.484Z"}
 {"level":"info","message":"Connected to mongodb://localhost/damianlikus_dev...","timestamp":"2022-08-16T15:14:03.503Z"}
+{"level":"info","message":"Listening on port 3001...","timestamp":"2022-08-18T15:52:03.550Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_tests...","timestamp":"2022-08-18T15:52:03.972Z"}
+{"level":"info","message":"Listening on port 3001...","timestamp":"2022-08-18T15:52:04.595Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_tests...","timestamp":"2022-08-18T15:52:04.614Z"}
+{"level":"info","message":"Listening on port 3001...","timestamp":"2022-08-18T15:52:05.185Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_tests...","timestamp":"2022-08-18T15:52:05.228Z"}
+{"level":"info","message":"Listening on port 3001...","timestamp":"2022-08-18T15:52:05.872Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_tests...","timestamp":"2022-08-18T15:52:05.890Z"}
+{"level":"info","message":"Listening on port 3001...","timestamp":"2022-08-18T15:52:07.778Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_tests...","timestamp":"2022-08-18T15:52:07.798Z"}
+{"level":"info","message":"Listening on port 3001...","timestamp":"2022-08-18T15:52:08.363Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_tests...","timestamp":"2022-08-18T15:52:08.401Z"}
+{"level":"info","message":"Listening on port 3001...","timestamp":"2022-08-18T15:52:09.031Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_tests...","timestamp":"2022-08-18T15:52:09.047Z"}
+{"level":"info","message":"Listening on port 3001...","timestamp":"2022-08-18T15:52:09.540Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_tests...","timestamp":"2022-08-18T15:52:09.559Z"}
