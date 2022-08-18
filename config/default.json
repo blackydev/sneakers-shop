@@ -1,6 +1,5 @@
 {
   "jwtPrivateKey": "",
   "db": "",
-  "public": "./public/default/",
-  "furgonetka": ""
+  "public": "./public/production/"
 }
