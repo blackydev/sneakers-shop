@@ -11,12 +11,13 @@ exports.createCart = async (cartBody) => {
   const products = [];
   let amount = 0;
   for (const el of cartBody.products) {
-    const id = el.productId;
+    const id = el._id;
 
     if (!el.quantity) el.quantity = 1;
-    let product = await Product.findProductByIdAndUpdate(id, {
+
+    let product = await findProductByIdAndUpdate(id, {
       $inc: { numberInStock: -1 * el.quantity },
-    });
+    }); // TODO: implement better update
     if (!product)
       return new Error("The product with the given ID was not found.");
 
@@ -27,7 +28,7 @@ exports.createCart = async (cartBody) => {
       quantity: el.quantity,
     });
 
-    amount += product.price;
+    amount += product.price * el.quantity;
   }
 
   cart = {

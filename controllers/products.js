@@ -13,7 +13,7 @@ exports.findProductById = async (id) => {
 };
 
 exports.findProductByIdAndUpdate = async (id, update) => {
-  const query = Object.assign({ _id: id }, query);
+  const query = Object.assign({ _id: id }, globalQuery);
   const product = await Product.findOneAndUpdate(query, update, { new: true });
   if (!product) return;
   return product;

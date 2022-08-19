@@ -24,7 +24,7 @@ const orderSchema = new mongoose.Schema({
 
 const Order = mongoose.model("orders", orderSchema);
 
-function validateCart(cart) {
+function validateOrder(cart) {
   const statuses = [
     "pending",
     "interrupted",
