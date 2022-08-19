@@ -8,6 +8,7 @@ exports.createCartFromJSON = async (cartBody) => {
   const { error } = validate(cartBody);
   if (error) return error;
 
+<<<<<<< Updated upstream
   const products = [];
   for (const el of cartBody.products) {
     let product;
@@ -17,6 +18,15 @@ exports.createCartFromJSON = async (cartBody) => {
     if (!isValid)
       return new Error("Product with given id doesn't exists: " + id);
 
+=======
+  const cart = [];
+  for (const el of cartBody) {
+    const id = el.product._id;
+
+    let product = await findProductById(id);
+    if (!product)
+      return new Error("The product with the given ID was not found.");
+>>>>>>> Stashed changes
     try {
       product = await findProductById(id);
       if (!product)

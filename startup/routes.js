@@ -1,7 +1,8 @@
 const express = require("express");
-const users = require("../routes/users");
 const authentication = require("../routes/authentication");
+const users = require("../routes/users");
 const products = require("../routes/products");
+const orders = require("../routes/orders");
 const error = require("../middleware/error");
 const config = require("config");
 
@@ -12,6 +13,7 @@ module.exports = function (app) {
   app.use("/api/users", users);
   app.use("/api/products", products);
   app.use("/api/auth", authentication);
+  app.use("/api/orders", orders);
 
   app.use(error);
 };

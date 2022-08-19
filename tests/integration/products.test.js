@@ -162,13 +162,5 @@ describe("products routes", () => {
       const exists = await fs.existsSync(res.body.image);
       expect(exists).toBeFalsy();
     });
-
-    /* it("return 403 if user is not admin", async () => { 
-      imagePath = webpImg.filePath;
-      const user = await new User({ isAdmin: false });
-      token = user.generateAuthToken();
-      const res = await exec();
-      expect(res.status).toBe(403);
-    }); TODO: read ECONNRESET error*/
   });
 });
