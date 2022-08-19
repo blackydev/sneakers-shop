@@ -1,46 +1,38 @@
 const { Product } = require("../models/product");
-const { findProductById } = require("./products");
+const { findProductByIdAndUpdate } = require("./products");
 const mongoose = require("mongoose");
 const validateObjectId = require("../functions/validateObjectId");
 const { validate } = require("../models/cart");
 
-exports.createCartFromJSON = async (cartBody) => {
+exports.createCart = async (cartBody) => {
   const { error } = validate(cartBody);
   if (error) return error;
 
   const products = [];
+  let amount = 0;
   for (const el of cartBody.products) {
-    let product;
     const id = el.productId;
 
-    const isValid = validateObjectId(id);
-    if (!isValid)
-      return new Error("Product with given id doesn't exists: " + id);
-
-    try {
-      product = await findProductById(id);
-      if (!product)
-        return new Error("Product with given id doesn't exists: " + id);
-
-      if (!el.quantity) el.quantity = 1;
-      product = await Product.findByIdAndUpdate(
-        id,
-        { $inc: { numberInStock: -1 * el.quantity } },
-        { new: true }
-      );
-    } catch (ex) {
-      return ex;
-    }
+    if (!el.quantity) el.quantity = 1;
+    let product = await Product.findProductByIdAndUpdate(id, {
+      $inc: { numberInStock: -1 * el.quantity },
+    });
+    if (!product)
+      return new Error("The product with the given ID was not found.");
 
     products.push({
-      productId: product._id,
-      price: product.price,
+      _id: product._id,
+      name: product.name,
+      cost: product.price,
       quantity: el.quantity,
     });
+
+    amount += product.price;
   }
 
   cart = {
     products: products,
+    amount: amount,
   };
 
   return cart;

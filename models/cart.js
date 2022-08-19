@@ -5,7 +5,14 @@ const { productSchema } = require("./product");
 const cartSchema = new mongoose.Schema({
   products: [
     {
-      product: { type: productSchema, required: true },
+      _id: { type: mongoose.Schema.Types.ObjectId, required: true },
+      name: {
+        type: String,
+        required: true,
+        maxlength: 10000,
+        trim: true,
+      },
+      cost: { ...schemas.price, required: true },
       quantity: {
         type: Number,
         min: 1,
@@ -17,12 +24,17 @@ const cartSchema = new mongoose.Schema({
       },
     },
   ],
+
+  amount: {
+    ...schemas.price,
+    required: true,
+  },
 });
 
 function validateCart(cart) {
   const schema = Joi.object({
     products: Joi.array().items({
-      productId: Joi.objectId().required(),
+      _id: Joi.objectId().required(),
       quantity: Joi.number().integer().min(1),
     }),
   });

@@ -1,25 +1,25 @@
 const { Order, validate } = require("../models/order");
-const { createCartFromJSON } = require("./carts");
-const { createCustomerFromJSON } = require("./customers");
+const { createCart } = require("./carts");
+const { createCustomer } = require("./customers");
 const _ = require("lodash");
 const express = require("express");
 
 const postOrder = async (req, res) => {
-  let order = createOrderFromJSON(req.body);
+  let order = createOrder(req.body);
   order = new Order(order);
   await order.save();
 
   res.send(order);
 };
 
-const createOrderFromJSON = async (orderBody) => {
+const createOrder = async (orderBody) => {
   const { error } = validate(orderBody);
   if (error) return error.details[0].message;
 
-  const customer = await createCustomerFromJSON(orderBody.customer);
+  const customer = await createCustomer(orderBody.customer);
   if (_.isError(customer)) return customer;
 
-  const cart = await createCartFromJSON(orderBody.cart);
+  const cart = await createCart(orderBody.cart);
   if (_.isError(cart)) return cart;
 
   let amount = 0;
@@ -36,5 +36,5 @@ const createOrderFromJSON = async (orderBody) => {
 
 module.exports = {
   post: postOrder,
-  createOrderFromJSON: createOrderFromJSON,
+  createOrder: createOrder,
 };

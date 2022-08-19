@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const _ = require("lodash");
 const { Product } = require("../../../models/product");
-const { createCartFromJSON } = require("../../../controllers/carts");
+const { createCart } = require("../../../controllers/carts");
 
 const products = [
   {
@@ -36,7 +36,7 @@ describe("carts", () => {
     await Product.deleteMany({});
   });
 
-  describe("createCartFromJSON", () => {
+  describe("createCart", () => {
     let productsId;
 
     beforeEach(async () => {
@@ -54,7 +54,7 @@ describe("carts", () => {
       };
 
       const jsonCart = JSON.parse(JSON.stringify(cartBody));
-      const result = await createCartFromJSON(jsonCart);
+      const result = await createCart(jsonCart);
 
       expect(result).toMatchObject({
         products: [
@@ -75,7 +75,7 @@ describe("carts", () => {
       };
 
       const jsonCart = JSON.parse(JSON.stringify(cartBody));
-      const result = await createCartFromJSON(jsonCart);
+      const result = await createCart(jsonCart);
       expect(_.isError(result)).toBeTruthy();
     });
 
@@ -88,7 +88,7 @@ describe("carts", () => {
       };
 
       const jsonCart = JSON.parse(JSON.stringify(cartBody));
-      const result = await createCartFromJSON(jsonCart);
+      const result = await createCart(jsonCart);
       expect(_.isError(result)).toBeTruthy();
     });
 
@@ -101,7 +101,7 @@ describe("carts", () => {
       };
 
       const jsonCart = JSON.parse(JSON.stringify(cartBody));
-      const result = await createCartFromJSON(jsonCart);
+      const result = await createCart(jsonCart);
       expect(_.isError(result)).toBeTruthy();
     });
   });

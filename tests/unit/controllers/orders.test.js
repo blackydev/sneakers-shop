@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const _ = require("lodash");
 const { Product } = require("../../../models/product");
-const { createOrderFromJSON } = require("../../../controllers/orders");
+const { createOrder } = require("../../../controllers/orders");
 
 const products = [
   {
@@ -35,7 +35,7 @@ describe("orders", () => {
     await Product.deleteMany({});
   });
 
-  describe("createCartFromJSON", () => {
+  describe("createCart", () => {
     let productsId;
 
     beforeEach(async () => {
@@ -66,7 +66,7 @@ describe("orders", () => {
     };
 
     it("should return order if is valid", async () => {
-      const result = await createOrderFromJSON(exec());
+      const result = await createOrder(exec());
       expect(result).toMatchObject({
         customer: {
           city: "Jaworzno",

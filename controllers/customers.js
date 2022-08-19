@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const _ = require("lodash");
 const { validate } = require("../models/customer");
 
-exports.createCustomerFromJSON = async (customerBody) => {
+exports.createCustomer = (customerBody) => {
   const { error } = validate(customerBody);
   if (error) return error;
 

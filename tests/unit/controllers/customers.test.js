@@ -1,9 +1,9 @@
 const _ = require("lodash");
 const { Product } = require("../../../models/product");
-const { createCustomerFromJSON } = require("../../../controllers/customers");
+const { createCustomer } = require("../../../controllers/customers");
 
 describe("carts", () => {
-  describe("createCartFromJSON", () => {
+  describe("createCart", () => {
     let name, lastname, email, street, zip, city, phone;
 
     beforeEach(() => {
@@ -31,7 +31,7 @@ describe("carts", () => {
 
     it("should return customer if is valid", async () => {
       const jsonCart = exec();
-      const result = await createCustomerFromJSON(jsonCart);
+      const result = await createCustomer(jsonCart);
 
       expect(result).toMatchObject({
         name: name,
@@ -47,7 +47,7 @@ describe("carts", () => {
     it("should return customer if is invalid", async () => {
       zip = "1";
       const jsonCart = exec();
-      const result = await createCustomerFromJSON(jsonCart);
+      const result = await createCustomer(jsonCart);
 
       expect(_.isError(result)).toBeTruthy();
     });
@@ -55,7 +55,7 @@ describe("carts", () => {
     it("should return customer if is empty", async () => {
       zip = null;
       const jsonCart = exec();
-      const result = await createCustomerFromJSON(jsonCart);
+      const result = await createCustomer(jsonCart);
 
       expect(_.isError(result)).toBeTruthy();
     });

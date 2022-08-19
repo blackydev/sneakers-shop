@@ -15,11 +15,6 @@ const orderSchema = new mongoose.Schema({
     required: true,
   },
 
-  amount: {
-    ...schemas.price,
-    required: true,
-  },
-
   status: {
     type: String,
     default: "pending",
@@ -29,16 +24,28 @@ const orderSchema = new mongoose.Schema({
 
 const Order = mongoose.model("orders", orderSchema);
 
-function validateOrder(order) {
+function validateCart(cart) {
+  const statuses = [
+    "pending",
+    "interrupted",
+    "paid",
+    "delivering",
+    "finalised",
+  ];
+
   const schema = Joi.object({
     customer: Joi.object().required(),
     cart: Joi.object().required(),
-    amount: joiSchemas.price,
-    status: Joi.string().max(256),
+    status: Joi.string()
+      .max(256)
+      .custom((v, helper) => {
+        return statuses.includes(v)
+          ? true
+          : helper.message("Invalid order status.");
+      }),
   });
 
-  return schema.validate(order);
+  return schema.validate(cart);
 }
-
 exports.Order = Order;
 exports.validate = validateOrder;

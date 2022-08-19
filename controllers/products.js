@@ -1,14 +1,21 @@
 const { Product } = require("../models/product");
-const query = { hidden: { $in: [false, null] } };
+const globalQuery = { hidden: { $in: [false, null] } };
 
 exports.findProducts = async () => {
-  const products = await Product.find(query);
+  const products = await Product.find(globalQuery);
   return products;
 };
 
 exports.findProductById = async (id) => {
   const product = await Product.findById(id);
   if (!product || product.hidden) return;
+  return product;
+};
+
+exports.findProductByIdAndUpdate = async (id, update) => {
+  const query = Object.assign({ _id: id }, query);
+  const product = await Product.findOneAndUpdate(query, update, { new: true });
+  if (!product) return;
   return product;
 };
 
