@@ -4,13 +4,13 @@ const { createCustomer } = require("../../../controllers/customers");
 
 describe("carts", () => {
   describe("createCart", () => {
-    let name, lastname, email, street, zip, city, phone;
+    let name, lastname, email, address, zip, city, phone;
 
     beforeEach(() => {
       name = "Jan";
       lastname = "Kowalski";
       email = "jankowalski@jakismail.xd";
-      street = "Wiczesława 97";
+      address = "Wiczesława 97";
       zip = "32-203";
       city = "Jaworzno";
       phone = "+48123456789";
@@ -21,7 +21,7 @@ describe("carts", () => {
         name: name,
         lastname: lastname,
         email: email,
-        street: street,
+        address: address,
         zip: zip,
         city: city,
         phone: phone,
@@ -37,7 +37,7 @@ describe("carts", () => {
         name: name,
         lastname: lastname,
         email: email,
-        street: street,
+        address: address,
         zip: zip,
         city: city,
         phone: phone,

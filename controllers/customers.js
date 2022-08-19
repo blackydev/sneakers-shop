@@ -11,7 +11,7 @@ exports.createCustomer = (customerBody) => {
     "lastname",
     "email",
     "companyName",
-    "street",
+    "address",
     "zip",
     "city",
     "phone",

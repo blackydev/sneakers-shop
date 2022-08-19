@@ -3,7 +3,7 @@ const { emailSchema, emailJoiSchema } = require("./schemas/email");
 const { phoneSchema, phoneJoiSchema } = require("./schemas/phone");
 const { zipSchema, zipJoiSchema } = require("./schemas/zip");
 const { citySchema, cityJoiSchema } = require("./schemas/city");
-const { streetSchema, streetJoiSchema } = require("./schemas/street");
+const { addressSchema, addressJoiSchema } = require("./schemas/address");
 const {
   companyNameSchema,
   companyNameJoiSchema,
@@ -16,7 +16,7 @@ exports.schemas = {
   phone: phoneSchema,
   zip: zipSchema,
   city: citySchema,
-  street: streetSchema,
+  address: addressSchema,
   companyName: companyNameSchema,
   price: priceSchema,
 };
@@ -27,7 +27,7 @@ exports.joiSchemas = {
   phone: phoneJoiSchema,
   zip: zipJoiSchema,
   city: cityJoiSchema,
-  street: streetJoiSchema,
+  address: addressJoiSchema,
   companyName: companyNameJoiSchema,
   price: priceJoiSchema,
 };

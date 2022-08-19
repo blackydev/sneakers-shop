@@ -2,7 +2,6 @@ const Joi = require("joi");
 const mongoose = require("mongoose");
 const { customerSchema } = require("./customer");
 const { cartSchema } = require("./cart");
-const { schemas, joiSchemas } = require("./utils/schemas");
 
 const orderSchema = new mongoose.Schema({
   customer: {

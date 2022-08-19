@@ -1,4 +1,5 @@
 {
+  "shopName": "Damian Likus",
   "jwtPrivateKey": "",
   "db": "",
   "public": "./public/production/"
