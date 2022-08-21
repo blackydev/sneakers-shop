@@ -49,7 +49,6 @@ const createTransaction = async (order, hostURL) => {
     sign: sign,
   };
   try {
-    return request;
     const result = await axios.post(`${p24URL}/transaction/register`, request);
     const token = _.pish(result, "token");
     return `${p24URL}/trnRequest/${token}`;

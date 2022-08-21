@@ -18,12 +18,12 @@ router.post("/", async (req, res) => {
 
   let order = new Order(getProperties(customer, cart, "pending"));
   await order.save();
-
+  return res.status(400).send(order);
   const hostUrl = getHostURL(req);
   const result = await p24.createTransaction(order, hostUrl);
   if (_.isError(result)) return res.status(400).send(result);
 
-  res.send(result);
+  res.redirect(result);
 });
 
 const getProperties = (customer, cart, status) => {
