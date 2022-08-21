@@ -23,7 +23,7 @@ router.post("/", async (req, res) => {
   const result = await p24.createTransaction(order, hostUrl);
   if (_.isError(result)) return res.status(400).send(result);
 
-  res.redirect(result);
+  res.send(result);
 });
 
 const getProperties = (customer, cart, status) => {

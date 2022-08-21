@@ -1,5 +1,6 @@
 const axios = require("axios").default;
 const config = require("config");
+const _ = require("lodash");
 const { calculateSHA384 } = require("../../utils/hash");
 
 const merchantId = 187534;
@@ -48,8 +49,8 @@ const createTransaction = async (order, hostURL) => {
     sign: sign,
   };
   try {
-    const result = await axios.post(p24URL + "/transaction/register", request);
-    const { token } = result;
+    const result = await axios.post(`${p24URL}/transaction/register`, request);
+    const token = _.pish(result, "token");
     return `${p24URL}/trnRequest/${token}`;
   } catch (error) {
     return error;
