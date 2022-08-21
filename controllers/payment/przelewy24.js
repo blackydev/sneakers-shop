@@ -66,6 +66,10 @@ const notifyTransaction = (req) => {
   return sign == req.body.sign;
 };
 
+// const getPaymentMethods = () => {
+
+// };
+
 module.exports = {
   createTransaction: createTransaction,
   notifyTransaction: notifyTransaction,
