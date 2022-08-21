@@ -1,6 +1,5 @@
 {
   "jwtPrivateKey": "",
   "db": "",
-  "public": "./public/development/",
-  "p24_crc": "fed5ac7ea50f655f"
+  "public": "./public/development/"
 }

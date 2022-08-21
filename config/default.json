@@ -3,5 +3,5 @@
   "jwtPrivateKey": "",
   "db": "",
   "public": "./public/production/",
-  "p24_crc": ""
+  "p24_crc": "fed5ac7ea50f655f"
 }

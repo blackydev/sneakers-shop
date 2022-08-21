@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const { schemas, joiSchemas } = require("./utils/schemas");
 
 const customerSchema = new mongoose.Schema({
+  _id: { id: false },
   name: { ...schemas.fullname, required: true },
   email: { ...schemas.email, required: true },
   companyName: { ...schemas.companyName },
