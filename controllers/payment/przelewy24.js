@@ -22,17 +22,18 @@ const client = axios.create({
 });
 
 const createTransaction = async (order, hostURL) => {
+  const customer = order.customer;
+  const cart = order.cart;
+
   const hashData = {
     sessionId: order._id, // TODO:
     merchantId: merchantId, // TODO:
-    amount: order.amount,
+    amount: cart.amount * 100,
     currency: "PLN",
     crc: crcKey,
   };
 
   const sign = calculateSHA384(JSON.stringify(hashData));
-  const customer = order.customer;
-  const cart = order.cart;
   const request = {
     merchantId: merchantId,
     posId: posId,
@@ -57,8 +58,11 @@ const createTransaction = async (order, hostURL) => {
     sign: sign,
   };
   try {
-    const { data } = await client.post(`/transaction/register`, request);
-    const token = _.pick(result, "token");
+    const { data: result } = await client.post(
+      `/transaction/register`,
+      request
+    );
+    const token = result.data.token;
     return `${p24URL}/trnRequest/${token}`;
   } catch (error) {
     return error;

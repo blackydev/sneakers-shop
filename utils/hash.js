@@ -1,5 +1,5 @@
-const sha384 = require("crypto-js/sha384");
+const crypto = require("crypto");
 
 exports.calculateSHA384 = (data) => {
-  return sha384(data);
+  return crypto.createHash("sha384").update(data, "utf8").digest("hex");
 };
