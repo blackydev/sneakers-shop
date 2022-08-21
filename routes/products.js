@@ -56,7 +56,7 @@ router.patch(
     const oldProduct = await Product.findByIdAndUpdate(
       { _id: req.params.id },
       { $set: req.body }
-    ); //TODO: CHECK DOES IT CORRECT
+    );
 
     if (!oldProduct) {
       res.status(404).send("The product with the given ID was not found.");
