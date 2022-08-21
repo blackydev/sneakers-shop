@@ -4,7 +4,6 @@ const emailSchema = {
   type: String,
   minlength: 5,
   maxlength: 255,
-  unique: true,
   match: [
     /^[a-zA-Z0-9_.+]*[a-zA-Z][a-zA-Z0-9_.+]*@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/,
     "Please fill a valid email address",

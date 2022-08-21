@@ -22,7 +22,7 @@ const createTransaction = async (order, hostURL) => {
   };
 
   const sign = calculateSHA384(JSON.stringify(hashData));
-
+  hostURL = "https://damianlikus.herokuapp.com";
   const customer = order.customer;
   // const cart = order.cart;
   const request = {
@@ -33,7 +33,7 @@ const createTransaction = async (order, hostURL) => {
     currency: "PLN",
     description: "Transakcja", // TODO:
     email: customer.email,
-    client: customer.name + " " + customer.lastname,
+    client: customer.name,
     address: customer.address,
     zip: customer.zip,
     city: customer.city,

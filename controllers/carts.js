@@ -3,6 +3,7 @@ const { findProductByIdAndUpdate } = require("./products");
 const mongoose = require("mongoose");
 const validateObjectId = require("../functions/validateObjectId");
 const { validate } = require("../models/cart");
+const winston = require("winston");
 
 exports.createCart = async (cartBody) => {
   const { error } = validate(cartBody);
@@ -12,7 +13,6 @@ exports.createCart = async (cartBody) => {
   let amount = 0;
   for (const el of cartBody.products) {
     const id = el._id;
-
     if (!el.quantity) el.quantity = 1;
 
     let product = await findProductByIdAndUpdate(id, {

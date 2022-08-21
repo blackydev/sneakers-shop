@@ -3,8 +3,7 @@ const mongoose = require("mongoose");
 const { schemas, joiSchemas } = require("./utils/schemas");
 
 const customerSchema = new mongoose.Schema({
-  name: { ...schemas.name, required: true },
-  lastname: { ...schemas.name, required: true },
+  name: { ...schemas.fullname, required: true },
   email: { ...schemas.email, required: true },
   companyName: { ...schemas.companyName },
   address: { ...schemas.address, required: true },
@@ -13,12 +12,9 @@ const customerSchema = new mongoose.Schema({
   phone: { ...schemas.phone, required: true },
 });
 
-const Customer = mongoose.model("customers", customerSchema);
-
 function validateCustomer(customer) {
   const schema = Joi.object({
-    name: joiSchemas.name.required(),
-    lastname: joiSchemas.name.required(),
+    name: joiSchemas.fullname.required(),
     email: joiSchemas.email.required(),
     companyName: joiSchemas.companyName,
     address: joiSchemas.address.required(),
@@ -30,6 +26,5 @@ function validateCustomer(customer) {
   return schema.validate(customer);
 }
 
-exports.Customer = Customer;
 exports.customerSchema = customerSchema;
 exports.validate = validateCustomer;

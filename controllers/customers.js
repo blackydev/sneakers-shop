@@ -8,7 +8,6 @@ exports.createCustomer = (customerBody) => {
 
   return _.pick(customerBody, [
     "name",
-    "lastname",
     "email",
     "companyName",
     "address",

@@ -7,11 +7,11 @@ const { schemas, joiSchemas } = require("./utils/schemas");
 
 const authNumber = () => {
   const number = Math.floor(Math.random() * 9007199254740990);
-  return this.authNumber = number.toString(36);
+  return (this.authNumber = number.toString(36));
 };
 
 const userSchema = new mongoose.Schema({
-  email: { ...schemas.email, required: true },
+  email: { ...schemas.email, required: true, unique: true },
   password: {
     type: String,
     required: true,
@@ -30,11 +30,15 @@ const userSchema = new mongoose.Schema({
 
 userSchema.methods.generateAuthToken = function () {
   return jwt.sign(
-    { _id: this._id, email: this.email, isAdmin: this.isAdmin, authNumber: this.authNumber },
+    {
+      _id: this._id,
+      email: this.email,
+      isAdmin: this.isAdmin,
+      authNumber: this.authNumber,
+    },
     config.get("jwtPrivateKey")
   );
 };
-
 
 userSchema.methods.resetAuthNumber = authNumber;
 

@@ -4,11 +4,10 @@ const { createCustomer } = require("../../../controllers/customers");
 
 describe("carts", () => {
   describe("createCart", () => {
-    let name, lastname, email, address, zip, city, phone;
+    let name, email, address, zip, city, phone;
 
     beforeEach(() => {
-      name = "Jan";
-      lastname = "Kowalski";
+      name = "Jan Kowalski";
       email = "jankowalski@jakismail.xd";
       address = "Wiczesława 97";
       zip = "32-203";
@@ -19,7 +18,6 @@ describe("carts", () => {
     exec = () => {
       const customer = {
         name: name,
-        lastname: lastname,
         email: email,
         address: address,
         zip: zip,
@@ -35,7 +33,6 @@ describe("carts", () => {
 
       expect(result).toMatchObject({
         name: name,
-        lastname: lastname,
         email: email,
         address: address,
         zip: zip,
