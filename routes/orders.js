@@ -40,7 +40,7 @@ router.post("/:id/notification/p24", validateObjectId, async (req, res) => {
     }
   );
 
-  const result = p24.verifyTransaction(order);
+  const result = await p24.verifyTransaction(order);
   if (result !== "success") {
     await Order.findByIdAndUpdate(
       { _id: req.params.id },
