@@ -1,4 +1,3 @@
-const mongoose = require("mongoose");
 const express = require("express");
 const router = express.Router();
 const { Order } = require("../models/order");
@@ -21,7 +20,7 @@ router.post("/", async (req, res) => {
   await order.save();
 
   const hostUrl = getHostURL(req);
-  const result = p24.createTransaction(order, hostUrl);
+  const result = await p24.createTransaction(order, hostUrl);
   if (_.isError(result)) return res.status(400).send(result);
 
   res.redirect(result);
