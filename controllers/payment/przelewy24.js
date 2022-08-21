@@ -10,11 +10,11 @@ const raportKey = "ce33570a9af0e85291c966f09c9ad973";
 
 const p24URL =
   process.env.NODE_ENV === "production"
-    ? "https://secure.przelewy24.pl/api/v1"
-    : "https://sandbox.przelewy24.pl/api/v1";
+    ? "https://secure.przelewy24.pl"
+    : "https://sandbox.przelewy24.pl";
 
 const client = axios.create({
-  baseURL: p24URL,
+  baseURL: `${p24URL}/api/v1`,
   auth: {
     username: posId.toString(),
     password: raportKey,
@@ -31,7 +31,6 @@ const createTransaction = async (order, hostURL) => {
   };
 
   const sign = calculateSHA384(JSON.stringify(hashData));
-  hostURL = "https://damianlikus.herokuapp.com";
   const customer = order.customer;
   const cart = order.cart;
   const request = {
@@ -58,10 +57,7 @@ const createTransaction = async (order, hostURL) => {
     sign: sign,
   };
   try {
-    const result = await client.post(
-      `${p24URL}/transaction/register`,
-      JSON.stringify(request)
-    );
+    const { data } = await client.post(`/transaction/register`, request);
     const token = _.pick(result, "token");
     return `${p24URL}/trnRequest/${token}`;
   } catch (error) {

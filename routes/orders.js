@@ -12,10 +12,10 @@ router.post("/", async (req, res) => {
   if (error) return res.status(400).send(error.details[0].message);
 
   const cart = await createCart(req.body.cart);
-  if (_.isError(cart)) return res.status(400).send(cart);
+  if (_.isError(cart)) return res.status(400).send(cart.message);
 
   const customer = await createCustomer(req.body.customer);
-  if (_.isError(customer)) return res.status(400).send(customer);
+  if (_.isError(customer)) return res.status(400).send(customer.message);
 
   let order = new Order(getProperties(customer, cart, "pending"));
   await order.save();
@@ -23,7 +23,11 @@ router.post("/", async (req, res) => {
   const result = await p24.createTransaction(order, hostUrl);
   if (_.isError(result)) return res.status(400).send(result);
 
-  res.redirect(result);
+  res.send(result);
+});
+
+router.post("/:id/transaction-status", async (req, res) => {
+  res.status(200).send("1");
 });
 
 const getProperties = (customer, cart, status) => {
