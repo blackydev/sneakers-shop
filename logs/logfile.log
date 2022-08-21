@@ -1166,3 +1166,271 @@
 {"level":"info","message":"Node environment: dev","timestamp":"2022-08-21T20:46:55.374Z"}
 {"level":"info","message":"Listening on port 3000...","timestamp":"2022-08-21T20:46:55.375Z"}
 {"level":"info","message":"Connected to mongodb://localhost/damianlikus_dev...","timestamp":"2022-08-21T20:46:55.387Z"}
+{"level":"info","message":"Node environment: dev","timestamp":"2022-08-21T20:52:16.194Z"}
+{"level":"info","message":"Listening on port 3000...","timestamp":"2022-08-21T20:52:16.195Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_dev...","timestamp":"2022-08-21T20:52:16.212Z"}
+{"level":"info","message":"Node environment: dev","timestamp":"2022-08-21T20:58:44.241Z"}
+{"level":"info","message":"Listening on port 3000...","timestamp":"2022-08-21T20:58:44.242Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_dev...","timestamp":"2022-08-21T20:58:44.256Z"}
+{"level":"info","message":"Node environment: dev","timestamp":"2022-08-21T20:59:24.149Z"}
+{"level":"info","message":"Listening on port 3000...","timestamp":"2022-08-21T20:59:24.150Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_dev...","timestamp":"2022-08-21T20:59:24.162Z"}
+{"level":"info","message":"Node environment: dev","timestamp":"2022-08-21T20:59:39.597Z"}
+{"level":"info","message":"Listening on port 3000...","timestamp":"2022-08-21T20:59:39.597Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_dev...","timestamp":"2022-08-21T20:59:39.610Z"}
+{"level":"info","message":"Node environment: dev","timestamp":"2022-08-21T20:59:45.927Z"}
+{"level":"info","message":"Listening on port 3000...","timestamp":"2022-08-21T20:59:45.927Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_dev...","timestamp":"2022-08-21T20:59:45.948Z"}
+{"level":"info","message":"Node environment: dev","timestamp":"2022-08-21T20:59:58.229Z"}
+{"level":"info","message":"Listening on port 3000...","timestamp":"2022-08-21T20:59:58.230Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_dev...","timestamp":"2022-08-21T20:59:58.248Z"}
+{"level":"info","message":"Node environment: dev","timestamp":"2022-08-21T21:00:14.048Z"}
+{"level":"info","message":"Listening on port 3000...","timestamp":"2022-08-21T21:00:14.048Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_dev...","timestamp":"2022-08-21T21:00:14.062Z"}
+{"level":"info","message":"Node environment: dev","timestamp":"2022-08-21T21:00:19.596Z"}
+{"level":"info","message":"Listening on port 3000...","timestamp":"2022-08-21T21:00:19.597Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_dev...","timestamp":"2022-08-21T21:00:19.614Z"}
+{"level":"info","message":"Node environment: dev","timestamp":"2022-08-21T21:00:33.814Z"}
+{"level":"info","message":"Listening on port 3000...","timestamp":"2022-08-21T21:00:33.814Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_dev...","timestamp":"2022-08-21T21:00:33.835Z"}
+{"level":"info","message":"Node environment: dev","timestamp":"2022-08-21T21:00:38.907Z"}
+{"level":"info","message":"Listening on port 3000...","timestamp":"2022-08-21T21:00:38.908Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_dev...","timestamp":"2022-08-21T21:00:38.928Z"}
+{"level":"info","message":"Node environment: dev","timestamp":"2022-08-21T21:00:48.192Z"}
+{"level":"info","message":"Listening on port 3000...","timestamp":"2022-08-21T21:00:48.192Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_dev...","timestamp":"2022-08-21T21:00:48.216Z"}
+{"level":"info","message":"Node environment: dev","timestamp":"2022-08-21T21:00:51.352Z"}
+{"level":"info","message":"Listening on port 3000...","timestamp":"2022-08-21T21:00:51.352Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_dev...","timestamp":"2022-08-21T21:00:51.366Z"}
+{"level":"info","message":"Node environment: dev","timestamp":"2022-08-21T21:00:55.747Z"}
+{"level":"info","message":"Listening on port 3000...","timestamp":"2022-08-21T21:00:55.747Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_dev...","timestamp":"2022-08-21T21:00:55.766Z"}
+{"level":"info","message":"Node environment: test","timestamp":"2022-08-21T21:03:11.213Z"}
+{"level":"info","message":"Listening on port 3001...","timestamp":"2022-08-21T21:03:11.213Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_tests...","timestamp":"2022-08-21T21:03:11.360Z"}
+{"level":"info","message":"Node environment: test","timestamp":"2022-08-21T21:03:12.194Z"}
+{"level":"info","message":"Listening on port 3001...","timestamp":"2022-08-21T21:03:12.195Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_tests...","timestamp":"2022-08-21T21:03:12.269Z"}
+{"level":"info","message":"Node environment: test","timestamp":"2022-08-21T21:03:12.899Z"}
+{"level":"info","message":"Listening on port 3001...","timestamp":"2022-08-21T21:03:12.899Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_tests...","timestamp":"2022-08-21T21:03:12.923Z"}
+{"level":"info","message":"Node environment: test","timestamp":"2022-08-21T21:03:15.017Z"}
+{"level":"info","message":"Listening on port 3001...","timestamp":"2022-08-21T21:03:15.018Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_tests...","timestamp":"2022-08-21T21:03:15.072Z"}
+{"level":"info","message":"Node environment: test","timestamp":"2022-08-21T21:03:15.857Z"}
+{"level":"info","message":"Listening on port 3001...","timestamp":"2022-08-21T21:03:15.857Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_tests...","timestamp":"2022-08-21T21:03:15.878Z"}
+{"level":"info","message":"Node environment: test","timestamp":"2022-08-21T21:03:16.506Z"}
+{"level":"info","message":"Listening on port 3001...","timestamp":"2022-08-21T21:03:16.507Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_tests...","timestamp":"2022-08-21T21:03:16.527Z"}
+{"level":"info","message":"Node environment: test","timestamp":"2022-08-21T21:11:13.490Z"}
+{"level":"info","message":"Listening on port 3001...","timestamp":"2022-08-21T21:11:13.491Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_tests...","timestamp":"2022-08-21T21:11:13.510Z"}
+{"level":"info","message":"Node environment: test","timestamp":"2022-08-21T21:11:14.205Z"}
+{"level":"info","message":"Listening on port 3001...","timestamp":"2022-08-21T21:11:14.206Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_tests...","timestamp":"2022-08-21T21:11:14.278Z"}
+{"level":"info","message":"Node environment: test","timestamp":"2022-08-21T21:11:14.935Z"}
+{"level":"info","message":"Listening on port 3001...","timestamp":"2022-08-21T21:11:14.936Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_tests...","timestamp":"2022-08-21T21:11:14.954Z"}
+{"level":"info","message":"Node environment: test","timestamp":"2022-08-21T21:15:27.480Z"}
+{"level":"info","message":"Listening on port 3001...","timestamp":"2022-08-21T21:15:27.480Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_tests...","timestamp":"2022-08-21T21:15:27.503Z"}
+{"level":"info","message":"Node environment: test","timestamp":"2022-08-21T21:15:28.216Z"}
+{"level":"info","message":"Listening on port 3001...","timestamp":"2022-08-21T21:15:28.217Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_tests...","timestamp":"2022-08-21T21:15:28.265Z"}
+{"level":"info","message":"Node environment: test","timestamp":"2022-08-21T21:15:28.955Z"}
+{"level":"info","message":"Listening on port 3001...","timestamp":"2022-08-21T21:15:28.955Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_tests...","timestamp":"2022-08-21T21:15:28.976Z"}
+{"level":"info","message":"Node environment: test","timestamp":"2022-08-21T21:15:48.856Z"}
+{"level":"info","message":"Listening on port 3001...","timestamp":"2022-08-21T21:15:48.857Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_tests...","timestamp":"2022-08-21T21:15:48.885Z"}
+{"level":"info","message":"Node environment: test","timestamp":"2022-08-21T21:15:49.572Z"}
+{"level":"info","message":"Listening on port 3001...","timestamp":"2022-08-21T21:15:49.572Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_tests...","timestamp":"2022-08-21T21:15:49.624Z"}
+{"level":"info","message":"Node environment: test","timestamp":"2022-08-21T21:15:50.302Z"}
+{"level":"info","message":"Listening on port 3001...","timestamp":"2022-08-21T21:15:50.302Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_tests...","timestamp":"2022-08-21T21:15:50.325Z"}
+{"level":"info","message":"Node environment: dev","timestamp":"2022-08-21T21:16:05.339Z"}
+{"level":"info","message":"Listening on port 3000...","timestamp":"2022-08-21T21:16:05.340Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_dev...","timestamp":"2022-08-21T21:16:05.353Z"}
+{"level":"info","message":"Node environment: dev","timestamp":"2022-08-21T21:16:29.832Z"}
+{"level":"info","message":"Listening on port 3000...","timestamp":"2022-08-21T21:16:29.833Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_dev...","timestamp":"2022-08-21T21:16:29.847Z"}
+{"level":"info","message":"Node environment: test","timestamp":"2022-08-21T21:16:46.655Z"}
+{"level":"info","message":"Listening on port 3001...","timestamp":"2022-08-21T21:16:46.655Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_tests...","timestamp":"2022-08-21T21:16:46.678Z"}
+{"level":"info","message":"Node environment: test","timestamp":"2022-08-21T21:16:47.360Z"}
+{"level":"info","message":"Listening on port 3001...","timestamp":"2022-08-21T21:16:47.360Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_tests...","timestamp":"2022-08-21T21:16:47.409Z"}
+{"level":"info","message":"Node environment: test","timestamp":"2022-08-21T21:16:48.092Z"}
+{"level":"info","message":"Listening on port 3001...","timestamp":"2022-08-21T21:16:48.093Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_tests...","timestamp":"2022-08-21T21:16:48.113Z"}
+{"level":"info","message":"Node environment: test","timestamp":"2022-08-21T21:18:32.776Z"}
+{"level":"info","message":"Listening on port 3001...","timestamp":"2022-08-21T21:18:32.776Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_tests...","timestamp":"2022-08-21T21:18:32.802Z"}
+{"level":"info","message":"Node environment: test","timestamp":"2022-08-21T21:18:33.517Z"}
+{"level":"info","message":"Listening on port 3001...","timestamp":"2022-08-21T21:18:33.518Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_tests...","timestamp":"2022-08-21T21:18:33.588Z"}
+{"level":"info","message":"Node environment: test","timestamp":"2022-08-21T21:18:34.266Z"}
+{"level":"info","message":"Listening on port 3001...","timestamp":"2022-08-21T21:18:34.266Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_tests...","timestamp":"2022-08-21T21:18:34.294Z"}
+{"level":"info","message":"Node environment: test","timestamp":"2022-08-21T21:19:29.983Z"}
+{"level":"info","message":"Listening on port 3001...","timestamp":"2022-08-21T21:19:29.984Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_tests...","timestamp":"2022-08-21T21:19:30.004Z"}
+{"level":"info","message":"Node environment: test","timestamp":"2022-08-21T21:19:30.732Z"}
+{"level":"info","message":"Listening on port 3001...","timestamp":"2022-08-21T21:19:30.733Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_tests...","timestamp":"2022-08-21T21:19:30.805Z"}
+{"level":"info","message":"Node environment: test","timestamp":"2022-08-21T21:19:31.474Z"}
+{"level":"info","message":"Listening on port 3001...","timestamp":"2022-08-21T21:19:31.474Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_tests...","timestamp":"2022-08-21T21:19:31.493Z"}
+{"level":"info","message":"Node environment: dev","timestamp":"2022-08-21T21:21:32.606Z"}
+{"level":"info","message":"Listening on port 3000...","timestamp":"2022-08-21T21:21:32.607Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_dev...","timestamp":"2022-08-21T21:21:32.625Z"}
+{"level":"info","message":"Node environment: dev","timestamp":"2022-08-21T21:22:11.170Z"}
+{"level":"info","message":"Listening on port 3000...","timestamp":"2022-08-21T21:22:11.171Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_dev...","timestamp":"2022-08-21T21:22:11.188Z"}
+{"level":"info","message":"Node environment: dev","timestamp":"2022-08-21T21:23:40.653Z"}
+{"level":"info","message":"Listening on port 3000...","timestamp":"2022-08-21T21:23:40.654Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_dev...","timestamp":"2022-08-21T21:23:40.666Z"}
+{"level":"info","message":"Node environment: dev","timestamp":"2022-08-21T21:24:15.204Z"}
+{"level":"info","message":"Listening on port 3000...","timestamp":"2022-08-21T21:24:15.205Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_dev...","timestamp":"2022-08-21T21:24:15.216Z"}
+{"level":"info","message":"Node environment: dev","timestamp":"2022-08-21T21:26:18.432Z"}
+{"level":"info","message":"Listening on port 3000...","timestamp":"2022-08-21T21:26:18.433Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_dev...","timestamp":"2022-08-21T21:26:18.447Z"}
+{"level":"info","message":"Node environment: dev","timestamp":"2022-08-21T21:29:53.569Z"}
+{"level":"info","message":"Listening on port 3000...","timestamp":"2022-08-21T21:29:53.570Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_dev...","timestamp":"2022-08-21T21:29:53.584Z"}
+{"level":"info","message":"Node environment: dev","timestamp":"2022-08-21T21:30:17.796Z"}
+{"level":"info","message":"Listening on port 3000...","timestamp":"2022-08-21T21:30:17.797Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_dev...","timestamp":"2022-08-21T21:30:17.809Z"}
+{"level":"info","message":"Node environment: dev","timestamp":"2022-08-21T21:32:29.399Z"}
+{"level":"info","message":"Listening on port 3000...","timestamp":"2022-08-21T21:32:29.399Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_dev...","timestamp":"2022-08-21T21:32:29.413Z"}
+{"level":"info","message":"Node environment: test","timestamp":"2022-08-21T21:32:36.042Z"}
+{"level":"info","message":"Listening on port 3001...","timestamp":"2022-08-21T21:32:36.042Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_tests...","timestamp":"2022-08-21T21:32:36.061Z"}
+{"level":"info","message":"Node environment: test","timestamp":"2022-08-21T21:32:36.721Z"}
+{"level":"info","message":"Listening on port 3001...","timestamp":"2022-08-21T21:32:36.721Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_tests...","timestamp":"2022-08-21T21:32:36.780Z"}
+{"level":"info","message":"Node environment: test","timestamp":"2022-08-21T21:32:37.449Z"}
+{"level":"info","message":"Listening on port 3001...","timestamp":"2022-08-21T21:32:37.449Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_tests...","timestamp":"2022-08-21T21:32:37.471Z"}
+{"level":"info","message":"Node environment: test","timestamp":"2022-08-21T21:32:50.889Z"}
+{"level":"info","message":"Listening on port 3001...","timestamp":"2022-08-21T21:32:50.889Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_tests...","timestamp":"2022-08-21T21:32:50.907Z"}
+{"level":"info","message":"Node environment: test","timestamp":"2022-08-21T21:32:51.583Z"}
+{"level":"info","message":"Listening on port 3001...","timestamp":"2022-08-21T21:32:51.583Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_tests...","timestamp":"2022-08-21T21:32:51.622Z"}
+{"level":"info","message":"Node environment: test","timestamp":"2022-08-21T21:32:52.256Z"}
+{"level":"info","message":"Listening on port 3001...","timestamp":"2022-08-21T21:32:52.256Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_tests...","timestamp":"2022-08-21T21:32:52.277Z"}
+{"level":"info","message":"Node environment: test","timestamp":"2022-08-21T21:32:54.455Z"}
+{"level":"info","message":"Listening on port 3001...","timestamp":"2022-08-21T21:32:54.455Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_tests...","timestamp":"2022-08-21T21:32:54.473Z"}
+{"level":"info","message":"Node environment: test","timestamp":"2022-08-21T21:32:55.159Z"}
+{"level":"info","message":"Listening on port 3001...","timestamp":"2022-08-21T21:32:55.159Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_tests...","timestamp":"2022-08-21T21:32:55.204Z"}
+{"level":"info","message":"Node environment: test","timestamp":"2022-08-21T21:32:55.825Z"}
+{"level":"info","message":"Listening on port 3001...","timestamp":"2022-08-21T21:32:55.826Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_tests...","timestamp":"2022-08-21T21:32:55.846Z"}
+{"level":"info","message":"Node environment: dev","timestamp":"2022-08-21T21:33:00.649Z"}
+{"level":"info","message":"Listening on port 3000...","timestamp":"2022-08-21T21:33:00.650Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_dev...","timestamp":"2022-08-21T21:33:00.673Z"}
+{"level":"info","message":"Node environment: dev","timestamp":"2022-08-21T21:35:51.610Z"}
+{"level":"info","message":"Listening on port 3000...","timestamp":"2022-08-21T21:35:51.611Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_dev...","timestamp":"2022-08-21T21:35:51.628Z"}
+{"level":"info","message":"Node environment: dev","timestamp":"2022-08-21T21:39:20.171Z"}
+{"level":"info","message":"Listening on port 3000...","timestamp":"2022-08-21T21:39:20.172Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_dev...","timestamp":"2022-08-21T21:39:20.185Z"}
+{"level":"info","message":"Node environment: dev","timestamp":"2022-08-21T21:39:27.033Z"}
+{"level":"info","message":"Listening on port 3000...","timestamp":"2022-08-21T21:39:27.034Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_dev...","timestamp":"2022-08-21T21:39:27.048Z"}
+{"level":"info","message":"Node environment: dev","timestamp":"2022-08-21T21:41:46.907Z"}
+{"level":"info","message":"Listening on port 3000...","timestamp":"2022-08-21T21:41:46.908Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_dev...","timestamp":"2022-08-21T21:41:46.921Z"}
+{"level":"info","message":"Node environment: dev","timestamp":"2022-08-21T21:42:22.529Z"}
+{"level":"info","message":"Listening on port 3000...","timestamp":"2022-08-21T21:42:22.530Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_dev...","timestamp":"2022-08-21T21:42:22.541Z"}
+{"level":"info","message":"Node environment: dev","timestamp":"2022-08-21T21:42:26.229Z"}
+{"level":"info","message":"Listening on port 3000...","timestamp":"2022-08-21T21:42:26.229Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_dev...","timestamp":"2022-08-21T21:42:26.241Z"}
+{"level":"info","message":"Node environment: dev","timestamp":"2022-08-21T21:43:13.403Z"}
+{"level":"info","message":"Listening on port 3000...","timestamp":"2022-08-21T21:43:13.404Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_dev...","timestamp":"2022-08-21T21:43:13.419Z"}
+{"level":"info","message":"Node environment: dev","timestamp":"2022-08-21T21:43:23.134Z"}
+{"level":"info","message":"Listening on port 3000...","timestamp":"2022-08-21T21:43:23.135Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_dev...","timestamp":"2022-08-21T21:43:23.151Z"}
+{"level":"info","message":"Node environment: dev","timestamp":"2022-08-21T21:43:28.704Z"}
+{"level":"info","message":"Listening on port 3000...","timestamp":"2022-08-21T21:43:28.705Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_dev...","timestamp":"2022-08-21T21:43:28.725Z"}
+{"level":"info","message":"Node environment: dev","timestamp":"2022-08-21T21:43:34.199Z"}
+{"level":"info","message":"Listening on port 3000...","timestamp":"2022-08-21T21:43:34.200Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_dev...","timestamp":"2022-08-21T21:43:34.219Z"}
+{"message":"Cannot read properties of undefined (reading 'isAdmin')","stack":"TypeError: Cannot read properties of undefined (reading 'isAdmin')\n    at isAdmin (C:\\Users\\patry\\Desktop\\damianlikus.com\\middleware\\authorization.js:25:12)\n    at Layer.handle [as handle_request] (C:\\Users\\patry\\Desktop\\damianlikus.com\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at next (C:\\Users\\patry\\Desktop\\damianlikus.com\\node_modules\\express\\lib\\router\\route.js:144:13)\n    at Route.dispatch (C:\\Users\\patry\\Desktop\\damianlikus.com\\node_modules\\express\\lib\\router\\route.js:114:3)\n    at Layer.handle [as handle_request] (C:\\Users\\patry\\Desktop\\damianlikus.com\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at C:\\Users\\patry\\Desktop\\damianlikus.com\\node_modules\\express\\lib\\router\\index.js:284:15\n    at Function.process_params (C:\\Users\\patry\\Desktop\\damianlikus.com\\node_modules\\express\\lib\\router\\index.js:346:12)\n    at next (C:\\Users\\patry\\Desktop\\damianlikus.com\\node_modules\\express\\lib\\router\\index.js:280:10)\n    at Function.handle (C:\\Users\\patry\\Desktop\\damianlikus.com\\node_modules\\express\\lib\\router\\index.js:175:3)\n    at router (C:\\Users\\patry\\Desktop\\damianlikus.com\\node_modules\\express\\lib\\router\\index.js:47:12)","level":"error","timestamp":"2022-08-21T21:43:34.882Z"}
+{"level":"info","message":"Node environment: dev","timestamp":"2022-08-21T21:43:39.840Z"}
+{"level":"info","message":"Listening on port 3000...","timestamp":"2022-08-21T21:43:39.841Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_dev...","timestamp":"2022-08-21T21:43:39.852Z"}
+{"level":"info","message":"Node environment: dev","timestamp":"2022-08-21T21:44:51.834Z"}
+{"level":"info","message":"Listening on port 3000...","timestamp":"2022-08-21T21:44:51.834Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_dev...","timestamp":"2022-08-21T21:44:51.852Z"}
+{"level":"info","message":"Node environment: dev","timestamp":"2022-08-21T21:45:41.109Z"}
+{"level":"info","message":"Listening on port 3000...","timestamp":"2022-08-21T21:45:41.110Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_dev...","timestamp":"2022-08-21T21:45:41.126Z"}
+{"level":"info","message":"Node environment: dev","timestamp":"2022-08-21T21:46:30.446Z"}
+{"level":"info","message":"Listening on port 3000...","timestamp":"2022-08-21T21:46:30.447Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_dev...","timestamp":"2022-08-21T21:46:30.461Z"}
+{"level":"info","message":"Node environment: dev","timestamp":"2022-08-21T21:48:18.418Z"}
+{"level":"info","message":"Listening on port 3000...","timestamp":"2022-08-21T21:48:18.419Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_dev...","timestamp":"2022-08-21T21:48:18.441Z"}
+{"level":"info","message":"Node environment: dev","timestamp":"2022-08-21T21:48:20.105Z"}
+{"level":"info","message":"Listening on port 3000...","timestamp":"2022-08-21T21:48:20.106Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_dev...","timestamp":"2022-08-21T21:48:20.120Z"}
+{"level":"info","message":"Node environment: dev","timestamp":"2022-08-21T21:49:24.373Z"}
+{"level":"info","message":"Listening on port 3000...","timestamp":"2022-08-21T21:49:24.374Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_dev...","timestamp":"2022-08-21T21:49:24.387Z"}
+{"level":"info","message":"Node environment: dev","timestamp":"2022-08-21T21:51:01.760Z"}
+{"level":"info","message":"Listening on port 3000...","timestamp":"2022-08-21T21:51:01.761Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_dev...","timestamp":"2022-08-21T21:51:01.776Z"}
+{"level":"info","message":"Node environment: dev","timestamp":"2022-08-21T21:51:18.236Z"}
+{"level":"info","message":"Listening on port 3000...","timestamp":"2022-08-21T21:51:18.237Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_dev...","timestamp":"2022-08-21T21:51:18.249Z"}
+{"level":"info","message":"Node environment: dev","timestamp":"2022-08-21T21:51:27.917Z"}
+{"level":"info","message":"Listening on port 3000...","timestamp":"2022-08-21T21:51:27.917Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_dev...","timestamp":"2022-08-21T21:51:27.945Z"}
+{"level":"info","message":"Node environment: dev","timestamp":"2022-08-21T21:51:37.091Z"}
+{"level":"info","message":"Listening on port 3000...","timestamp":"2022-08-21T21:51:37.091Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_dev...","timestamp":"2022-08-21T21:51:37.105Z"}
+{"level":"info","message":"Node environment: dev","timestamp":"2022-08-21T21:51:42.168Z"}
+{"level":"info","message":"Listening on port 3000...","timestamp":"2022-08-21T21:51:42.168Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_dev...","timestamp":"2022-08-21T21:51:42.189Z"}
+{"level":"info","message":"Node environment: dev","timestamp":"2022-08-21T21:51:47.901Z"}
+{"level":"info","message":"Listening on port 3000...","timestamp":"2022-08-21T21:51:47.901Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_dev...","timestamp":"2022-08-21T21:51:47.917Z"}
+{"level":"info","message":"Node environment: dev","timestamp":"2022-08-21T21:51:53.228Z"}
+{"level":"info","message":"Listening on port 3000...","timestamp":"2022-08-21T21:51:53.229Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_dev...","timestamp":"2022-08-21T21:51:53.246Z"}
+{"level":"info","message":"Node environment: dev","timestamp":"2022-08-21T21:51:54.173Z"}
+{"level":"info","message":"Listening on port 3000...","timestamp":"2022-08-21T21:51:54.174Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_dev...","timestamp":"2022-08-21T21:51:54.192Z"}
+{"level":"info","message":"Node environment: dev","timestamp":"2022-08-21T21:52:05.739Z"}
+{"level":"info","message":"Listening on port 3000...","timestamp":"2022-08-21T21:52:05.739Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_dev...","timestamp":"2022-08-21T21:52:05.752Z"}
+{"level":"info","message":"Node environment: dev","timestamp":"2022-08-21T21:52:32.142Z"}
+{"level":"info","message":"Listening on port 3000...","timestamp":"2022-08-21T21:52:32.143Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_dev...","timestamp":"2022-08-21T21:52:32.161Z"}
+{"level":"info","message":"Node environment: dev","timestamp":"2022-08-21T21:54:45.224Z"}
+{"level":"info","message":"Listening on port 3000...","timestamp":"2022-08-21T21:54:45.224Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_dev...","timestamp":"2022-08-21T21:54:45.241Z"}
+{"level":"info","message":"Node environment: dev","timestamp":"2022-08-21T21:55:01.694Z"}
+{"level":"info","message":"Listening on port 3000...","timestamp":"2022-08-21T21:55:01.695Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_dev...","timestamp":"2022-08-21T21:55:01.716Z"}
+{"level":"info","message":"Node environment: dev","timestamp":"2022-08-21T21:55:10.034Z"}
+{"level":"info","message":"Listening on port 3000...","timestamp":"2022-08-21T21:55:10.035Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_dev...","timestamp":"2022-08-21T21:55:10.050Z"}
+{"level":"info","message":"Node environment: dev","timestamp":"2022-08-21T21:55:24.936Z"}
+{"level":"info","message":"Listening on port 3000...","timestamp":"2022-08-21T21:55:24.937Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_dev...","timestamp":"2022-08-21T21:55:24.948Z"}
+{"level":"info","message":"Node environment: dev","timestamp":"2022-08-21T21:55:34.924Z"}
+{"level":"info","message":"Listening on port 3000...","timestamp":"2022-08-21T21:55:34.925Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_dev...","timestamp":"2022-08-21T21:55:34.942Z"}

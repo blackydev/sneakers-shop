@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const validateObjectId = require("../middleware/validateObjectId");
 const { Order, validate } = require("../models/order");
 const { createCart } = require("../controllers/carts");
 const { createCustomer } = require("../controllers/customers");
@@ -23,10 +24,10 @@ router.post("/", async (req, res) => {
   const result = await p24.createTransaction(order, hostUrl);
   if (_.isError(result)) return res.status(400).send(result);
 
-  res.redirect(result);
+  res.send(result);
 });
 
-router.post("/:id/notification/p24", async (req, res) => {
+router.post("/:id/notification/p24", validateObjectId, async (req, res) => {
   const verification = p24.verifyNotification(req.body);
   if (!verification) return res.status(400).send("Incorrect verification.");
 

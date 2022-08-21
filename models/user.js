@@ -32,8 +32,6 @@ userSchema.methods.generateAuthToken = function () {
   return jwt.sign(
     {
       _id: this._id,
-      email: this.email,
-      isAdmin: this.isAdmin,
       authNumber: this.authNumber,
     },
     config.get("jwtPrivateKey")

@@ -58,11 +58,10 @@ describe("products routes", () => {
     await server.close();
     await Product.deleteMany({});
   });
-
   describe("GET /", () => {
     let finalProducts;
     beforeEach(async () => {
-      finalProducts = [
+      finalProducts = await Product.insertMany([
         {
           ...products[0],
           image: pngImg.filePath,
@@ -75,15 +74,32 @@ describe("products routes", () => {
           ...products[2],
           image: webpImg.filePath,
         },
-      ];
-
-      await Product.insertMany(finalProducts);
+      ]);
     });
 
     it("should return 200 with all products", async () => {
       const res = await request(server).get("/api/products");
       expect(res.status).toBe(200);
-      expect(res.body).toMatchObject(finalProducts);
+      expect(res.body).toMatchObject([
+        {
+          _id: finalProducts[0]._id,
+          name: finalProducts[0].name,
+          price: finalProducts[0].price,
+          image: pngImg.filePath,
+        },
+        {
+          _id: finalProducts[1]._id,
+          name: finalProducts[1].name,
+          price: finalProducts[1].price,
+          image: jpgImg.filePath,
+        },
+        {
+          _id: finalProducts[2]._id,
+          name: finalProducts[2].name,
+          price: finalProducts[2].price,
+          image: webpImg.filePath,
+        },
+      ]);
     });
   });
 

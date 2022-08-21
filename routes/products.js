@@ -3,8 +3,7 @@ const mongoose = require("mongoose");
 const express = require("express");
 const router = express.Router();
 const validateObjectId = require("../middleware/validateObjectId");
-const auth = require("../middleware/authorization");
-const admin = require("../middleware/admin");
+const { auth, isAdmin } = require("../middleware/authorization");
 const { upload } = require("../middleware/productUpload");
 const { Product, validate, validateUnrequired } = require("../models/product");
 const { findProducts, findProductById } = require("../controllers/products");
@@ -15,7 +14,12 @@ const deleteImage = async (req) => {
 };
 
 router.get("/", async (req, res) => {
-  const products = await findProducts();
+  const products = await findProducts().select([
+    "_id",
+    "name",
+    "image",
+    "price",
+  ]);
   res.send(products);
 });
 
@@ -26,7 +30,7 @@ router.get("/:id", validateObjectId, async (req, res) => {
   res.send(product);
 });
 
-router.post("/", [auth, admin, upload.single("image")], async (req, res) => {
+router.post("/", [auth, isAdmin, upload.single("image")], async (req, res) => {
   req.body.image = req.file ? req.file.destination + req.file.filename : "";
 
   const { error } = validate(req.body);
@@ -43,7 +47,7 @@ router.post("/", [auth, admin, upload.single("image")], async (req, res) => {
 
 router.patch(
   "/:id",
-  [auth, admin, validateObjectId, upload.single("image")],
+  [auth, isAdmin, validateObjectId, upload.single("image")],
   async (req, res) => {
     req.body.image = req.file ? req.file.destination + req.file.filename : "";
 

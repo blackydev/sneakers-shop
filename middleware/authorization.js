@@ -2,21 +2,30 @@ const { User } = require("../models/user");
 const config = require("config");
 const jwt = require("jsonwebtoken");
 
-module.exports = async function auth(req, res, next) {
+async function auth(req, res, next) {
   const token = req.header("x-auth-token");
-  if (!token) res.status(401).send("Access denied. No token provided.");
+  if (!token) return res.status(401).send("Access denied. No token provided.");
 
   try {
     const decoded = jwt.verify(token, config.get("jwtPrivateKey"));
-    if (process.env.NODE_ENV !== "test") {
-      const user = await User.findById(decoded._id);
+    const user = await User.findOne({
+      _id: decoded._id,
+      authNumber: decoded.authNumber,
+    });
+    if (!user) throw Error();
 
-      if (user.authNumber != decoded.authNumber) throw Error();
-    }
-
-    req.user = decoded;
+    req.user = user;
     next();
   } catch (ex) {
     return res.status(400).send("Invalid token.");
   }
+}
+
+function isAdmin(req, res, next) {
+  return req.user.isAdmin ? next() : res.status(403).send("Access denied");
+}
+
+module.exports = {
+  auth,
+  isAdmin,
 };

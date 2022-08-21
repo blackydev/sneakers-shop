@@ -34,7 +34,7 @@ function validateOrder(cart) {
     "pending",
     "interrupted",
     "paid",
-    "delivering",
+    "in delivery",
     "finalised",
   ];
 
