@@ -4,7 +4,7 @@ const { calculateSHA384 } = require("../../utils/hash");
 
 const merchantId = 187534;
 const posId = 187534;
-const crcKey = config.get("p24-crc");
+const crcKey = config.get("p24_crc");
 
 const p24URL =
   process.env.NODE_ENV === "production"
