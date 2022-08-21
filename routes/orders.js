@@ -23,7 +23,7 @@ router.post("/", async (req, res) => {
   const result = await p24.createTransaction(order, hostUrl);
   if (_.isError(result)) return res.status(400).send(result);
 
-  res.send(result);
+  res.redirect(result);
 });
 
 router.post("/:id/notification/p24", async (req, res) => {
@@ -47,7 +47,7 @@ router.post("/:id/notification/p24", async (req, res) => {
         status: "interrupted",
       }
     );
-    return res.status(400).send("Something has gone wrong...");
+    return res.status(400).send("Something has gone wrong.");
   }
 
   // TODO: NOTIFY FURGONETKA.PL
