@@ -19,6 +19,12 @@ const orderSchema = new mongoose.Schema({
     default: "pending",
     maxlength: 256,
   },
+
+  p24: {
+    _id: {
+      type: mongoose.Schema.Types.ObjectId,
+    },
+  },
 });
 
 const Order = mongoose.model("orders", orderSchema);

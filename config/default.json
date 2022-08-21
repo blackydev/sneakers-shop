@@ -2,5 +2,6 @@
   "shopName": "Damian Likus",
   "jwtPrivateKey": "",
   "db": "",
-  "public": "./public/production/"
+  "public": "./public/production/",
+  "p24_crc": ""
 }

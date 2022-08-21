@@ -4,6 +4,8 @@ const router = express.Router();
 const { Order } = require("../models/order");
 const { createCart } = require("../controllers/carts");
 const { createCustomer } = require("../controllers/customers");
+const p24 = require("../controllers/payment/przelewy24");
+const { getHostURL } = require("../utils/url");
 
 router.post("/", async (req, res) => {
   const { error } = validate(req.body);
@@ -18,7 +20,11 @@ router.post("/", async (req, res) => {
   let order = new Order(getProperties(customer, cart, "pending"));
   await order.save();
 
-  res.send(order);
+  const hostUrl = getHostURL(req);
+  const result = p24.createTransaction(order, hostUrl);
+  if (_.isError(result)) return res.status(400).send(result);
+
+  res.redirect(result);
 });
 
 const getProperties = (customer, cart, status) => {

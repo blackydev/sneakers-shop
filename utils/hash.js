@@ -1,10 +1,5 @@
-//Name of the file : sha384-hash.js
-//Loading the crypto module in node.js
-var crypto = require("crypto");
-//creating hash object
-var hash = crypto.createHash("sha384");
-//passing the data to be hashed
+const sha384 = require("crypto-js/sha384");
 
 exports.calculateSHA384 = (data) => {
-  return crypto.createHash("sha384").update(data, "utf8").digest("hex");
+  return sha384(data);
 };

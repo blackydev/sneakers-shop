@@ -1,5 +1,6 @@
 {
   "jwtPrivateKey": "1234",
   "db": "mongodb://localhost/damianlikus_tests",
-  "public": "./public/test/"
+  "public": "./public/test/",
+  "p24_crc": "fed5ac7ea50f655f"
 }

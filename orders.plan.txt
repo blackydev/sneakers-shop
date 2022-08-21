@@ -1,0 +1,1 @@
+GET orders/:id/transaction-status
