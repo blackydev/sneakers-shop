@@ -42,7 +42,8 @@ router.post("/:id/notification/p24", validateObjectId, async (req, res) => {
   );
 
   const result = await p24.verifyTransaction(order);
-  if (!result) return res.status(400).send("Something has gone wrong.");
+  if (!result || _isError(result))
+    return res.status(400).send("Something has gone wrong.");
 
   // TODO: NOTIFY FURGONETKA.PL
 
@@ -50,7 +51,7 @@ router.post("/:id/notification/p24", validateObjectId, async (req, res) => {
     status: "paid",
   });
 
-  res.status(200).send("success");
+  res.send("success");
 });
 
 const getProperties = (customer, cart, status) => {

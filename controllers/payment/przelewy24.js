@@ -60,7 +60,7 @@ const createTransaction = async (order, hostURL) => {
   };
   try {
     const { data: result } = await client.post(
-      `/transaction/register`,
+      "/transaction/register",
       request
     );
 
@@ -118,8 +118,28 @@ const verifyTransaction = async (order) => {
   }
 };
 
+const getPaymentMethods = async (language) => {
+  try {
+    const { data: result } = await client.get(`/payment/methods/${language}`);
+    return result.data;
+  } catch (error) {
+    return error;
+  }
+};
+
+const test = async () => {
+  try {
+    const { data: result } = await client.get("testAccess");
+    return result.data === true;
+  } catch (error) {
+    return error;
+  }
+};
+
 module.exports = {
-  createTransaction: createTransaction,
-  verifyNotification: verifyNotification,
-  verifyTransaction: verifyTransaction,
+  createTransaction,
+  verifyNotification,
+  verifyTransaction,
+  getPaymentMethods,
+  test,
 };
