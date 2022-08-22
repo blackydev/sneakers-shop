@@ -28,6 +28,7 @@ const orderSchema = new mongoose.Schema({
 });
 
 const Order = mongoose.model("orders", orderSchema);
+const paymentTimeLimit = 30; /* IN MINUTES */
 
 function validateOrder(cart) {
   const statuses = [
@@ -52,5 +53,9 @@ function validateOrder(cart) {
 
   return schema.validate(cart);
 }
-exports.Order = Order;
-exports.validate = validateOrder;
+
+module.exports = {
+  Order,
+  validateOrder,
+  paymentTimeLimit,
+};

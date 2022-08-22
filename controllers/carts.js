@@ -38,3 +38,15 @@ exports.createCart = async (cartBody) => {
 
   return cart;
 };
+
+exports.returnCart = async (cart) => {
+  for (let prod of cart.products) {
+    const id = prod._id;
+    prod = await findProductByIdAndUpdate(id, {
+      $inc: { numberInStock: 1 * prod.quantity },
+    }); // TODO: implement better update
+    if (!prod) return new Error("The product with the given ID was not found.");
+  }
+
+  return true;
+};

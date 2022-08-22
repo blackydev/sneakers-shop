@@ -2,6 +2,7 @@ const axios = require("axios").default;
 const config = require("config");
 const _ = require("lodash");
 const { calculateSHA384 } = require("../../utils/hash");
+const { paymentTimeLimit } = require("../../models/order");
 
 const merchantId = 187534;
 const posId = 187534;
@@ -51,7 +52,7 @@ const createTransaction = async (order, hostURL) => {
     language: "pl",
     urlReturn: `${hostURL}`, // TODO:
     urlStatus: `${hostURL}/api/orders/${order._id}/notification/p24`, // adres do przekazania statusu transakcji
-    timeLimit: 30,
+    timeLimit: paymentTimeLimit,
     waitForResult: true,
     shipping: 0, // TODO:
     transferLabel: config.get("shopName"),
