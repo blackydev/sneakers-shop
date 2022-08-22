@@ -41,7 +41,7 @@ router.post("/:id/notification/p24", validateObjectId, async (req, res) => {
     { new: true }
   );
 
-  const result = await p24.verifyTransaction(order);
+  const result = await p24.verifyTransaction(order, req.body);
   if (!result || _isError(result)) throw Error(result);
 
   // TODO: NOTIFY FURGONETKA.PL
