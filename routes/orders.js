@@ -7,6 +7,7 @@ const { createCustomer } = require("../controllers/customers");
 const p24 = require("../controllers/payment/przelewy24");
 const { getHostURL } = require("../utils/url");
 const _ = require("lodash");
+winston = require("winston");
 
 router.post("/", async (req, res) => {
   const { error } = validate(req.body);
@@ -41,8 +42,13 @@ router.post("/:id/notification/p24", validateObjectId, async (req, res) => {
     { new: true }
   );
 
-  const result = await p24.verifyTransaction(order, req.body);
-  if (!result || _isError(result)) throw Error(result);
+  const result = await p24.verifyTransaction(order);
+  winston.info(result);
+  winston.info("order " + order);
+  winston.info("req " + req.body);
+
+  if (!result || _isError(result))
+    return res.status(400).send("Something has gone wrong.");
 
   // TODO: NOTIFY FURGONETKA.PL
 
