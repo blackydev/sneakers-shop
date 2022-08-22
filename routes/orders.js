@@ -42,8 +42,7 @@ router.post("/:id/notification/p24", validateObjectId, async (req, res) => {
   );
 
   const result = await p24.verifyTransaction(order);
-  if (!result || _isError(result))
-    return res.status(400).send("Something has gone wrong.");
+  if (!result || _isError(result)) throw Error(result);
 
   // TODO: NOTIFY FURGONETKA.PL
 
