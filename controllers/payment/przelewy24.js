@@ -89,14 +89,14 @@ const verifyNotification = (notificationRequest) => {
   return sign === notificationRequest.sign;
 };
 
-const verifyTransaction = async (order) => {
+const verifyTransaction = async (order, b) => {
   const cart = order.cart;
 
   const hashData = {
-    sessionId: order._id,
-    orderId: order.p24._id,
-    amount: cart.amount * 100,
-    currency: "PLN",
+    sessionId: b._id,
+    orderId: b.p24._id,
+    amount: b.amount,
+    currency: b.currency,
     crc: crcKey,
   };
 
@@ -104,10 +104,10 @@ const verifyTransaction = async (order) => {
   const request = {
     merchantId: merchantId,
     posId: posId,
-    sessionId: order._id,
-    amount: cart.amount * 100,
-    currency: "PLN",
-    orderId: order.p24._id,
+    sessionId: b.sessionId,
+    amount: b.amount,
+    currency: b.currency,
+    orderId: b.orderId,
     sign: sign,
   };
   try {
