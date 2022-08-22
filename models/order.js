@@ -22,7 +22,7 @@ const orderSchema = new mongoose.Schema({
 
   p24: {
     _id: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: Number,
     },
   },
 });
