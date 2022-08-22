@@ -94,7 +94,7 @@ const verifyTransaction = async (order, b) => {
 
   const hashData = {
     sessionId: b._id,
-    orderId: b.p24._id,
+    orderId: b.orderId,
     amount: b.amount,
     currency: b.currency,
     crc: crcKey,
