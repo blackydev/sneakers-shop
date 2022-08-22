@@ -14,22 +14,33 @@ exports.createCart = async (cartBody) => {
 
   const products = [];
   let amount = 0;
-  for (const el of cartBody.products) {
-    const id = el._id;
-    if (!el.quantity) el.quantity = 1;
+  for (const product of cartBody.products) {
+    if (!product.quantity) product.quantity = 1;
 
-    let product = await decreaseUnhiddenProductStock(id, el.quantity); // TODO: implement better update
-    if (!product)
-      return new Error("The product with the given ID was not found.");
+    let finalProduct = await decreaseUnhiddenProductStock(
+      product._id,
+      product.quantity
+    ); // TODO: implement better update
+
+    if (!finalProduct)
+      for (const previousProduct of cartBody.products) {
+        if (product._id === previousProduct._id)
+          return new Error("The product with the given ID was not found.");
+
+        await increaseProductStock(
+          previousProduct._id,
+          previousProduct.quantity
+        );
+      }
 
     products.push({
-      _id: product._id,
-      name: product.name,
-      cost: product.price,
-      quantity: el.quantity,
+      _id: finalProduct._id,
+      name: finalProduct.name,
+      cost: finalProduct.price,
+      quantity: product.quantity,
     });
 
-    amount += product.price * el.quantity;
+    amount += finalProduct.price * product.quantity;
   }
 
   cart = {
@@ -41,16 +52,13 @@ exports.createCart = async (cartBody) => {
 };
 
 exports.returnCart = async (cart) => {
-  for (let prod of cart.products) {
-    const id = prod._id;
-    prod = await Product.findByIdAndUpdate(
-      id,
-      {
-        $inc: { numberInStock: 1 * prod.quantity },
-      },
-      { new: true }
+  for (let product of cart.products) {
+    const finalProduct = await increaseProductStock(
+      product._id,
+      product.quantity
     );
-    if (!prod) return new Error("The product with the given ID was not found.");
+    if (!finalProduct)
+      return new Error("The product with the given ID was not found.");
   }
 
   return true;
