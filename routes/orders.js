@@ -34,7 +34,7 @@ router.post("/:id/notification/p24", validateObjectId, async (req, res) => {
   if (req.body.amount != req.body.originAmount) return; // TODO: implement later
 
   const order = await Order.findByIdAndUpdate(
-    { _id: req.params.id },
+    req.params.id,
     {
       p24: { _id: req.body.orderId },
     },
@@ -46,12 +46,9 @@ router.post("/:id/notification/p24", validateObjectId, async (req, res) => {
 
   // TODO: NOTIFY FURGONETKA.PL
 
-  await Order.findByIdAndUpdate(
-    { _id: req.params.id },
-    {
-      status: "paid",
-    }
-  );
+  await Order.findByIdAndUpdate(req.params.id, {
+    status: "paid",
+  });
 
   res.status(200);
 });

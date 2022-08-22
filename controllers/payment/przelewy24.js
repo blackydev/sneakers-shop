@@ -63,6 +63,7 @@ const createTransaction = async (order, hostURL) => {
       `/transaction/register`,
       request
     );
+    console.log(request.urlStatus);
 
     const token = result.data.token;
     return `${p24URL}/trnRequest/${token}`;
