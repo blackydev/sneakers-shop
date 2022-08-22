@@ -105,7 +105,7 @@ const verifyTransaction = async (order) => {
   };
   try {
     const { data: result } = await client.post("/transaction/verify", request);
-    return result.data.status;
+    return result.data.status === "success";
   } catch (error) {
     return error;
   }
