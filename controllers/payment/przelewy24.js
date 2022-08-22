@@ -50,7 +50,7 @@ const createTransaction = async (order, hostURL) => {
     country: "PL",
     phone: customer.phone,
     language: "pl",
-    urlReturn: `${hostURL}`, // TODO:
+    urlReturn: `https://www.google.com/`, // TODO:
     urlStatus: `${hostURL}/api/orders/${order._id}/notification/p24`, // adres do przekazania statusu transakcji
     timeLimit: paymentTimeLimit,
     waitForResult: true,
