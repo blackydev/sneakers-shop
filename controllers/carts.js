@@ -1,5 +1,8 @@
 const { Product } = require("../models/product");
-const { findProductByIdAndUpdate } = require("./products");
+const {
+  increaseProductStock,
+  decreaseUnhiddenProductStock,
+} = require("./products");
 const mongoose = require("mongoose");
 const validateObjectId = require("../functions/validateObjectId");
 const { validate } = require("../models/cart");
@@ -15,9 +18,7 @@ exports.createCart = async (cartBody) => {
     const id = el._id;
     if (!el.quantity) el.quantity = 1;
 
-    let product = await findProductByIdAndUpdate(id, {
-      $inc: { numberInStock: -1 * el.quantity },
-    }); // TODO: implement better update
+    let product = await decreaseUnhiddenProductStock(id, el.quantity); // TODO: implement better update
     if (!product)
       return new Error("The product with the given ID was not found.");
 

@@ -6,15 +6,12 @@ const validateObjectId = require("../middleware/validateObjectId");
 const { auth, isAdmin } = require("../middleware/authorization");
 const { upload } = require("../middleware/productUpload");
 const { Product, validate, validateUnrequired } = require("../models/product");
-const { findProducts, findProductById } = require("../controllers/products");
 const { deleteFile } = require("../functions/deleteFile");
 
-const deleteImage = async (req) => {
-  req.file ? await deleteFile(req.body.image) : null;
-};
+const hiddenQuery = { hidden: { $in: [false, null] } };
 
 router.get("/", async (req, res) => {
-  const products = await findProducts().select([
+  const products = await Product.find(hiddenQuery).select([
     "_id",
     "name",
     "image",
@@ -24,8 +21,9 @@ router.get("/", async (req, res) => {
 });
 
 router.get("/:id", validateObjectId, async (req, res) => {
-  const product = await findProductById(req.params.id);
-  if (!product)
+  const product = await Product.findById(req.params.id);
+
+  if (!product || product.hidden)
     return res.status(404).send("The product with the given ID was not found.");
   res.send(product);
 });
@@ -69,10 +67,14 @@ router.patch(
 
     const newProduct = await Product.findById({ _id: req.params.id });
 
-    res.send(newProduct);
-    await deleteFile(oldProduct.image);
+    res.status(200).send(newProduct);
+    if (req.file) await deleteFile(oldProduct.image);
   }
 );
+
+const deleteImage = async (req) => {
+  req.file ? await deleteFile(req.body.image) : null;
+};
 
 const getProperties = (productBody) => {
   return _.pick(productBody, [

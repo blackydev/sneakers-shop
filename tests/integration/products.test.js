@@ -108,7 +108,7 @@ describe("products routes", () => {
     let product;
     let token;
 
-    beforeEach(() => {
+    beforeEach(async () => {
       product = {
         name: "Star Wars I",
         description:
@@ -118,10 +118,17 @@ describe("products routes", () => {
         numberInStock: 255,
       };
 
-      token = new User({ isAdmin: true }).generateAuthToken();
+      let user = new User({
+        email: "qwertyMail@gmail.com",
+        password: "Password12345",
+        isAdmin: true,
+      });
+      user = await user.save();
+      token = user.generateAuthToken();
     });
 
     afterEach(async () => {
+      await User.deleteMany({});
       // delete all files after test
       const dir = config.get("public") + "images/products/";
       await fs.readdir(dir, (err, files) => {
