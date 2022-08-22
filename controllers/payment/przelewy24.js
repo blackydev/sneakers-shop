@@ -41,7 +41,7 @@ const createTransaction = async (order, hostURL) => {
     sessionId: order._id,
     amount: cart.amount * 100,
     currency: "PLN",
-    description: `${hostURL}`,
+    description: config.get("shopName"),
     email: customer.email,
     client: customer.name,
     address: customer.address,
@@ -63,7 +63,6 @@ const createTransaction = async (order, hostURL) => {
       `/transaction/register`,
       request
     );
-    console.log(request.urlStatus);
 
     const token = result.data.token;
     return `${p24URL}/trnRequest/${token}`;
@@ -74,8 +73,15 @@ const createTransaction = async (order, hostURL) => {
 
 const verifyNotification = (notificationRequest) => {
   const notificationHash = {
-    ...notificationRequest,
-    sign: undefined,
+    merchantId: notificationRequest.merchantId,
+    posId: notificationRequest.posId,
+    sessionId: notificationRequest.sessionId,
+    amount: notificationRequest.amount,
+    originAmount: notificationRequest.originAmount,
+    currency: notificationRequest.currency,
+    orderId: notificationRequest.orderId,
+    methodId: notificationRequest.methodId,
+    statement: notificationRequest.statement,
     crc: crcKey,
   };
 
