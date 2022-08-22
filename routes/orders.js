@@ -45,7 +45,7 @@ router.post("/:id/notification/p24", validateObjectId, async (req, res) => {
   const result = await p24.verifyTransaction(order);
   winston.info(result);
   winston.info("order " + JSON.stringify(order));
-  winston.info("req " + JSON.stringify(order));
+  winston.info("req " + JSON.stringify(req.body));
 
   if (!result || _.isError(result))
     return res.status(400).send("Something has gone wrong.");
