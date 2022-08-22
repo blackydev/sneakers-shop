@@ -8,7 +8,7 @@ exports.increaseProductStock = async (id, quantity) => {
     },
     { new: true }
   );
-  return product ? true : false;
+  return product;
 };
 
 exports.decreaseUnhiddenProductStock = async (id, quantity) => {
@@ -19,5 +19,5 @@ exports.decreaseUnhiddenProductStock = async (id, quantity) => {
     },
     { new: true }
   );
-  return product ? true : false;
+  return product;
 };
