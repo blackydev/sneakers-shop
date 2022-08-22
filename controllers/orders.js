@@ -3,15 +3,17 @@ const { returnCart } = require("../controllers/carts");
 
 const setInterruptedOrders = async () => {
   let orders = await Order.find({ status: "pending" });
-  const currentTime = new Date.UTC();
-  for (const order of orders) {
+  const currentTime = new Date().getTime();
+  for (let order of orders) {
     const orderTime = order._id.getTimestamp();
-    const result = (currentTime - orderTime) / 1000 / 60;
-    if (result > 500)
-      await Order.findByIdAndUpdate(order._id, { status: "interrupted" });
-    await returnCart(Order.cart);
+    const result = (currentTime - orderTime) / 1000 / 60; // in minutes
+    if (result > 12 * 60) {
+      order = await Order.findByIdAndUpdate(order._id, {
+        status: "interrupted",
+      });
+      await returnCart(order.cart);
+    }
   }
-  console.log("XDDD");
 };
 
 module.exports = {
