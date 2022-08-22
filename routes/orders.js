@@ -7,7 +7,6 @@ const { createCustomer } = require("../controllers/customers");
 const p24 = require("../controllers/payment/przelewy24");
 const { getHostURL } = require("../utils/url");
 const _ = require("lodash");
-const { setTimeLimitToBePending } = require("../controllers/orders");
 
 router.post("/", async (req, res) => {
   const { error } = validate(req.body);

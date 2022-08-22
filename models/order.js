@@ -56,6 +56,6 @@ function validateOrder(cart) {
 
 module.exports = {
   Order,
-  validateOrder,
+  validate: validateOrder,
   paymentTimeLimit,
 };
