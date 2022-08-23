@@ -11,13 +11,18 @@ const { deleteFile } = require("../functions/deleteFile");
 const hiddenQuery = { hidden: { $in: [false, null] } };
 
 router.get("/", async (req, res) => {
-  const products = await Product.find(hiddenQuery).select([
-    "_id",
-    "name",
-    "image",
-    "price",
-  ]);
-  res.send(products);
+  try {
+    const { hide, select, sortBy } = req.query;
+    const query = hide === "false" ? null : hiddenQuery;
+
+    const products = await Product.find(query)
+      .select(select) // ["_id", "name", "image", "price"]
+      .sort(sortBy);
+
+    res.send(products);
+  } catch (ex) {
+    res.status(400).send(ex.message);
+  }
 });
 
 router.get("/:id", validateObjectId, async (req, res) => {

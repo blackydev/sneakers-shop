@@ -1,13 +1,14 @@
 const { Order, paymentTimeLimit } = require("../models/order");
+const { getTransactionData } = require("../controllers/payment/przelewy24");
 const { returnCart } = require("../controllers/carts");
+const { result } = require("lodash");
 
 const setInterruptedOrders = async () => {
   let orders = await Order.find({ status: "pending" });
-  const currentTime = new Date().getTime();
+
   for (let order of orders) {
-    const orderTime = order._id.getTimestamp();
-    const result = (currentTime - orderTime) / 1000 / 60; // in minutes
-    if (result > 12 * 60) {
+    result = await getTransactionData(order._id);
+    if (result.date > paymentTimeLimit && result.status === 0) {
       order = await Order.findByIdAndUpdate(order._id, {
         status: "interrupted",
       });

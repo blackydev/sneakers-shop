@@ -6,7 +6,23 @@ const { createCart } = require("../controllers/carts");
 const { createCustomer } = require("../controllers/customers");
 const p24 = require("../controllers/payment/przelewy24");
 const { getHostURL } = require("../utils/url");
+const { auth, isAdmin } = require("../middleware/authorization");
 const _ = require("lodash");
+
+router.get("/", [auth, isAdmin], async (req, res) => {
+  const { select, sortBy } = req.query;
+  const orders = await Order.find().select(select).sort(sortBy);
+  res.send(orders);
+});
+
+router.get("/:id", [auth, isAdmin], async (req, res) => {
+  const order = await Order.findById(req.params.id);
+
+  if (!order)
+    return res.status(404).send("The order with the given ID was not found.");
+
+  res.send(order);
+});
 
 router.post("/", async (req, res) => {
   const { error } = validate(req.body);
@@ -24,17 +40,26 @@ router.post("/", async (req, res) => {
   res.send(order);
 });
 
-router.get("/:id/payment", validateObjectId, async (req, res) => {
+router.post("/:id/payment", validateObjectId, async (req, res) => {
   const order = await Order.findById(req.params.id);
   if (!order || order.status === "interrupted")
     return res.status(404).send("The order with the given ID was not found.");
 
+  order.p24.methodId = req.body.methodId;
   const hostUrl = getHostURL(req);
 
   const result = await p24.createTransaction(order, hostUrl);
   if (_.isError(result)) return res.status(400).send(result);
 
   res.send(result); //TODO: redirect
+});
+
+router.get("/:id/status", validateObjectId, async (req, res) => {
+  const order = await Order.findById(req.params.id);
+  if (!order)
+    return res.status(404).send("The order with the given ID was not found.");
+
+  res.send(order.status); //TODO: redirect
 });
 
 router.post("/:id/p24callback", validateObjectId, async (req, res) => {
@@ -77,25 +102,5 @@ const getProperties = (customer, cart, status) => {
     status: status,
   };
 };
-
-/*  router.post("/", async (req, res) => {
-  const { error } = validate(req.body);
-  if (error) return res.status(400).send(error.details[0].message);
-
-  const cart = await createCart(req.body.cart);
-  if (_.isError(cart)) return res.status(400).send(cart.message);
-
-  const customer = await createCustomer(req.body.customer);
-  if (_.isError(customer)) return res.status(400).send(customer.message);
-
-  let order = new Order(getProperties(customer, cart, "pending"));
-  await order.save();
-
-  const hostUrl = getHostURL(req);
-  const result = await p24.createTransaction(order, hostUrl);
-  if (_.isError(result)) return res.status(400).send(result);
-
-  res.send(result);
-}); INFO: create order and pay */
 
 module.exports = router;

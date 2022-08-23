@@ -50,6 +50,7 @@ const createTransaction = async (order, hostURL) => {
       zip: customer.zip,
       city: customer.city,
       country: "PL",
+      method: order.p24.methodId,
       phone: customer.phone,
       language: "pl",
       urlReturn: `${hostURL}/api/products`, // TODO:
@@ -139,10 +140,22 @@ const test = async () => {
   }
 };
 
+const getTransactionData = async (p24Id) => {
+  try {
+    const { data: result } = await client.get(
+      `/transaction/by/sessionId/${p24Id}`
+    );
+    return result.data;
+  } catch (error) {
+    return error;
+  }
+};
+
 module.exports = {
   createTransaction,
   verifyNotification,
   verifyTransaction,
   getPaymentMethods,
   test,
+  getTransactionData,
 };
