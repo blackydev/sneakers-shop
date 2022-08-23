@@ -101,8 +101,6 @@ const verifyTransaction = async (order) => {
     crc: crcKey,
   };
 
-  winston.info("order: " + JSON.stringify(order.p24._id));
-
   const sign = calculateSHA384(JSON.stringify(hashData));
 
   const request = {
@@ -119,6 +117,7 @@ const verifyTransaction = async (order) => {
     winston.info("result: " + JSON.stringify(result));
     return result.data.status === "success";
   } catch (error) {
+    winston.info("error: " + JSON.stringify(error));
     return error;
   }
 };
