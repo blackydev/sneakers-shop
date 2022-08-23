@@ -106,7 +106,7 @@ const verifyTransaction = async (order) => {
   const request = {
     merchantId: merchantId,
     posId: posId,
-    sessionId: order._id,
+    sessionId: order._id.toString(),
     amount: cart.amount * 100,
     currency: "PLN",
     orderId: order.p24.id,
