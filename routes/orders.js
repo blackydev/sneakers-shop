@@ -26,7 +26,7 @@ router.post("/", async (req, res) => {
 
 router.get("/:id/payment", validateObjectId, async (req, res) => {
   const order = await Order.findById(req.params.id);
-  if (!order)
+  if (!order || order.status === "interrupted")
     return res.status(404).send("The order with the given ID was not found.");
 
   const hostUrl = getHostURL(req);
@@ -51,7 +51,7 @@ router.post("/:id/p24callback", validateObjectId, async (req, res) => {
     { new: true }
   );
 
-  const result = await p24.verifyTransaction(order);
+  const result = await p24.verifyTransaction(order, req.body);
 
   if (!result || _.isError(result))
     return res.status(400).send("Something has gone wrong.");

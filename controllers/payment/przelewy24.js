@@ -90,7 +90,7 @@ const verifyNotification = (notificationRequest) => {
   return sign === notificationRequest.sign;
 };
 
-const verifyTransaction = async (order) => {
+const verifyTransaction = async (order, body) => {
   const cart = order.cart;
 
   const hashData = {
@@ -100,6 +100,9 @@ const verifyTransaction = async (order) => {
     currency: "PLN",
     crc: crcKey,
   };
+
+  winston.info("order: " + JSON.stringify(order));
+  winston.info("body: " + JSON.stringify(body));
 
   const sign = calculateSHA384(JSON.stringify(hashData));
 
