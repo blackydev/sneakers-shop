@@ -51,7 +51,7 @@ router.post("/:id/p24callback", validateObjectId, async (req, res) => {
     { new: true }
   );
 
-  const result = await p24.verifyTransaction(order, req.body);
+  const result = await p24.verifyTransaction(order);
 
   if (!result || _.isError(result))
     return res.status(400).send("Something has gone wrong.");
