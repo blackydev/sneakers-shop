@@ -44,21 +44,18 @@ router.post("/:id/notification/p24", validateObjectId, async (req, res) => {
 
   const result = await p24.verifyTransaction(order);
 
-  // if (!result || _.isError(result))
-  // return res.status(400).send("Something has gone wrong.");
+  if (!result || _.isError(result))
+    return res.status(400).send("Something has gone wrong.");
 
   // TODO: NOTIFY FURGONETKA.PL
 
-  let or = await Order.findByIdAndUpdate(
+  await Order.findByIdAndUpdate(
     req.params.id,
     {
       status: "paid",
     },
     { new: true }
   );
-
-  winston.info("order " + JSON.stringify(or));
-  winston.info("req " + JSON.stringify(req.body));
 
   res.send("success");
 });

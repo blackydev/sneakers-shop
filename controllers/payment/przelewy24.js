@@ -101,17 +101,19 @@ const verifyTransaction = async (order) => {
   };
 
   const sign = calculateSHA384(JSON.stringify(hashData));
+
   const request = {
     merchantId: merchantId,
     posId: posId,
     sessionId: order._id,
     amount: cart.amount * 100,
     currency: "PLN",
-    orderId: order.p24._id,
+    orderId: order.p24.id,
     sign: sign,
   };
   try {
     const { data: result } = await client.post("/transaction/verify", request);
+    winston.info("result: " + JSON.stringify(result));
     return result.data.status === "success";
   } catch (error) {
     return error;
