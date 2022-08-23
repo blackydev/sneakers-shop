@@ -8,7 +8,6 @@ const merchantId = 187534;
 const posId = 187534;
 const crcKey = config.get("p24_crc");
 const raportKey = "ce33570a9af0e85291c966f09c9ad973";
-winston = require("winston");
 
 const p24URL =
   process.env.NODE_ENV === "production"
@@ -53,7 +52,7 @@ const createTransaction = async (order, hostURL) => {
       method: order.p24.methodId,
       phone: customer.phone,
       language: "pl",
-      urlReturn: `${hostURL}/api/products`, // TODO:
+      urlReturn: `${hostURL}/api/products/${order._id}/status`, // TODO:
       urlStatus: `${hostURL}/api/orders/${order._id}/p24callback`, // adres do przekazania statusu transakcji
       timeLimit: paymentTimeLimit,
       waitForResult: true,
