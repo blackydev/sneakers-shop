@@ -24,42 +24,42 @@ const client = axios.create({
 });
 
 const createTransaction = async (order, hostURL) => {
-  const customer = order.customer;
-  const cart = order.cart;
-
-  const hashData = {
-    sessionId: order._id,
-    merchantId: merchantId,
-    amount: cart.amount * 100,
-    currency: "PLN",
-    crc: crcKey,
-  };
-
-  const sign = calculateSHA384(JSON.stringify(hashData));
-  const request = {
-    merchantId: merchantId,
-    posId: posId,
-    sessionId: order._id,
-    amount: cart.amount * 100,
-    currency: "PLN",
-    description: config.get("shopName"),
-    email: customer.email,
-    client: customer.name,
-    address: customer.address,
-    zip: customer.zip,
-    city: customer.city,
-    country: "PL",
-    phone: customer.phone,
-    language: "pl",
-    urlReturn: `${hostURL}/api/products`, // TODO:
-    urlStatus: `${hostURL}/api/orders/${order._id}/p24callback`, // adres do przekazania statusu transakcji
-    timeLimit: paymentTimeLimit,
-    waitForResult: true,
-    shipping: 0, // TODO:
-    transferLabel: config.get("shopName"),
-    sign: sign,
-  };
   try {
+    const customer = order.customer;
+    const cart = order.cart;
+
+    const hashData = {
+      sessionId: order._id,
+      merchantId: merchantId,
+      amount: cart.amount * 100,
+      currency: "PLN",
+      crc: crcKey,
+    };
+
+    const sign = calculateSHA384(JSON.stringify(hashData));
+    const request = {
+      merchantId: merchantId,
+      posId: posId,
+      sessionId: order._id,
+      amount: cart.amount * 100,
+      currency: "PLN",
+      description: config.get("shopName"),
+      email: customer.email,
+      client: customer.name,
+      address: customer.address,
+      zip: customer.zip,
+      city: customer.city,
+      country: "PL",
+      phone: customer.phone,
+      language: "pl",
+      urlReturn: `${hostURL}/api/products`, // TODO:
+      urlStatus: `${hostURL}/api/orders/${order._id}/p24callback`, // adres do przekazania statusu transakcji
+      timeLimit: paymentTimeLimit,
+      waitForResult: true,
+      shipping: 0, // TODO:
+      transferLabel: config.get("shopName"),
+      sign: sign,
+    };
     const { data: result } = await client.post(
       "/transaction/register",
       request
@@ -91,33 +91,32 @@ const verifyNotification = (notificationRequest) => {
 };
 
 const verifyTransaction = async (order) => {
-  const cart = order.cart;
-
-  const hashData = {
-    sessionId: order._id,
-    orderId: order.p24._id,
-    amount: cart.amount * 100,
-    currency: "PLN",
-    crc: crcKey,
-  };
-
-  const sign = calculateSHA384(JSON.stringify(hashData));
-
-  const request = {
-    merchantId: merchantId,
-    posId: posId,
-    sessionId: order._id,
-    amount: cart.amount * 100,
-    currency: "PLN",
-    orderId: order.p24._id,
-    sign: sign,
-  };
   try {
-    const { data: result } = await client.post("/transaction/verify", request);
-    winston.info("result: " + JSON.stringify(result));
+    const cart = order.cart;
+
+    const hashData = {
+      sessionId: order._id,
+      orderId: order.p24._id,
+      amount: cart.amount * 100,
+      currency: "PLN",
+      crc: crcKey,
+    };
+
+    const sign = calculateSHA384(JSON.stringify(hashData));
+
+    const request = {
+      merchantId: merchantId,
+      posId: posId,
+      sessionId: order._id,
+      amount: cart.amount * 100,
+      currency: "PLN",
+      orderId: order.p24._id,
+      sign: sign,
+    };
+
+    const { data: result } = await client.put("/transaction/verify", request);
     return result.data.status === "success";
   } catch (error) {
-    winston.info("error: " + JSON.stringify(error));
     return error;
   }
 };
