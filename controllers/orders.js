@@ -8,7 +8,7 @@ const setInterruptedOrders = async () => {
 
   for (let order of orders) {
     result = await getTransactionData(order._id);
-    if (result.date > paymentTimeLimit && result.status === 0) {
+    if (result.date > paymentTimeLimit && !result.status) {
       order = await Order.findByIdAndUpdate(order._id, {
         status: "interrupted",
       });
