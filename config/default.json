@@ -2,6 +2,7 @@
   "shopName": "Damian Likus",
   "jwtPrivateKey": "",
   "db": "",
+  "furgonetka-password": "",
   "public": "./public/production/",
   "p24_crc": "fed5ac7ea50f655f"
 }

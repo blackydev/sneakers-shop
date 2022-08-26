@@ -2,18 +2,21 @@ const axios = require("axios").default;
 const config = require("config");
 const _ = require("lodash");
 
-const delivURL =
-  process.env.NODE_ENV === "production"
-    ? "https://api.furgonetka.pl"
-    : "https://api-test.furgonetka.pl";
+let token;
+const client_id = 0;
+const client_secret = 0;
 
 const client = axios.create({
-  baseURL: `${p24URL}/api/v1`,
+  baseURL: `${furURL}/oauth/authorize`,
   auth: {
     username: posId.toString(),
     password: raportKey,
   },
 });
+
+const getToken = async () => {
+
+};
 
 const getTransactionData = async (p24Id) => {
   try {

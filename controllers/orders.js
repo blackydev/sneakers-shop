@@ -1,5 +1,5 @@
 const { Order, paymentTimeLimit } = require("../models/order");
-const { getTransactionData } = require("../controllers/payment/przelewy24");
+const { getTransactionData } = require("./przelewy24.pl/main");
 const { returnCart } = require("../controllers/carts");
 const { result } = require("lodash");
 
