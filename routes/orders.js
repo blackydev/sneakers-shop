@@ -54,7 +54,7 @@ router.post("/:id/payment", validateObjectId, async (req, res) => {
 
   res.send(result); //TODO: redirect
   setTimeout(async () => {
-    await setInterruptedOrder(orderId);
+    await setInterruptedOrder(order._id);
   }, (paymentTimeLimit + 1) * 60 * 1000);
 });
 

@@ -19,5 +19,5 @@ const setInterruptedOrder = async (orderId) => {
 };
 
 module.exports = {
-  setInterruptedOrders: setInterruptedOrder,
+  setInterruptedOrder: setInterruptedOrder,
 };
