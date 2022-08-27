@@ -1,5 +1,6 @@
 const axios = require("axios").default;
 const config = require("config");
+const winston = require("winston");
 
 const client = axios.create({
     baseURL: "https://konto.furgonetka.pl", // /oauth/authorize
@@ -13,6 +14,7 @@ class Auth {
         const data = await this.#getToken();
         this.accessToken = data.access_token;
         this.refresh_token = data.refresh_token;
+        winston.info("access token: " + this.accessToken);
     };
 
     async update() {
