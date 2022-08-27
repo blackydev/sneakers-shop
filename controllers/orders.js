@@ -8,14 +8,15 @@ const setInterruptedOrder = async (orderId) => {
   if (order.status !== "pending") return order.status;
 
   const res = await getTransactionData(order._id);
-  if (!res.status)
+  if (!res.status) {
     await returnCart(order.cart);
-  await Order.findByIdAndUpdate(order._id, {
-    status: "interrupted",
-  });
-  winston.info(result.date);
+    await Order.findByIdAndUpdate(order._id, {
+      status: "interrupted",
+    });
+    winston.info(result.date);
 
-  return "interrupted";
+    return "interrupted";
+  }
 };
 
 module.exports = {

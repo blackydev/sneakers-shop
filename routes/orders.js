@@ -70,9 +70,6 @@ router.post("/:id/p24callback", validateObjectId, async (req, res) => {
   const verification = p24.verifyNotification(req.body);
   if (!verification) return res.status(400).send("Incorrect verification.");
 
-  if (req.body.amount != req.body.originAmount)
-    return res.send("The order is not paid in full."); // TODO: implement later
-
   const order = await Order.findByIdAndUpdate(
     req.params.id,
     {
@@ -80,6 +77,9 @@ router.post("/:id/p24callback", validateObjectId, async (req, res) => {
     },
     { new: true }
   );
+
+  if (req.body.amount != req.body.originAmount)
+    return res.send("The order is not paid in full.");
 
   if (order.status === "interrupted") {
     const res = recreateReturnedCart(order.cart);
