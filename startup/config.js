@@ -14,4 +14,5 @@ module.exports = async function async() {
     throw new Error(
       "FATAL ERROR: Unsuccessful test connection with przelewy24."
     );
+
 };

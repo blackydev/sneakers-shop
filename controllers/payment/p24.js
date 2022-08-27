@@ -4,10 +4,10 @@ const _ = require("lodash");
 const { calculateSHA384 } = require("../../utils/hash");
 const { paymentTimeLimit } = require("../../models/order");
 
-const merchantId = 187534;
-const posId = 187534;
+const merchantId = config.get("p24.merchantId");
+const posId = config.get("p24.posId");
 const crcKey = config.get("p24.crc");
-const raportKey = "ce33570a9af0e85291c966f09c9ad973";
+const raportKey = config.get("p24.raportKey");
 
 const p24URL =
   process.env.NODE_ENV === "production"
@@ -42,7 +42,7 @@ const createTransaction = async (order, hostURL) => {
       sessionId: order._id,
       amount: cart.amount * 100,
       currency: "PLN",
-      description: config.get("shopName"),
+      description: config.get("websiteName"),
       email: customer.email,
       client: customer.name,
       address: customer.address,
@@ -52,12 +52,12 @@ const createTransaction = async (order, hostURL) => {
       method: order.p24.methodId,
       phone: customer.phone,
       language: "pl",
-      urlReturn: `${hostURL}/api/products/${order._id}/status`, // TODO:
-      urlStatus: `${hostURL}/api/orders/${order._id}/p24callback`, // adres do przekazania statusu transakcji
+      urlReturn: `${hostURL}/api/products/${order._id}/status`,
+      urlStatus: `${hostURL}/api/orders/${order._id}/p24callback`,
       timeLimit: paymentTimeLimit,
       waitForResult: true,
       shipping: 0, // TODO:
-      transferLabel: config.get("shopName"),
+      transferLabel: config.get("websiteName"),
       sign: sign,
     };
     const { data: result } = await client.post(

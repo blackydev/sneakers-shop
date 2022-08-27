@@ -1,5 +1,3 @@
 {
-  "jwtPrivateKey": "",
-  "db": "",
   "public": "./public/development/"
 }

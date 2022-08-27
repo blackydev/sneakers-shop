@@ -1,4 +1,5 @@
 {
   "jwtPrivateKey": "1234",
   "db": "mongodb://localhost/damianlikus_tests",
-  "public": "./public/test/"}
+  "public": "./public/test/"
+}

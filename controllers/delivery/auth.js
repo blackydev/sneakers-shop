@@ -1,10 +1,11 @@
 const axios = require("axios").default;
+const config = require("config");
 
 const client = axios.create({
     baseURL: "https://konto.furgonetka.pl", // /oauth/authorize
 });
 
-class auth {
+class Auth {
     accessToken;
     refreshToken;
 
@@ -29,7 +30,7 @@ class auth {
         };
 
         const headers = {
-            Authorization: authorization,
+            Authorization: config.get("furgonetka.auth"),
         };
 
         try {
@@ -47,13 +48,13 @@ class auth {
     async #updateToken() {
         const request = {
             grant_type: "refresh_token",
-            username: "TODO: add username",
+            username: config.get("furgonetka.username"),
             password: config.get("furgonetka.password"),
             refresh_token: this.refreshToken,
         };
 
         const headers = {
-            Authorization: authorization,
+            Authorization: config.get("furgonetka.auth"),
         };
 
         try {
@@ -69,5 +70,7 @@ class auth {
     };
 
 }
+
+const auth = new Auth();
 
 module.exports = auth;
