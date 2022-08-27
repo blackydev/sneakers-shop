@@ -2,7 +2,6 @@ const axios = require("axios").default;
 const _ = require("lodash");
 const auth = require("./auth");
 
-
 const furURL =
   process.env.NODE_ENV === "production"
     ? "https://api.furgonetka.pl"
@@ -10,7 +9,7 @@ const furURL =
 
 const client = axios.create({
   baseURL: `${furURL}/oauth/authorize`,
-  authorizationCode: "",
+  authorizationCode: auth.accessToken,
 });
 
 const getDeliverers = async () => {
