@@ -86,12 +86,12 @@ router.post("/:id/p24callback", validateObjectId, async (req, res) => {
     if (_.isError(res)) return res.send("Order is interrupted.");
   }
 
+  // TODO: NOTIFY FURGONETKA.PL
+
   const result = await p24.verifyTransaction(order);
 
   if (!result || _.isError(result))
     return res.status(400).send("Something has gone wrong.");
-
-  // TODO: NOTIFY FURGONETKA.PL
 
   await Order.findByIdAndUpdate(
     req.params.id,
