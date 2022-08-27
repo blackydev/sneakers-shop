@@ -8,7 +8,7 @@ const furURL =
     : "https://api-test.furgonetka.pl";
 
 const client = axios.create({
-  baseURL: `${furURL}/oauth/authorize`,
+  baseURL: `${furURL}`,
   authorizationCode: auth.accessToken,
 });
 
