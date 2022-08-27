@@ -52,10 +52,11 @@ router.post("/:id/payment", validateObjectId, async (req, res) => {
   const result = await p24.createTransaction(order, hostUrl);
   if (_.isError(result)) return res.status(400).send(result);
 
-  res.send(result); //TODO: redirect
   setTimeout(async () => {
     await setInterruptedOrder(order._id);
   }, (paymentTimeLimit + 1) * 60 * 1000);
+
+  res.send(result); //TODO: redirect
 });
 
 router.get("/:id/status", validateObjectId, async (req, res) => {
@@ -63,7 +64,7 @@ router.get("/:id/status", validateObjectId, async (req, res) => {
   if (!order)
     return res.status(404).send("The order with the given ID was not found.");
 
-  res.send(order.status); //TODO: redirect
+  res.send(order.status);
 });
 
 router.post("/:id/p24callback", validateObjectId, async (req, res) => {
@@ -79,11 +80,11 @@ router.post("/:id/p24callback", validateObjectId, async (req, res) => {
   );
 
   if (req.body.amount != req.body.originAmount)
-    return res.send("The order is not paid in full.");
+    return res.status(400).send("The order is not paid in full.");
 
   if (order.status === "interrupted") {
     const res = recreateReturnedCart(order.cart);
-    if (_.isError(res)) return res.send("Order is interrupted.");
+    if (_.isError(res)) return res.status(400).send("Order is interrupted.");
   }
 
   // TODO: NOTIFY FURGONETKA.PL
@@ -101,7 +102,7 @@ router.post("/:id/p24callback", validateObjectId, async (req, res) => {
     { new: true }
   );
 
-  res.send("success");
+  res.status(204);
 });
 
 const getProperties = (customer, cart, status) => {

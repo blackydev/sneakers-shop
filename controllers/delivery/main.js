@@ -23,4 +23,7 @@ const getDeliverers = async () => {
   }
 };
 
+module.exports = {
+  getDeliverers,
+}
 
