@@ -1,26 +1,29 @@
 const axios = require("axios").default;
 const config = require("config");
-const winston = require("winston");
+const { setDaysTimeout } = require("../../utils/timeouts");
 
 const client = axios.create({
     baseURL: "https://konto.furgonetka.pl", // /oauth/authorize
 });
 
 class Auth {
-    accessToken;
-    refreshToken;
+    #accessToken; getToken() { return this.#accessToken };
+    #refreshToken;
+
 
     async init() {
         const data = await this.#getToken();
-        this.accessToken = data.access_token;
-        this.refresh_token = data.refresh_token;
-        winston.info("access token: " + this.accessToken);
+        this.#accessToken = data.access_token;
+        this.#refreshToken = data.refresh_token;
+        setDaysTimeout(async () => {
+            await this.#update();
+        }, 29);
     };
 
-    async update() {
+    async #update() {
         const data = await this.#updateToken();
-        this.accessToken = data.access_token;
-        this.refresh_token = data.refresh_token;
+        this.#accessToken = data.access_token;
+        this.#refreshToken = data.refresh_token;
     };
 
 
@@ -52,7 +55,7 @@ class Auth {
             grant_type: "refresh_token",
             username: config.get("furgonetka.username"),
             password: config.get("furgonetka.password"),
-            refresh_token: this.refreshToken,
+            refresh_token: this.#refreshToken,
         };
 
         const headers = {

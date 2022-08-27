@@ -1,6 +1,7 @@
 const axios = require("axios").default;
 const _ = require("lodash");
 const auth = require("./auth");
+auth.init();
 
 const furURL =
   process.env.NODE_ENV === "production"
@@ -9,7 +10,7 @@ const furURL =
 
 const client = axios.create({
   baseURL: `${furURL}`,
-  authorizationCode: auth.accessToken,
+  authorizationCode: auth.getToken(),
 });
 
 const getDeliverers = async () => {

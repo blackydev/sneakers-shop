@@ -1,6 +1,3 @@
-const auth = require("../controllers/delivery/auth");
-
-
 function setDaysTimeout(callback, days) {
     let msInDay = 86400 * 1000;
 
@@ -15,10 +12,4 @@ function setDaysTimeout(callback, days) {
     }, msInDay);
 }
 
-module.exports = async function async() {
-    await auth.init();
-    setDaysTimeout(async function () {
-        await auth.update();
-    }, 29);
-};
-
+module.exports = { setDaysTimeout };
