@@ -48,7 +48,7 @@ tooBigImg = {
   filePath: "./tests/files/tooBigImg.jpg",
 };
 
-describe("products routes", () => {
+describe("products route", () => {
   let server;
   beforeEach(() => {
     server = require("../../index");
@@ -103,7 +103,7 @@ describe("products routes", () => {
     });
   });
 
-  describe("PUT /", () => {
+  describe("POST /", () => {
     let imagePath;
     let product;
     let token;
@@ -186,12 +186,16 @@ describe("products routes", () => {
       expect(exists).toBeFalsy();
     });
 
-    /* it("return 403 if user is not admin", async () => { 
+    it("return 403 if user is not admin", async () => {
       imagePath = webpImg.filePath;
-      const user = await new User({ isAdmin: false });
+      let user = new User({
+        email: "qwertyMailer@gmail.com",
+        password: "Password12345",
+      });
+      user = await user.save();
       token = user.generateAuthToken();
       const res = await exec();
       expect(res.status).toBe(403);
-    }); TODO: read ECONNRESET error*/
+    });
   });
 });

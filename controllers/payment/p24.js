@@ -6,7 +6,7 @@ const { paymentTimeLimit } = require("../../models/order");
 
 const merchantId = 187534;
 const posId = 187534;
-const crcKey = config.get("p24_crc");
+const crcKey = config.get("p24.crc");
 const raportKey = "ce33570a9af0e85291c966f09c9ad973";
 
 const p24URL =

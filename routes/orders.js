@@ -1,10 +1,11 @@
 const express = require("express");
 const router = express.Router();
 const validateObjectId = require("../middleware/validateObjectId");
-const { Order, validate } = require("../models/order");
-const { createCart } = require("../controllers/carts");
+const { Order, validate, paymentTimeLimit } = require("../models/order");
+const { createCart, recreateReturnedCart } = require("../controllers/carts");
 const { createCustomer } = require("../controllers/customers");
-const p24 = require("../controllers/payment/przelewy24");
+const { setInterruptedOrder } = require("../controllers/orders");
+const p24 = require("../controllers/payment/p24");
 const { getHostURL } = require("../utils/url");
 const { auth, isAdmin } = require("../middleware/authorization");
 const _ = require("lodash");
@@ -52,6 +53,9 @@ router.post("/:id/payment", validateObjectId, async (req, res) => {
   if (_.isError(result)) return res.status(400).send(result);
 
   res.send(result); //TODO: redirect
+  setTimeout(async () => {
+    await setInterruptedOrder(orderId);
+  }, (paymentTimeLimit + 1) * 60 * 1000);
 });
 
 router.get("/:id/status", validateObjectId, async (req, res) => {
@@ -76,6 +80,11 @@ router.post("/:id/p24callback", validateObjectId, async (req, res) => {
     },
     { new: true }
   );
+
+  if (order.status === "interrupted") {
+    const res = recreateReturnedCart(order.cart);
+    if (_.isError(res)) return res.send("Order is interrupted.");
+  }
 
   const result = await p24.verifyTransaction(order);
 

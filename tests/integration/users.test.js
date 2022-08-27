@@ -1,7 +1,7 @@
 const { User } = require("../../models/user");
 const request = require("supertest");
 
-describe("users routes", () => {
+describe("users route", () => {
   beforeEach(() => {
     server = require("../../index");
   });

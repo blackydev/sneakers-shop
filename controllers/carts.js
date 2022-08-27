@@ -51,6 +51,29 @@ exports.createCart = async (cartBody) => {
   return cart;
 };
 
+exports.recreateReturnedCart = async (cartBody) => {
+  for (const product of cartBody.products) {
+    let finalProduct = await decreaseUnhiddenProductStock(
+      product._id,
+      product.quantity
+    );
+
+    if (!finalProduct)
+      for (const previousProduct of cartBody.products) {
+        if (product._id === previousProduct._id)
+          return new Error("The product with the given ID was not found.");
+
+        await increaseProductStock(
+          previousProduct._id,
+          previousProduct.quantity
+        );
+      }
+
+  }
+
+  return cart;
+};
+
 exports.returnCart = async (cart) => {
   for (let product of cart.products) {
     const finalProduct = await increaseProductStock(

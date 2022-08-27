@@ -1,22 +1,23 @@
-const { Order, paymentTimeLimit } = require("../models/order");
-const { getTransactionData } = require("./przelewy24.pl/main");
+const { Order } = require("../models/order");
+const { getTransactionData } = require("./payment/p24");
 const { returnCart } = require("../controllers/carts");
-const { result } = require("lodash");
+const winston = require("winston");
 
-const setInterruptedOrders = async () => {
-  let orders = await Order.find({ status: "pending" });
+const setInterruptedOrder = async (orderId) => {
+  let order = await Order.findById(orderId);
+  if (order.status !== "pending") return order.status;
 
-  for (let order of orders) {
-    result = await getTransactionData(order._id);
-    if (result.date > paymentTimeLimit && !result.status) {
-      order = await Order.findByIdAndUpdate(order._id, {
-        status: "interrupted",
-      });
-      await returnCart(order.cart);
-    }
-  }
+  const res = await getTransactionData(order._id);
+  if (!res.status)
+    await returnCart(order.cart);
+  await Order.findByIdAndUpdate(order._id, {
+    status: "interrupted",
+  });
+  winston.info(result.date);
+
+  return "interrupted";
 };
 
 module.exports = {
-  setInterruptedOrders,
+  setInterruptedOrders: setInterruptedOrder,
 };

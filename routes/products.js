@@ -33,23 +33,6 @@ router.get("/:id", validateObjectId, async (req, res) => {
   res.send(product);
 });
 
-router.get("/all", [auth, isAdmin], async (req, res) => {
-  const products = await Product.find().select([
-    "_id",
-    "name",
-    "image",
-    "price",
-  ]);
-  res.send(products);
-});
-
-router.get("/all/:id", [auth, isAdmin, validateObjectId], async (req, res) => {
-  const product = await Product.findById(req.params.id);
-  if (!product)
-    return res.status(404).send("The product with the given ID was not found.");
-  res.send(product);
-});
-
 router.post("/", [auth, isAdmin, upload.single("image")], async (req, res) => {
   req.body.image = req.file ? req.file.destination + req.file.filename : "";
 
