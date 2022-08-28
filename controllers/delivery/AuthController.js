@@ -1,6 +1,6 @@
 const axios = require("axios").default;
 const config = require("config");
-const { setDaysTimeout } = require("../../utils/timeouts");
+const { setDaysInterval } = require("../../utils/timers");
 const winston = require("winston");
 
 const furgonetkaURL =
@@ -8,17 +8,17 @@ const furgonetkaURL =
         ? "https://api.furgonetka.pl"
         : "https://api-test.furgonetka.pl";
 
-const authFurgonetkaURL =
+const authURL =
     process.env.NODE_ENV === "production"
         ? "https://konto.furgonetka.pl"
         : "https://konto-test.furgonetka.pl";
 
 const authClient = axios.create({
-    baseURL: authFurgonetkaURL,
+    baseURL: authURL,
 });
 
 
-class Auth { //TODO: change name of object + file + instance of object
+class AuthController { //TODO: change name of object + file + instance of object
     accessToken;
     #refreshToken;
     #clientId = config.get("furgonetka.clientId");
@@ -30,7 +30,7 @@ class Auth { //TODO: change name of object + file + instance of object
     setAxiosClient = () => {
         this.axiosClient = axios.create({
             baseURL: furgonetkaURL,
-            authorizationCode: "Bearer " + this.accessToken,
+            headers: { "authorization": "Bearer " + this.accessToken, }
         });
     }
 
@@ -39,7 +39,7 @@ class Auth { //TODO: change name of object + file + instance of object
         this.accessToken = data.access_token;
         this.#refreshToken = data.refresh_token;
         this.setAxiosClient();
-        setDaysTimeout(async () => {
+        setDaysInterval(async () => {
             await this.#update();
             this.setAxiosClient();
         }, 29);
@@ -101,6 +101,6 @@ class Auth { //TODO: change name of object + file + instance of object
 
 }
 
-const auth = new Auth();
+const authController = new AuthController();
 
-module.exports = auth;
+module.exports = authController;
