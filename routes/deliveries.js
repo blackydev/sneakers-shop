@@ -1,14 +1,17 @@
 const express = require("express");
 const router = express.Router();
-const { getDeliverers } = require("../controllers/delivery/main")
+const { getDeliverers, getPoints } = require("../controllers/delivery/main")
 
 router.get("/services", async (req, res) => {
     const data = await getDeliverers();
     res.status(200).send(data);
 });
 
-router.get("/", async (req, res) => {
-    const data = await getDeliverers();
+router.get("/points/:service", async (req, res) => {
+    const { search } = req.query;
+    const service = [].push(req.params.service);
+    if (!search) return res.status(400).send("No search phrase.");
+    const data = await getPoints(search, service);
     res.status(200).send(data);
 });
 

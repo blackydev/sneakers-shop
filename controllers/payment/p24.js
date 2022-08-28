@@ -68,7 +68,7 @@ const createTransaction = async (order, hostURL) => {
     const token = result.data.token;
     return `${p24URL}/trnRequest/${token}`;
   } catch (error) {
-    return error;
+    return error.message;
   }
 };
 
@@ -117,7 +117,7 @@ const verifyTransaction = async (order) => {
     const { data: result } = await client.put("/transaction/verify", request);
     return result.data.status === "success";
   } catch (error) {
-    return error;
+    return error.message;
   }
 };
 
@@ -126,7 +126,7 @@ const getPaymentMethods = async (language) => {
     const { data: result } = await client.get(`/payment/methods/${language}`);
     return result.data;
   } catch (error) {
-    return error;
+    return error.message;
   }
 };
 
@@ -135,7 +135,7 @@ const test = async () => {
     const { data: result } = await client.get("testAccess");
     return result.data === true;
   } catch (error) {
-    return error;
+    return error.message;
   }
 };
 
@@ -146,7 +146,7 @@ const getTransactionData = async (p24Id) => {
     );
     return result.data;
   } catch (error) {
-    return error;
+    return error.message;
   }
 };
 

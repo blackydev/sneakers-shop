@@ -27,12 +27,17 @@ const orderSchema = new mongoose.Schema({
     },
   },
 
-  furgonetka: {
+  delivery: {
     serviceId: {
       type: Number,
+      required: true,
     },
     price: {
       ...schemas.price,
+      required: true,
+    },
+    point: {
+      type: String,
     }
   }
 });
@@ -60,8 +65,10 @@ function validateOrder(cart) {
           ? true
           : helper.message("Invalid order status.");
       }),
-    furgonetka: Joi.object().keys({
+    delivery: Joi.object().keys({
       serviceId: Joi.number().required(),
+      point: Joi.string(),
+      price: joiSchemas.price().required(),
     }),
   });
 
