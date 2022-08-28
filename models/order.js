@@ -2,6 +2,7 @@ const Joi = require("joi");
 const mongoose = require("mongoose");
 const { customerSchema } = require("./customer");
 const { cartSchema } = require("./cart");
+const { schemas, joiSchemas } = require("./utils/schemas");
 
 const orderSchema = new mongoose.Schema({
   customer: {
@@ -25,6 +26,15 @@ const orderSchema = new mongoose.Schema({
       type: Number,
     },
   },
+
+  furgonetka: {
+    serviceId: {
+      type: Number,
+    },
+    price: {
+      ...schemas.price,
+    }
+  }
 });
 
 const Order = mongoose.model("orders", orderSchema);
@@ -35,6 +45,7 @@ function validateOrder(cart) {
     "pending",
     "interrupted",
     "paid",
+    "accepted",
     "in delivery",
     "finalised",
   ];
@@ -49,6 +60,9 @@ function validateOrder(cart) {
           ? true
           : helper.message("Invalid order status.");
       }),
+    furgonetka: Joi.object().keys({
+      serviceId: Joi.number().required(),
+    }),
   });
 
   return schema.validate(cart);

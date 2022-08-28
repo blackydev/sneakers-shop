@@ -7,4 +7,9 @@ router.get("/services", async (req, res) => {
     res.status(200).send(data);
 });
 
+router.get("/", async (req, res) => {
+    const data = await getDeliverers();
+    res.status(200).send(data);
+});
+
 module.exports = router;
