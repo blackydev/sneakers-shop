@@ -3,8 +3,8 @@ const router = express.Router();
 const { getDeliverers } = require("../controllers/delivery/main")
 
 router.get("/", async (req, res) => {
-    const result = await getDeliverers();
-    res.status(200).send(result);
+    const data = await getDeliverers();
+    res.status(200).send(data);
 });
 
 module.exports = router;
