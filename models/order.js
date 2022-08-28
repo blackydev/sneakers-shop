@@ -65,6 +65,7 @@ function validateOrder(cart) {
           ? true
           : helper.message("Invalid order status.");
       }),
+
     delivery: Joi.object().keys({
       serviceId: Joi.number().required(),
       point: Joi.string(),
