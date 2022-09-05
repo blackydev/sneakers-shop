@@ -4,6 +4,7 @@ const fs = require("fs");
 const path = require("path");
 const config = require("config");
 const { createUser, deleteUsers } = require("./users.test");
+const { exec } = require("child_process");
 
 const products = [
   {
@@ -57,6 +58,7 @@ describe("products route", () => {
     await server.close();
     await Product.deleteMany({});
   });
+
   describe("GET /", () => {
     let finalProducts;
     beforeEach(async () => {
@@ -76,7 +78,7 @@ describe("products route", () => {
       ]);
     });
 
-    it("should return 200 with all products", async () => {
+    it("should return all products", async () => {
       const res = await request(server).get("/api/products");
       expect(res.status).toBe(200);
       expect(res.body).toMatchObject([
@@ -99,6 +101,73 @@ describe("products route", () => {
           image: webpImg.filePath,
         },
       ]);
+    });
+
+    it("should return 400 with error", async () => {
+      const res = await request(server).get(
+        "/api/products?sortBy=name&sortBy=_id&sortBy=name"
+      );
+      expect(res.status).toBe(400);
+    });
+  });
+
+  describe("GET /:id", () => {
+    let hidden;
+    const exec = async () => {
+      let product = new Product({
+        ...products[0],
+        image: pngImg.filePath,
+        hidden: hidden,
+      });
+      await product.save();
+      return product;
+    };
+
+    it("should return product", async () => {
+      const product = await exec();
+      const res = await request(server).get(`/api/products/${product._id}`);
+      expect(res.body).toMatchObject({
+        _id: product._id,
+        name: product.name,
+        price: product.price,
+        image: pngImg.filePath,
+      });
+      expect(res.status).toBe(200);
+    });
+
+    it("should return product with _id and name", async () => {
+      const product = await exec();
+      const res = await request(server).get(
+        `/api/products/${product._id}?select=name`
+      );
+      expect(res.body).toMatchObject({
+        _id: product._id,
+        name: product.name,
+      });
+      expect(res.status).toBe(200);
+    });
+
+    it("should not return hidden product", async () => {
+      hidden = true;
+      const product = await exec();
+      const res = await request(server).get(`/api/products/${product._id}`);
+      expect(res.body).toMatchObject({});
+      expect(res.status).toBe(404);
+    });
+
+    it("should return hidden product", async () => {
+      hidden = true;
+      const product = await exec();
+      const res = await request(server).get(
+        `/api/products/${product._id}?showHidden=true`
+      );
+      expect(res.body).toMatchObject({
+        _id: product._id,
+        name: product.name,
+        price: product.price,
+        image: pngImg.filePath,
+      });
+      expect(res.status).toBe(200);
     });
   });
 
@@ -137,7 +206,7 @@ describe("products route", () => {
       });
     });
 
-    exec = () => {
+    const exec = () => {
       return request(server)
         .post("/api/products")
         .set("x-auth-token", token)

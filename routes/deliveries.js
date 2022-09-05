@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { getDeliverers, getPoints } = require("../controllers/furgonetka/main");
+const { getDeliverers, getPoints } = require("../controllers/furgonetka");
 
 router.get("/services", async (req, res) => {
   const data = await getDeliverers();

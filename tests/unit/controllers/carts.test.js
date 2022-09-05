@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const _ = require("lodash");
 const { Product } = require("../../../models/product");
-const { createCart } = require("../../../controllers/carts");
+const { createCart } = require("../../../controllers/orders/carts");
 
 const products = [
   {

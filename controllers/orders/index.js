@@ -1,6 +1,6 @@
-const { Order } = require("../models/order");
-const { getTransactionData } = require("./p24");
-const { returnCart } = require("../controllers/carts");
+const { Order } = require("../../models/order");
+const { getTransactionData } = require("../p24");
+const { returnCart } = require("./carts");
 const winston = require("winston");
 
 const setInterruptedOrder = async (orderId) => {

@@ -12,8 +12,8 @@ const hiddenQuery = { hidden: { $in: [false, null] } };
 
 router.get("/", async (req, res) => {
   try {
-    const { hide, select, sortBy } = req.query;
-    const query = hide === "false" ? null : hiddenQuery;
+    const { showHidden, select, sortBy } = req.query;
+    const query = showHidden === "true" ? null : hiddenQuery;
 
     const products = await Product.find(query)
       .select(select) // ["_id", "name", "image", "price"]
@@ -26,10 +26,17 @@ router.get("/", async (req, res) => {
 });
 
 router.get("/:id", validateObjectId, async (req, res) => {
-  const product = await Product.findById(req.params.id);
+  let { showHidden, select } = req.query;
+  showHidden = showHidden === "true" ? true : false;
 
-  if (!product || product.hidden)
-    return res.status(404).send("The product with the given ID was not found.");
+  const product = await Product.findById(req.params.id, select);
+
+  if (!showHidden)
+    if (product.hidden)
+      return res
+        .status(404)
+        .send("The product with the given ID was not found.");
+
   res.send(product);
 });
 

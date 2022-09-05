@@ -1,6 +1,6 @@
 const _ = require("lodash");
 const { Product } = require("../../../models/product");
-const { createCustomer } = require("../../../controllers/customers");
+const { createCustomer } = require("../../../controllers/orders/customers");
 
 describe("carts", () => {
   describe("createCart", () => {
