@@ -1,5 +1,7 @@
 const { User } = require("../../models/user");
 const request = require("supertest");
+const jwt = require("jsonwebtoken");
+const config = require("config");
 
 describe("users route", () => {
   beforeEach(() => {
@@ -68,6 +70,50 @@ describe("users route", () => {
       expect(res.body).toHaveProperty("_id");
       expect(res.body).toHaveProperty("email", email);
       expect(res.header).toHaveProperty("x-auth-token");
+    });
+  });
+
+  describe("POST /auth", () => {
+    let email, password;
+
+    beforeEach(async () => {
+      email = "correctEmail@gmail.com";
+      password = "correctPassword123";
+      await request(server)
+        .post("/api/users")
+        .send({ email: email, password: password });
+    });
+
+    const exec = async () => {
+      return await request(server)
+        .post("/api/users/auth")
+        .send({ email: email, password: password });
+    };
+
+    it("should return token", async () => {
+      const res = await exec();
+      let token = jwt.verify(res.text, config.get("jwtPrivateKey"));
+      expect(token).toHaveProperty("_id");
+      expect(token).toHaveProperty("authNumber");
+      expect(res.status).toBe(200);
+    });
+
+    it("should return 400 if email is incorrect", async () => {
+      email = "incorrectEmail";
+      const res = await exec();
+      expect(res.status).toBe(400);
+    });
+
+    it("should return 400 if password is incorrect", async () => {
+      password = "IncorrectPassword123";
+      const res = await exec();
+      expect(res.status).toBe(400);
+    });
+
+    it("should return 400 if password is empty", async () => {
+      password = "";
+      const res = await exec();
+      expect(res.status).toBe(400);
     });
   });
 });
