@@ -71,3 +71,22 @@ describe("users route", () => {
     });
   });
 });
+
+const createUser = async (isAdmin) => {
+  let user = new User({
+    email: "correctEmail@gmail.com",
+    password: "correctPassword123",
+    isAdmin: isAdmin,
+  });
+  user = await user.save();
+  return user;
+};
+
+const deleteUsers = async () => {
+  await User.deleteMany({});
+};
+
+module.exports = {
+  createUser,
+  deleteUsers,
+};

@@ -1,5 +1,5 @@
 const { Order } = require("../models/order");
-const { getTransactionData } = require("./payment/p24");
+const { getTransactionData } = require("./p24");
 const { returnCart } = require("../controllers/carts");
 const winston = require("winston");
 
@@ -20,5 +20,5 @@ const setInterruptedOrder = async (orderId) => {
 };
 
 module.exports = {
-  setInterruptedOrder: setInterruptedOrder,
+  setInterruptedOrder,
 };

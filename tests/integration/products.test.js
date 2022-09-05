@@ -1,10 +1,9 @@
-const { Product, productSchema } = require("../../models/product");
-const { User } = require("../../models/user");
+const { Product } = require("../../models/product");
 const request = require("supertest");
 const fs = require("fs");
 const path = require("path");
 const config = require("config");
-const { mockResponse } = require("mock-req-res");
+const { createUser, deleteUsers } = require("./users.test");
 
 const products = [
   {
@@ -118,17 +117,13 @@ describe("products route", () => {
         numberInStock: 255,
       };
 
-      let user = new User({
-        email: "qwertyMail@gmail.com",
-        password: "Password12345",
-        isAdmin: true,
-      });
+      let user = await createUser(true);
       user = await user.save();
       token = user.generateAuthToken();
     });
 
     afterEach(async () => {
-      await User.deleteMany({});
+      await deleteUsers();
       // delete all files after test
       const dir = config.get("public") + "images/products/";
       await fs.readdir(dir, (err, files) => {
@@ -188,10 +183,8 @@ describe("products route", () => {
 
     it("return 403 if user is not admin", async () => {
       imagePath = webpImg.filePath;
-      let user = new User({
-        email: "qwertyMailer@gmail.com",
-        password: "Password12345",
-      });
+      await deleteUsers();
+      let user = await createUser();
       user = await user.save();
       token = user.generateAuthToken();
       const res = await exec();
@@ -199,3 +192,25 @@ describe("products route", () => {
     });
   });
 });
+
+const createProduct = async () => {
+  let product = new Product({
+    name: "Star Wars I",
+    description:
+      "Set 32 years before the original trilogy, during the era of the Galactic Republic, the plot follows Jedi Master Qui-Gon Jinn and his apprentice Obi-Wan Kenobi as they try to protect Queen Padmé Amidala of Naboo in hopes of securing a peaceful end to an interplanetary trade dispute.",
+    slogan: "It's awesome movie",
+    price: 15,
+    numberInStock: 255,
+  });
+  product = await product.save();
+  return product;
+};
+
+const deleteProducts = async () => {
+  await Product.deleteMany({});
+};
+
+module.exports = {
+  createProduct,
+  deleteProducts,
+};

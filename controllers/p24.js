@@ -1,8 +1,8 @@
 const axios = require("axios").default;
 const config = require("config");
 const _ = require("lodash");
-const { calculateSHA384 } = require("../../utils/hash");
-const { paymentTimeLimit } = require("../../models/order");
+const { calculateSHA384 } = require("../utils/hash");
+const { paymentTimeLimit } = require("../models/order");
 
 const merchantId = config.get("p24.merchantId");
 const posId = config.get("p24.posId");

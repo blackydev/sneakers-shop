@@ -1,5 +1,5 @@
 const config = require("config");
-const p24 = require("../controllers/payment/p24");
+const p24 = require("../controllers/p24");
 
 module.exports = async function async() {
   if (!config.has("jwtPrivateKey"))
@@ -14,5 +14,4 @@ module.exports = async function async() {
     throw new Error(
       "FATAL ERROR: Unsuccessful test connection with przelewy24."
     );
-
 };

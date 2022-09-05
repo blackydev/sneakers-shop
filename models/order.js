@@ -38,8 +38,8 @@ const orderSchema = new mongoose.Schema({
     },
     point: {
       type: String,
-    }
-  }
+    },
+  },
 });
 
 const Order = mongoose.model("orders", orderSchema);
