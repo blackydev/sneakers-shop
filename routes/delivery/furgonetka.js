@@ -1,11 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { validate, deliveryMethods } = require("../models/order/delivery");
-const { getDeliverers, getPoints } = require("../controllers/furgonetka");
-
-router.get("/", async (req, res) => {
-  res.status(200).send(deliveryMethods);
-});
+const { getPoints } = require("../../controllers/furgonetka");
 
 router.get("/:service/points", async (req, res) => {
   const { search } = req.query;
