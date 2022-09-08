@@ -3,6 +3,7 @@ const config = require("config");
 const _ = require("lodash");
 const { calculateSHA384 } = require("../utils/hash");
 const { paymentTimeLimit } = require("../models/order");
+const winston = require("winston");
 
 const merchantId = config.get("p24.merchantId");
 const posId = config.get("p24.posId");
@@ -26,6 +27,8 @@ const createTransaction = async (order, hostURL) => {
   try {
     const customer = order.customer;
     const cart = order.cart;
+    const delivery = order.delivery;
+    winston.info(order);
 
     const hashData = {
       sessionId: order._id,
@@ -56,7 +59,7 @@ const createTransaction = async (order, hostURL) => {
       urlStatus: `${hostURL}/api/p24/callback/${order._id}`,
       timeLimit: paymentTimeLimit,
       waitForResult: true,
-      shipping: order.delivery.price,
+      shipping: delivery.price,
       transferLabel: config.get("websiteName"),
       sign: sign,
     };
