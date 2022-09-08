@@ -42,7 +42,7 @@ const createTransaction = async (order, hostURL) => {
       merchantId: merchantId,
       posId: posId,
       sessionId: order._id,
-      amount: order.totalAmount * 100,
+      amount: order.totalCost * 100,
       currency: "PLN",
       description: config.get("websiteName"),
       email: customer.email,

@@ -28,7 +28,7 @@ const orderSchema = new mongoose.Schema({
     },
   },
 
-  totalAmount: {
+  totalCost: {
     ...schemas.price,
     required: true /* total amount = cart cost + delivery cost */,
   },
