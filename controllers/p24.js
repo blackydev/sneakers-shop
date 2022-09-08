@@ -57,7 +57,6 @@ const createTransaction = async (order, hostURL) => {
       urlStatus: `${hostURL}/api/p24/callback/${order._id}`,
       timeLimit: paymentTimeLimit,
       waitForResult: true,
-      shipping: delivery.cost * 100,
       transferLabel: config.get("websiteName"),
       sign: sign,
     };
