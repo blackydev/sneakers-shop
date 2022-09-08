@@ -9,7 +9,6 @@ const merchantId = config.get("p24.merchantId");
 const posId = config.get("p24.posId");
 const crcKey = config.get("p24.crc");
 const raportKey = config.get("p24.raportKey");
-
 const p24URL =
   process.env.NODE_ENV === "production"
     ? "https://secure.przelewy24.pl"
@@ -62,6 +61,7 @@ const createTransaction = async (order, hostURL) => {
       transferLabel: config.get("websiteName"),
       sign: sign,
     };
+    winston.info("requyest: " + request);
     const { data: result } = await client.post(
       "/transaction/register",
       request
