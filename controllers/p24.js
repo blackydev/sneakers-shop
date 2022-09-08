@@ -31,7 +31,7 @@ const createTransaction = async (order, hostURL) => {
     const hashData = {
       sessionId: order._id,
       merchantId: merchantId,
-      amount: cart.amount * 100,
+      amount: order.totalCost * 100,
       currency: "PLN",
       crc: crcKey,
     };
@@ -57,11 +57,10 @@ const createTransaction = async (order, hostURL) => {
       urlStatus: `${hostURL}/api/p24/callback/${order._id}`,
       timeLimit: paymentTimeLimit,
       waitForResult: true,
-      //  shipping: delivery.cost * 100,
+      shipping: delivery.cost * 100,
       transferLabel: config.get("websiteName"),
       sign: sign,
     };
-    winston.info("requyest: " + JSON.stringify(request));
     const { data: result } = await client.post(
       "/transaction/register",
       request
