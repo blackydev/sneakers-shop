@@ -50,8 +50,17 @@ function validateDelivery(delivery) {
   return schema.validate(delivery);
 }
 
+function validatePricePatch(delivery) {
+  const schema = Joi.object({
+    price: joiSchemas.price.required(),
+  });
+
+  return schema.validate(delivery);
+}
+
 module.exports = {
   Delivery,
   deliverySchema,
   validate: validateDelivery,
+  validatePricePatch,
 };

@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { Delivery } = require("../../models/order/delivery");
+const { Delivery, validatePricePatch } = require("../../models/order/delivery");
 const { getDeliverers, getPoints } = require("../../controllers/furgonetka");
 const validateObjectId = require("../../middleware/validateObjectId");
 const { auth, isAdmin } = require("../../middleware/authorization");
@@ -10,9 +10,18 @@ router.get("/", async (req, res) => {
   res.status(200).send(methods);
 });
 
-router.patch("/:id", validateObjectId, async (req, res) => {
-  if (req.body.price)
-    if (error) return res.status(400).send("Price needed to patch.");
+router.get("/:id", validateObjectId, async (req, res) => {
+  const method = await Delivery.findById(req.params.id);
+
+  if (!method)
+    return res.status(404).send("The method with the given ID was not found.");
+
+  res.send(method);
+});
+
+router.patch("/:id", [auth, isAdmin, validateObjectId], async (req, res) => {
+  const { error } = validatePricePatch(req.body);
+  if (error) return res.status(400).send(error.details[0].message);
 
   const method = await Delivery.findByIdAndUpdate(
     req.params.id,
