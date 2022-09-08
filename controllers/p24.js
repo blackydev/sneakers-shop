@@ -61,7 +61,7 @@ const createTransaction = async (order, hostURL) => {
       transferLabel: config.get("websiteName"),
       sign: sign,
     };
-    winston.info("requyest: " + request);
+    winston.info("requyest: " + JSON.stringify(request));
     const { data: result } = await client.post(
       "/transaction/register",
       request
