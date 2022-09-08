@@ -13,7 +13,7 @@ exports.createDelivery = async (deliveryBody) => {
   return {
     _id: delivery._id,
     name: delivery.name,
-    price: delivery.price,
+    cost: delivery.price,
     point: deliveryBody.point,
   };
 };

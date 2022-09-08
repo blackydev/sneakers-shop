@@ -34,8 +34,21 @@ const orderSchema = new mongoose.Schema({
   },
 
   delivery: {
-    type: deliverySchema,
-    required: true,
+    _id: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+    },
+    name: {
+      type: String,
+      required: true,
+    },
+    cost: {
+      ...schemas.price,
+      required: true,
+    },
+    points: {
+      type: Boolean,
+    },
   },
 });
 

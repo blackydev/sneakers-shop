@@ -16,8 +16,7 @@ const deliverySchema = new mongoose.Schema({
   },
 });
 
-/*
-[{
+/*[{
     "name": "personal pickup",
     "price": 0,
     "point": false,

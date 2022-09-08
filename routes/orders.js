@@ -61,7 +61,7 @@ const getProperties = (customer, cart, delivery, status) => {
     customer: customer,
     cart: cart,
     delivery: delivery,
-    totalAmount: cart.amount + delivery.price,
+    totalAmount: cart.amount + delivery.cost,
     status: status,
   };
 };
