@@ -57,6 +57,7 @@ const createTransaction = async (order, hostURL) => {
       urlStatus: `${hostURL}/api/p24/callback/${order._id}`,
       timeLimit: paymentTimeLimit,
       waitForResult: true,
+      shipping: delivery.cost * 100,
       transferLabel: config.get("websiteName"),
       sign: sign,
     };
@@ -69,6 +70,7 @@ const createTransaction = async (order, hostURL) => {
     const token = result.data.token;
     return `${p24URL}/trnRequest/${token}`;
   } catch (error) {
+    winston.info(error.message);
     return error.message;
   }
 };
