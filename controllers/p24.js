@@ -29,6 +29,7 @@ const createTransaction = async (order, hostURL) => {
     const cart = order.cart;
     const delivery = order.delivery;
     winston.info(delivery);
+    winston.info("price" + delivery.price);
 
     const hashData = {
       sessionId: order._id,
