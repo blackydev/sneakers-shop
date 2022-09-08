@@ -28,6 +28,11 @@ const orderSchema = new mongoose.Schema({
     },
   },
 
+  totalAmount: {
+    ...schemas.price,
+    required: true /* total amount = cart cost + delivery cost */,
+  },
+
   delivery: {
     type: deliverySchema,
     required: true,

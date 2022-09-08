@@ -28,8 +28,6 @@ const createTransaction = async (order, hostURL) => {
     const customer = order.customer;
     const cart = order.cart;
     const delivery = order.delivery;
-    winston.info(delivery);
-    winston.info("price" + delivery.price);
 
     const hashData = {
       sessionId: order._id,
@@ -44,7 +42,7 @@ const createTransaction = async (order, hostURL) => {
       merchantId: merchantId,
       posId: posId,
       sessionId: order._id,
-      amount: cart.amount * 100,
+      amount: order.totalAmount * 100,
       currency: "PLN",
       description: config.get("websiteName"),
       email: customer.email,
