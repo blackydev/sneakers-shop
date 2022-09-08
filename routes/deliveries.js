@@ -1,17 +1,17 @@
 const express = require("express");
 const router = express.Router();
+const { validate, deliveryMethods } = require("../models/order/delivery");
 const { getDeliverers, getPoints } = require("../controllers/furgonetka");
 
-router.get("/services", async (req, res) => {
-  const data = await getDeliverers();
-  res.status(200).send(data);
+router.get("/", async (req, res) => {
+  res.status(200).send(deliveryMethods);
 });
 
-router.get("/points/:service", async (req, res) => {
+router.get("/:service/points", async (req, res) => {
   const { search } = req.query;
-  const service = [].push(req.params.service);
-  if (!search) return res.status(400).send("No search phrase.");
-  const data = await getPoints(search, service);
+  const service = req.params.service;
+  if (!search) return res.status(400).send("No search phrase query.");
+  const data = await getPoints(service, search);
   res.status(200).send(data);
 });
 

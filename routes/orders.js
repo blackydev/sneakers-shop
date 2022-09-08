@@ -7,6 +7,7 @@ const {
   recreateReturnedCart,
 } = require("../controllers/orders/carts");
 const { createCustomer } = require("../controllers/orders/customers");
+const { createDelivery } = require("../controllers/orders/delivery");
 const { setInterruptedOrder } = require("../controllers/orders");
 const p24 = require("../controllers/p24");
 const { getHostURL } = require("../utils/url");
@@ -38,7 +39,10 @@ router.post("/", async (req, res) => {
   const customer = await createCustomer(req.body.customer);
   if (_.isError(customer)) return res.status(400).send(customer.message);
 
-  let order = new Order(getProperties(customer, cart, "pending"));
+  const delivery = await createDelivery(req.body.delivery);
+  if (_.isError(delivery)) return res.status(400).send(delivery.message);
+
+  let order = new Order(getProperties(customer, cart, delivery, "pending"));
   await order.save();
 
   res.send(order);
@@ -108,10 +112,11 @@ router.post("/:id/p24callback", validateObjectId, async (req, res) => {
   res.status(204);
 });
 
-const getProperties = (customer, cart, status) => {
+const getProperties = (customer, cart, delivery, status) => {
   return {
     customer: customer,
     cart: cart,
+    delivery: delivery,
     status: status,
   };
 };

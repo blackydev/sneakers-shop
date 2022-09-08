@@ -58,7 +58,7 @@ function validateOrder(order) {
           : helper.message("Invalid order status.");
       }),
 
-    delivery: Joi.object().keys(),
+    delivery: Joi.object().required(),
   });
 
   return schema.validate(order);
