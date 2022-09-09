@@ -31,7 +31,7 @@ const orderSchema = new mongoose.Schema({
   },
 
   delivery: {
-    id: {
+    methodId: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
     },

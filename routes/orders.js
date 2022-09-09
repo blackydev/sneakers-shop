@@ -1,17 +1,13 @@
 const express = require("express");
 const router = express.Router();
 const validateObjectId = require("../middleware/validateObjectId");
-const { Order, validate, paymentTimeLimit } = require("../models/order");
-const {
-  createCart,
-  recreateReturnedCart,
-} = require("../controllers/orders/carts");
-const { createCustomer } = require("../controllers/orders/customers");
-const { createDelivery } = require("../controllers/delivery");
+const { Order, validate } = require("../models/order");
+const { createOrder } = require("../controllers/orders");
 const p24 = require("../controllers/p24");
 const { getHostURL } = require("../utils/url");
 const { auth, isAdmin } = require("../middleware/authorization");
 const _ = require("lodash");
+const winston = require("winston");
 
 router.get("/", [auth, isAdmin], async (req, res) => {
   const { select, sortBy } = req.query;
@@ -32,22 +28,14 @@ router.post("/", async (req, res) => {
   /*
 request: 
 {
-  cart: {...}, customer: {...}, delivery: {id, ?point}
+  cart: {...}, customer: {...}, delivery: {methodId, ?point}
 }
   */
   req.body.status = "pending";
-  try {
-    validate(req.body);
-    var cart = await createCart(req.body.cart);
-    var customer = await createCustomer(req.body.customer);
-    var delivery = await createDelivery(req.body.delivery);
-  } catch (err) {
-    return res.status(400).send(err);
-  }
+  const orderObject = await createOrder(req.body);
+  if (_.isError(orderObject)) return res.status(400).send(orderObject.message);
 
-  const status = req.body.status;
-
-  let order = new Order(getProperties(customer, cart, delivery, status));
+  const order = new Order(orderObject);
   await order.save();
 
   res.send(order);
@@ -57,22 +45,10 @@ router.put("/:id", [auth, isAdmin], async (req, res) => {
   /* request: 
   the same as in the post method + status
   */
-  try {
-    validate(req.body);
-    var cart = await createCart(req.body.cart);
-    var customer = await createCustomer(req.body.customer);
-    var delivery = await createDelivery(req.body.delivery);
-  } catch (err) {
-    return res.status(400).send(err);
-  }
+  const orderObject = await createOrder(req.body);
+  if (_.isError(orderObject)) return res.status(400).send(orderObject.message);
 
-  const status = req.body.status;
-
-  let order = new Order(
-    req.params.id,
-    getProperties(customer, cart, delivery, status),
-    { new: true }
-  );
+  let order = new Order(req.params.id, orderObject, { new: true });
   await order.save();
 
   res.send(order);
@@ -139,15 +115,5 @@ router.post("/:id/p24Callback", validateObjectId, async (req, res) => {
 
   res.status(204);
 });
-
-const getProperties = (customer, cart, delivery, status) => {
-  return {
-    customer: customer,
-    cart: cart,
-    delivery: delivery,
-    totalCost: cart.amount + delivery.cost,
-    status: status,
-  };
-};
 
 module.exports = router;

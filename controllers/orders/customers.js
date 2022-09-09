@@ -4,7 +4,7 @@ const { validate } = require("../../models/order/customer");
 
 exports.createCustomer = (customerBody) => {
   const { error } = validate(customerBody);
-  if (error) throw error;
+  if (error) return error;
 
   return _.pick(customerBody, [
     "name",

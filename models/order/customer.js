@@ -6,7 +6,7 @@ const customerSchema = new mongoose.Schema({
   _id: { id: false },
   name: { ...schemas.fullname, required: true },
   email: { ...schemas.email, required: true },
-  companyName: { ...schemas.companyName },
+  company: { ...schemas.company },
   address: { ...schemas.address, required: true },
   zip: { ...schemas.zip, required: true },
   city: { ...schemas.city, required: true },
@@ -17,7 +17,7 @@ function validateCustomer(customer) {
   const schema = Joi.object({
     name: joiSchemas.fullname.required(),
     email: joiSchemas.email.required(),
-    companyName: joiSchemas.companyName,
+    company: joiSchemas.company,
     address: joiSchemas.address.required(),
     zip: joiSchemas.zip.required(),
     city: joiSchemas.city.required(),
