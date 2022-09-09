@@ -47,7 +47,10 @@ describe("carts", () => {
 
     it("should return cart if products are valid", async () => {
       const cartBody = {
-        products: [{ _id: productsId[0] }, { _id: productsId[1], quantity: 2 }],
+        products: [
+          { productId: productsId[0] },
+          { productId: productsId[1], quantity: 2 },
+        ],
       };
 
       const jsonCart = JSON.parse(JSON.stringify(cartBody));
@@ -55,8 +58,8 @@ describe("carts", () => {
 
       expect(result).toMatchObject({
         products: [
-          { cost: 15, _id: productsId[0], quantity: 1 },
-          { cost: 10, _id: productsId[1], quantity: 2 },
+          { cost: 15, productId: productsId[0], quantity: 1 },
+          { cost: 10, productId: productsId[1], quantity: 2 },
         ],
         amount: 35,
       });
@@ -66,7 +69,10 @@ describe("carts", () => {
     it("should return error if product with given id doesn't exist", async () => {
       const fakeId = mongoose.Types.ObjectId();
       const cartBody = {
-        products: [{ _id: productsId[0] }, { _id: fakeId, quantity: 2 }],
+        products: [
+          { productId: productsId[0] },
+          { productId: fakeId, quantity: 2 },
+        ],
       };
 
       const jsonCart = JSON.parse(JSON.stringify(cartBody));
@@ -76,7 +82,10 @@ describe("carts", () => {
 
     it("should return error if product id is invalid", async () => {
       const cartBody = {
-        products: [{ _id: productsId[0] }, { _id: 123, quantity: 2 }],
+        products: [
+          { productId: productsId[0] },
+          { productId: 123, quantity: 2 },
+        ],
       };
 
       const jsonCart = JSON.parse(JSON.stringify(cartBody));
@@ -87,8 +96,8 @@ describe("carts", () => {
     it("should return error if client send products with fake price", async () => {
       const cartBody = {
         products: [
-          { _id: productsId[0], price: 45 },
-          { _id: 123, quantity: 2, price: 30 },
+          { productId: productsId[0], price: 45 },
+          { productId: 123, quantity: 2, price: 30 },
         ],
       };
 

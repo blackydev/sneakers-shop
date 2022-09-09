@@ -1,17 +1,15 @@
 const mongoose = require("mongoose");
 const _ = require("lodash");
-const { Delivery } = require("../../models/order/delivery");
+const { Delivery } = require("../models/delivery");
 
 exports.createDelivery = async (deliveryBody) => {
-  const delivery = await Delivery.findById(deliveryBody._id);
+  const delivery = await Delivery.findById(deliveryBody.id);
   if (delivery.points)
     if (!deliveryBody.point)
-      return new Error(
-        "The delivery with the given ID should have point send."
-      );
+      throw new Error("The delivery with the given ID should have point send.");
 
   return {
-    _id: delivery._id,
+    id: delivery.id,
     name: delivery.name,
     cost: delivery.price,
     point: deliveryBody.point,

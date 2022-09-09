@@ -54,7 +54,7 @@ const createTransaction = async (order, hostURL) => {
       phone: customer.phone,
       language: "pl",
       urlReturn: `${hostURL}/api/orders/${order._id}/status`,
-      urlStatus: `${hostURL}/api/p24/callback/${order._id}`,
+      urlStatus: `${hostURL}/api/orders/${order._id}/p24Callback`,
       timeLimit: paymentTimeLimit,
       waitForResult: true,
       shipping: delivery.cost * 100,
@@ -69,7 +69,7 @@ const createTransaction = async (order, hostURL) => {
     const token = result.data.token;
     return `${p24URL}/trnRequest/${token}`;
   } catch (error) {
-    return error.message;
+    return new Error(error.message);
   }
 };
 
@@ -97,7 +97,7 @@ const verifyTransaction = async (order) => {
 
     const hashData = {
       sessionId: order._id,
-      orderId: order.p24._id,
+      orderId: order.p24Id,
       amount: cart.amount * 100,
       currency: "PLN",
       crc: crcKey,
@@ -111,14 +111,14 @@ const verifyTransaction = async (order) => {
       sessionId: order._id,
       amount: cart.amount * 100,
       currency: "PLN",
-      orderId: order.p24._id,
+      orderId: order.p24Id,
       sign: sign,
     };
 
     const { data: result } = await client.put("/transaction/verify", request);
     return result.data.status === "success";
   } catch (error) {
-    return error.message;
+    return new Error(error.message);
   }
 };
 
@@ -127,7 +127,7 @@ const getPaymentMethods = async (language) => {
     const { data: result } = await client.get(`/payment/methods/${language}`);
     return result.data;
   } catch (error) {
-    return error.message;
+    return new Error(error.message);
   }
 };
 
@@ -136,7 +136,7 @@ const test = async () => {
     const { data: result } = await client.get("testAccess");
     return result.data === true;
   } catch (error) {
-    return error.message;
+    return new Error(error.message);
   }
 };
 
@@ -147,7 +147,7 @@ const getTransactionData = async (p24Id) => {
     );
     return result.data;
   } catch (error) {
-    return error.message;
+    return new Error(error.message);
   }
 };
 

@@ -3,7 +3,6 @@ const mongoose = require("mongoose");
 const { customerSchema } = require("./customer");
 const { cartSchema } = require("./cart");
 const { schemas, joiSchemas } = require("../utils/schemas");
-const { deliverySchema } = require("./delivery");
 
 const orderSchema = new mongoose.Schema({
   customer: {
@@ -22,10 +21,8 @@ const orderSchema = new mongoose.Schema({
     maxlength: 256,
   },
 
-  p24: {
-    _id: {
-      type: Number,
-    },
+  p24Id: {
+    type: Number,
   },
 
   totalCost: {
@@ -34,7 +31,7 @@ const orderSchema = new mongoose.Schema({
   },
 
   delivery: {
-    _id: {
+    id: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
     },
@@ -46,8 +43,8 @@ const orderSchema = new mongoose.Schema({
       ...schemas.price,
       required: true,
     },
-    points: {
-      type: Boolean,
+    point: {
+      type: String,
     },
   },
 });
@@ -74,7 +71,8 @@ function validateOrder(order) {
         return statuses.includes(v)
           ? true
           : helper.message("Invalid order status.");
-      }),
+      })
+      .required(),
 
     delivery: Joi.object().required(),
   });

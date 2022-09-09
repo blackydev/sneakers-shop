@@ -6,7 +6,7 @@ const cartSchema = new mongoose.Schema({
   _id: { id: false },
   products: [
     {
-      _id: { type: mongoose.Schema.Types.ObjectId, required: true },
+      productId: { type: mongoose.Schema.Types.ObjectId, required: true },
       name: {
         type: String,
         required: true,
@@ -36,7 +36,7 @@ function validateCart(cart) {
   const schema = Joi.object().keys({
     products: Joi.array().items(
       Joi.object().keys({
-        _id: Joi.objectId().required(),
+        productId: Joi.objectId().required(),
         quantity: Joi.number().integer().min(1),
       })
     ),

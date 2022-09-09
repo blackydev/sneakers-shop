@@ -1,6 +1,6 @@
 const Joi = require("joi");
 const mongoose = require("mongoose");
-const { schemas, joiSchemas } = require("../utils/schemas");
+const { schemas, joiSchemas } = require("./utils/schemas");
 
 const deliverySchema = new mongoose.Schema({
   name: {
@@ -13,6 +13,10 @@ const deliverySchema = new mongoose.Schema({
   },
   points: {
     type: Boolean,
+  },
+  serviceId: {
+    type: Number,
+    required: true,
   },
 });
 
@@ -45,14 +49,7 @@ function validateDelivery(delivery) {
     name: Joi.number().required(),
     price: joiSchemas.price.required(),
     point: Joi.string(),
-  });
-
-  return schema.validate(delivery);
-}
-
-function validatePricePatch(delivery) {
-  const schema = Joi.object({
-    price: joiSchemas.price.required(),
+    serviceId: Joi.number().required(),
   });
 
   return schema.validate(delivery);
@@ -62,5 +59,4 @@ module.exports = {
   Delivery,
   deliverySchema,
   validate: validateDelivery,
-  validatePricePatch,
 };

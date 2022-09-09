@@ -1,9 +1,8 @@
 const express = require("express");
 const router = express.Router();
-const { Delivery, validatePricePatch } = require("../../models/order/delivery");
-const { getDeliverers, getPoints } = require("../../controllers/furgonetka");
-const validateObjectId = require("../../middleware/validateObjectId");
-const { auth, isAdmin } = require("../../middleware/authorization");
+const { Delivery, validatePatch } = require("../models/delivery");
+const validateObjectId = require("../middleware/validateObjectId");
+const { auth, isAdmin } = require("../middleware/authorization");
 
 router.get("/", async (req, res) => {
   const methods = await Delivery.find();
@@ -20,12 +19,15 @@ router.get("/:id", validateObjectId, async (req, res) => {
 });
 
 router.patch("/:id", [auth, isAdmin, validateObjectId], async (req, res) => {
-  const { error } = validatePricePatch(req.body);
+  const { error } = validatePatch(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
   const method = await Delivery.findByIdAndUpdate(
     req.params.id,
-    { price: req.body.price },
+    {
+      price: req.body.price,
+      serviceId: req.body.serviceId,
+    },
     {
       new: true,
     }
