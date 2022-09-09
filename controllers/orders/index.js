@@ -23,7 +23,6 @@ exports.createOrder = async (orderBody) => {
   const properties = getOrderProperties(customer, cart, delivery, status);
 
   const order = new Order(properties);
-  winston.info(JSON.stringify(order));
   return order;
 };
 

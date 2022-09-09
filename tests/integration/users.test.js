@@ -118,14 +118,15 @@ describe("users route", () => {
   });
 });
 
-const createUser = async (isAdmin) => {
+const getAuthToken = async (isAdmin) => {
   let user = new User({
     email: "correctEmail@gmail.com",
     password: "correctPassword123",
     isAdmin: isAdmin,
   });
   user = await user.save();
-  return user;
+  token = user.generateAuthToken();
+  return token;
 };
 
 const deleteUsers = async () => {
@@ -133,6 +134,6 @@ const deleteUsers = async () => {
 };
 
 module.exports = {
-  createUser,
+  getAuthToken,
   deleteUsers,
 };

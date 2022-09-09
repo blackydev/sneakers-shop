@@ -1,5 +1,3 @@
-const mongoose = require("mongoose");
-const _ = require("lodash");
 const { Delivery } = require("../models/delivery");
 
 exports.createDelivery = async (deliveryBody) => {

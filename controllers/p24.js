@@ -50,7 +50,7 @@ const createTransaction = async (order, hostURL) => {
       zip: customer.zip,
       city: customer.city,
       country: "PL",
-      method: order.p24.methodId,
+      //   method: order.p24.methodId,
       phone: customer.phone,
       language: "pl",
       urlReturn: `${hostURL}/api/orders/${order._id}/status`,

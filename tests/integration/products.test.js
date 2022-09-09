@@ -3,8 +3,7 @@ const request = require("supertest");
 const fs = require("fs");
 const path = require("path");
 const config = require("config");
-const { createUser, deleteUsers } = require("./users.test");
-const { exec } = require("child_process");
+const { getAuthToken, deleteUsers } = require("./users.test");
 
 const products = [
   {
@@ -186,9 +185,7 @@ describe("products route", () => {
         numberInStock: 255,
       };
 
-      let user = await createUser(true);
-      user = await user.save();
-      token = user.generateAuthToken();
+      token = await getAuthToken(true);
     });
 
     afterEach(async () => {
@@ -253,9 +250,7 @@ describe("products route", () => {
     it("return 403 if user is not admin", async () => {
       imagePath = webpImg.filePath;
       await deleteUsers();
-      let user = await createUser();
-      user = await user.save();
-      token = user.generateAuthToken();
+      token = await getAuthToken();
       const res = await exec();
       expect(res.status).toBe(403);
     });
