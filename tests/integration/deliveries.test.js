@@ -64,130 +64,130 @@ describe("deliveries route", () => {
       expect(res.body.length).toBe(4);
     });
   });
-});
 
-describe("GET /:id", () => {
-  let deliveryId;
+  describe("GET /:id", () => {
+    let deliveryId;
 
-  beforeEach(async () => {
-    const deliveries = await createDeliveries();
-    deliveryId = deliveries[0]._id;
+    beforeEach(async () => {
+      const deliveries = await createDeliveries();
+      deliveryId = deliveries[0]._id;
+    });
+
+    afterEach(async () => {
+      await deleteDeliveries();
+    });
+
+    const exec = () => {
+      return request(server).get(`/api/deliveries/${deliveryId}`);
+    };
+
+    it("return delivery if valid id is passed", async () => {
+      const res = await exec();
+      expect(res.status).toBe(200);
+      expect(res.body).toHaveProperty("name");
+      expect(res.body).toHaveProperty("price");
+      expect(res.body).toHaveProperty("serviceId");
+    });
+
+    it("return 404 if invalid id is passed", async () => {
+      deliveryId = mongoose.Types.ObjectId();
+      const res = await exec();
+      expect(res.status).toBe(404);
+    });
   });
 
-  afterEach(async () => {
-    await deleteDeliveries();
-  });
+  describe("PUT /:id", () => {
+    let deliveryId;
+    let token;
+    let name, price, points, serviceId;
 
-  const exec = () => {
-    return request(server).get(`/api/deliveries/${deliveryId}`);
-  };
+    beforeEach(async () => {
+      const deliveries = await createDeliveries();
+      const delivery = deliveries[2];
+      name = delivery.name;
+      price = delivery.price;
+      points = delivery.points;
+      serviceId = delivery.serviceId;
 
-  it("return delivery if valid id is passed", async () => {
-    const res = await exec();
-    expect(res.status).toBe(200);
-    expect(res.body).toHaveProperty("name");
-    expect(res.body).toHaveProperty("price");
-    expect(res.body).toHaveProperty("serviceId");
-  });
+      deliveryId = deliveries[3]._id;
 
-  it("return 404 if invalid id is passed", async () => {
-    deliveryId = mongoose.Types.ObjectId();
-    const res = await exec();
-    expect(res.status).toBe(404);
-  });
-});
+      token = await getAuthToken(true);
+    });
 
-describe("PUT /:id", () => {
-  let deliveryId;
-  let token;
-  let name, price, points, serviceId;
+    afterEach(async () => {
+      await deleteDeliveries();
+      await deleteUsers();
+    });
 
-  beforeEach(async () => {
-    const deliveries = await createDeliveries();
-    const delivery = deliveries[2];
-    name = delivery.name;
-    price = delivery.price;
-    points = delivery.points;
-    serviceId = delivery.serviceId;
+    const exec = () => {
+      return request(server)
+        .put(`/api/deliveries/${deliveryId}`)
+        .set("x-auth-token", token)
+        .send({ name, price, points, serviceId });
+    };
 
-    deliveryId = deliveries[3]._id;
+    it("return delivery if valid data is passed", async () => {
+      const res = await exec();
+      expect(res.body).toHaveProperty("name", name);
+      expect(res.body).toHaveProperty("price", price);
+      expect(res.body).toHaveProperty("points", points);
+      expect(res.body).toHaveProperty("serviceId", serviceId);
+      expect(res.status).toBe(200);
+    });
 
-    token = await getAuthToken(true);
-  });
+    it("return delivery with points=false if points is not in request", async () => {
+      points = null;
+      const res = await exec();
+      expect(res.body).toHaveProperty("name", name);
+      expect(res.body).toHaveProperty("price", price);
+      expect(res.body).toHaveProperty("points", false);
+      expect(res.body).toHaveProperty("serviceId", serviceId);
+      expect(res.status).toBe(200);
+    });
 
-  afterEach(async () => {
-    await deleteDeliveries();
-    await deleteUsers();
-  });
+    it("return 400 if name is not provided", async () => {
+      name = "";
+      const res = await exec();
+      expect(res.status).toBe(400);
+    });
 
-  const exec = () => {
-    return request(server)
-      .put(`/api/deliveries/${deliveryId}`)
-      .set("x-auth-token", token)
-      .send({ name, price, points, serviceId });
-  };
+    it("return 404 if passed ID is invalid", async () => {
+      deliveryId = mongoose.Types.ObjectId();
+      const res = await exec();
+      expect(res.status).toBe(404);
+    });
 
-  it("return delivery if valid data is passed", async () => {
-    const res = await exec();
-    expect(res.body).toHaveProperty("name", name);
-    expect(res.body).toHaveProperty("price", price);
-    expect(res.body).toHaveProperty("points", points);
-    expect(res.body).toHaveProperty("serviceId", serviceId);
-    expect(res.status).toBe(200);
-  });
+    it("return 403 if user is not admin", async () => {
+      await deleteUsers();
+      token = await getAuthToken(false);
+      const res = await exec();
+      expect(res.status).toBe(403);
+    });
 
-  it("return delivery with points=false if points is not in request", async () => {
-    points = null;
-    const res = await exec();
-    expect(res.body).toHaveProperty("name", name);
-    expect(res.body).toHaveProperty("price", price);
-    expect(res.body).toHaveProperty("points", false);
-    expect(res.body).toHaveProperty("serviceId", serviceId);
-    expect(res.status).toBe(200);
-  });
+    it("return 400 if invalid token is provided", async () => {
+      await deleteUsers();
+      token = "123";
+      const res = await exec();
+      expect(res.status).toBe(400);
+    });
 
-  it("return 400 if name is not provided", async () => {
-    name = "";
-    const res = await exec();
-    expect(res.status).toBe(400);
-  });
+    it("return 401 if no token is provided", async () => {
+      await deleteUsers();
+      token = "";
+      const res = await exec();
+      expect(res.status).toBe(401);
+    });
 
-  it("return 404 if passed ID is invalid", async () => {
-    deliveryId = mongoose.Types.ObjectId();
-    const res = await exec();
-    expect(res.status).toBe(404);
-  });
-
-  it("return 403 if user is not admin", async () => {
-    await deleteUsers();
-    token = await getAuthToken(false);
-    const res = await exec();
-    expect(res.status).toBe(403);
-  });
-
-  it("return 400 if invalid token is provided", async () => {
-    await deleteUsers();
-    token = "123";
-    const res = await exec();
-    expect(res.status).toBe(400);
-  });
-
-  it("return 401 if no token is provided", async () => {
-    await deleteUsers();
-    token = "";
-    const res = await exec();
-    expect(res.status).toBe(401);
-  });
-
-  it("return 400 if token is fake", async () => {
-    token = jwt.sign(
-      {
-        _id: mongoose.Types.ObjectId(),
-      },
-      config.get("jwtPrivateKey")
-    );
-    const res = await exec();
-    expect(res.status).toBe(400);
+    it("return 400 if token is fake", async () => {
+      token = jwt.sign(
+        {
+          _id: mongoose.Types.ObjectId(),
+        },
+        config.get("jwtPrivateKey")
+      );
+      const res = await exec();
+      expect(res.status).toBe(400);
+    });
   });
 });
 

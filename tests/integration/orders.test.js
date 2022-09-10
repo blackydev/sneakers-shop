@@ -489,3 +489,8 @@ const getOrderObject = (products, quantities, deliveries) => {
     },
   ];
 };
+
+module.exports = {
+  createOrders,
+  deleteOrders,
+};
