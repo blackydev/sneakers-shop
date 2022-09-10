@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "export NODE_ENV=test&&export PORT=3001&&jest --verbose --coverage --forceExit --watchAll --maxWorkers=1",
-    "test-win": "set NODE_ENV=test&set PORT=3001&jest --verbose --coverage --forceExit --watchAll --maxWorkers=1",
+    "test": "export NODE_ENV=test&&export PORT=4001&&jest --verbose --coverage --forceExit --watchAll --maxWorkers=1",
+    "test-win": "set NODE_ENV=test&set PORT=4001&jest --verbose --coverage --forceExit --watchAll --maxWorkers=1",
     "dev": "export NODE_ENV=dev&&nodemon index.js",
     "dev-win": "set NODE_ENV=dev&nodemon index.js",
     "start": "node index.js"

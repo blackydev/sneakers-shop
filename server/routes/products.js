@@ -42,7 +42,9 @@ router.get("/:id", validateObjectId, async (req, res) => {
 });
 
 router.post("/", [auth, isAdmin, upload.single("image")], async (req, res) => {
-  req.body.image = req.file ? req.file.destination + req.file.filename : "";
+  req.body.image = req.file
+    ? /*req.file.destination  */ "/images/products/" + req.file.filename
+    : "";
 
   const { error } = validate(req.body);
   if (error) {
@@ -56,12 +58,13 @@ router.post("/", [auth, isAdmin, upload.single("image")], async (req, res) => {
   res.send(product);
 });
 
+/*
 router.put(
   "/:id",
   [auth, isAdmin, validateObjectId, validateProductId, upload.single("image")],
   async (req, res) => {
     req.body.image = req.file
-      ? req.file.destination + req.file.filename
+      ? "/images/products/" + req.file.filename
       : "NO-UPDATE";
 
     const { error } = validate(req.body);
@@ -83,6 +86,7 @@ router.put(
     if (req.file) await deleteFile(oldProduct.image);
   }
 );
+*/
 
 const deleteImage = async (req) => {
   req.file ? await deleteFile(req.body.image) : null;

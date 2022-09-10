@@ -65,7 +65,7 @@ router.post("/:id/payment", validateObjectId, async (req, res) => {
   const result = await p24.createTransaction(order, hostUrl);
   if (_.isError(result)) return res.status(400).send(result);
 
-  res.redirect(result); //TODO: redirect
+  res.redirect(result);
 });
 
 router.get("/:id/status", validateObjectId, async (req, res) => {
