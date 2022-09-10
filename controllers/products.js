@@ -1,6 +1,6 @@
 const { Product } = require("../models/product");
 
-exports.increaseProductStock = async (id, quantity) => {
+const increaseProductStock = async (id, quantity) => {
   let product = await Product.findByIdAndUpdate(
     id,
     {
@@ -11,7 +11,7 @@ exports.increaseProductStock = async (id, quantity) => {
   return product;
 };
 
-exports.decreaseUnhiddenProductStock = async (id, quantity) => {
+const decreaseUnhiddenProductStock = async (id, quantity) => {
   let product = await Product.findOneAndUpdate(
     { _id: id, hidden: { $in: [false, null] } },
     {
@@ -20,4 +20,9 @@ exports.decreaseUnhiddenProductStock = async (id, quantity) => {
     { new: true }
   );
   return product;
+};
+
+module.exports = {
+  increaseProductStock,
+  decreaseUnhiddenProductStock,
 };

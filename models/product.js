@@ -10,8 +10,7 @@ const productSchema = new mongoose.Schema({
     maxlength: 512,
     trim: true,
   },
-  image:
-  {
+  image: {
     type: String,
     required: true,
     maxlength: 2560,
@@ -57,22 +56,6 @@ function validateProduct(product) {
   return schema.validate(product);
 }
 
-function validateProductUnrequired(product) {
-  const schema = Joi.object({
-    name: Joi.string().min(3).max(512),
-    image: Joi.string().max(2560),
-    description: Joi.string().min(32),
-    slogan: Joi.string().max(256),
-    price: priceJoiSchema,
-    numberInStock: Joi.number().min(0),
-    release: Joi.date(),
-    hidden: Joi.boolean(),
-  });
-
-  return schema.validate(product);
-}
-
 exports.Product = Product;
 exports.validate = validateProduct;
-exports.validateUnrequired = validateProductUnrequired;
 exports.productSchema = productSchema;

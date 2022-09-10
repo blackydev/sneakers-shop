@@ -1,8 +1,8 @@
 const multer = require("multer");
 const config = require("config");
-const path = require("path");
-const { generateFilename } = require("../functions/generateFilename");
+const generateFilename = require("../utils/generateFilename");
 const filesPath = config.get("public") + "images/products/";
+const winston = require("winston");
 
 const maxSize = 1024 * 1024 * 1.3;
 
@@ -11,10 +11,7 @@ const storage = multer.diskStorage({
     cb(null, filesPath);
   },
   filename: async function (req, file, cb) {
-    let filename = await generateFilename(
-      path.extname(file.originalname),
-      req.body.name
-    ); // TODO: change implementation
+    let filename = generateFilename(file.originalname);
 
     cb(null, filename);
   },

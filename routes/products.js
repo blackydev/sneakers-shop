@@ -5,15 +5,16 @@ const router = express.Router();
 const validateObjectId = require("../middleware/validateObjectId");
 const { auth, isAdmin } = require("../middleware/authorization");
 const { upload } = require("../middleware/productUpload");
-const { Product, validate, validateUnrequired } = require("../models/product");
-const { deleteFile } = require("../functions/deleteFile");
+const { Product, validate } = require("../models/product");
+const { validateProductId } = require("../middleware/validateObjectsId");
+const { deleteFile } = require("../utils/deleteFile");
 
 const hiddenQuery = { hidden: { $in: [false, null] } };
 
 router.get("/", async (req, res) => {
   try {
     const { showHidden, select, sortBy } = req.query;
-    const query = showHidden === "true" ? null : hiddenQuery;
+    if (showHidden !== "true") var query = hiddenQuery;
 
     const products = await Product.find(query)
       .select(select) // ["_id", "name", "image", "price"]
@@ -55,31 +56,30 @@ router.post("/", [auth, isAdmin, upload.single("image")], async (req, res) => {
   res.send(product);
 });
 
-router.patch(
+router.put(
   "/:id",
-  [auth, isAdmin, validateObjectId, upload.single("image")],
+  [auth, isAdmin, validateObjectId, validateProductId, upload.single("image")],
   async (req, res) => {
-    req.body.image = req.file ? req.file.destination + req.file.filename : "";
+    req.body.image = req.file
+      ? req.file.destination + req.file.filename
+      : "NO-UPDATE";
 
-    const { error } = validateUnrequired(req.body);
+    const { error } = validate(req.body);
     if (error) {
       deleteImage(req);
       return res.status(400).send(error.details[0].message);
     }
+
+    if (req.body.image === "NO-UPDATE") req.body.image = undefined;
 
     const oldProduct = await Product.findByIdAndUpdate(
       { _id: req.params.id },
       { $set: req.body }
     );
 
-    if (!oldProduct) {
-      res.status(404).send("The product with the given ID was not found.");
-      return deleteImage(req);
-    }
+    const product = await Product.findById({ _id: req.params.id });
 
-    const newProduct = await Product.findById({ _id: req.params.id });
-
-    res.status(200).send(newProduct);
+    res.status(200).send(product);
     if (req.file) await deleteFile(oldProduct.image);
   }
 );

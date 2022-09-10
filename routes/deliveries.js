@@ -1,8 +1,9 @@
 const express = require("express");
 const router = express.Router();
-const { Delivery, validatePatch } = require("../models/delivery");
+const { Delivery, validate } = require("../models/delivery");
 const validateObjectId = require("../middleware/validateObjectId");
 const { auth, isAdmin } = require("../middleware/authorization");
+const _ = require("lodash");
 
 router.get("/", async (req, res) => {
   const methods = await Delivery.find();
@@ -18,27 +19,28 @@ router.get("/:id", validateObjectId, async (req, res) => {
   res.send(method);
 });
 
-router.patch("/:id", [auth, isAdmin, validateObjectId], async (req, res) => {
-  const { error } = validatePatch(req.body);
+router.put("/:id", [auth, isAdmin, validateObjectId], async (req, res) => {
+  if (!req.body.points) req.body.points = false;
+
+  const { error } = validate(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
-  const method = await Delivery.findByIdAndUpdate(
+  const delivery = await Delivery.findByIdAndUpdate(
     req.params.id,
-    {
-      price: req.body.price,
-      serviceId: req.body.serviceId,
-    },
-    {
-      new: true,
-    }
+    getProperties(req.body),
+    { new: true }
   );
 
-  if (!method)
+  if (!delivery)
     return res
       .status(404)
       .send("The delivery method with the given name was not found.");
 
-  res.send(method);
+  res.send(delivery);
 });
+
+const getProperties = (body) => {
+  return _.pick(body, ["name", "price", "points", "serviceId"]);
+};
 
 module.exports = router;

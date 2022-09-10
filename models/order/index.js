@@ -4,6 +4,8 @@ const { customerSchema } = require("./customer");
 const { cartSchema } = require("./cart");
 const { schemas, joiSchemas } = require("../utils/schemas");
 
+const statuses = ["pending", "interrupted", "paid", "accepted", "shipped"];
+
 const orderSchema = new mongoose.Schema({
   customer: {
     type: customerSchema,
@@ -17,6 +19,7 @@ const orderSchema = new mongoose.Schema({
 
   status: {
     type: String,
+    enum: statuses,
     default: "pending",
     maxlength: 256,
   },
@@ -53,15 +56,6 @@ const Order = mongoose.model("orders", orderSchema);
 const paymentTimeLimit = 30; /* IN MINUTES */
 
 function validateOrder(order) {
-  const statuses = [
-    "pending",
-    "interrupted",
-    "paid",
-    "accepted",
-    "in delivery",
-    "finalised",
-  ];
-
   const schema = Joi.object({
     customer: Joi.object().required(),
     cart: Joi.object().required(),
@@ -84,4 +78,5 @@ module.exports = {
   Order,
   validate: validateOrder,
   paymentTimeLimit,
+  statuses,
 };

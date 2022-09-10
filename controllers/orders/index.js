@@ -4,9 +4,8 @@ const { createCustomer } = require("./customers");
 const { createDelivery } = require("../delivery");
 const { Order } = require("../../models/order");
 const _ = require("lodash");
-const winston = require("winston");
 
-exports.createOrder = async (orderBody) => {
+const createOrder = async (orderBody) => {
   const { error } = validate(orderBody);
   if (error) return error;
 
@@ -34,4 +33,8 @@ const getOrderProperties = (customer, cart, delivery, status) => {
     totalCost: cart.amount + delivery.cost,
     status: status,
   };
+};
+
+module.exports = {
+  createOrder,
 };

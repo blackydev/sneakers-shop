@@ -1,8 +1,10 @@
 const { Product } = require("../../models/product");
+const mongoose = require("mongoose");
+const jwt = require("jsonwebtoken");
+const config = require("config");
 const request = require("supertest");
 const fs = require("fs");
 const path = require("path");
-const config = require("config");
 const { getAuthToken, deleteUsers } = require("./users.test");
 
 const products = [
@@ -19,6 +21,7 @@ const products = [
     description:
       "It is a period of civil war. Rebel spaceships, striking from a hidden base, have won their first victory against the evil Galactic Empire.",
     price: 10,
+    slogan: "It's good movie",
     numberInStock: 5,
     release: new Date("1979-07-19").toISOString(),
   },
@@ -31,24 +34,19 @@ const products = [
   },
 ];
 
-pngImg = {
-  filePath: "./tests/files/star wars 1.png",
-};
+pngImg = "./tests/files/star wars 1.png";
 
-jpgImg = {
-  filePath: "./tests/files/star wars 4.jpg",
-};
+jpgImg = "./tests/files/star wars 4.jpg";
 
-webpImg = {
-  filePath: "./tests/files/star wars 6.webp",
-};
+webpImg = "./tests/files/star wars 6.webp";
 
-tooBigImg = {
-  filePath: "./tests/files/tooBigImg.jpg",
-};
+tooBigImg = "./tests/files/tooBigImg.jpg";
+
+mockImgUrl = "./path/xyz.jpg";
 
 describe("products route", () => {
   let server;
+  let token;
   beforeEach(() => {
     server = require("../../index");
   });
@@ -56,6 +54,7 @@ describe("products route", () => {
   afterEach(async () => {
     await server.close();
     await Product.deleteMany({});
+    await deleteUsers();
   });
 
   describe("GET /", () => {
@@ -64,49 +63,48 @@ describe("products route", () => {
       finalProducts = await Product.insertMany([
         {
           ...products[0],
-          image: pngImg.filePath,
+          image: pngImg,
         },
         {
           ...products[1],
-          image: jpgImg.filePath,
+          image: jpgImg,
         },
         {
           ...products[2],
-          image: webpImg.filePath,
+          image: webpImg,
         },
       ]);
+    });
+
+    afterEach(async () => {
+      await Product.deleteMany({});
     });
 
     it("should return all products", async () => {
       const res = await request(server).get("/api/products");
       expect(res.status).toBe(200);
-      expect(res.body).toMatchObject([
-        {
-          _id: finalProducts[0]._id,
-          name: finalProducts[0].name,
-          price: finalProducts[0].price,
-          image: pngImg.filePath,
-        },
-        {
-          _id: finalProducts[1]._id,
-          name: finalProducts[1].name,
-          price: finalProducts[1].price,
-          image: jpgImg.filePath,
-        },
-        {
-          _id: finalProducts[2]._id,
-          name: finalProducts[2].name,
-          price: finalProducts[2].price,
-          image: webpImg.filePath,
-        },
-      ]);
+      expect(res.body.length).toBe(3);
     });
 
-    it("should return 400 with error", async () => {
+    it("should return 400 with error if sort query is an array", async () => {
       const res = await request(server).get(
         "/api/products?sortBy=name&sortBy=_id&sortBy=name"
       );
       expect(res.status).toBe(400);
+    });
+
+    it("should return 200 with hidden products", async () => {
+      await Product.deleteMany({});
+      const hiddenProduct = new Product({
+        ...products[0],
+        hidden: true,
+        image: mockImgUrl,
+      });
+      await hiddenProduct.save();
+
+      const res = await request(server).get("/api/products?showHidden=true");
+      expect(res.status).toBe(200);
+      expect(res.body.length).toBe(1);
     });
   });
 
@@ -115,7 +113,7 @@ describe("products route", () => {
     const exec = async () => {
       let product = new Product({
         ...products[0],
-        image: pngImg.filePath,
+        image: pngImg,
         hidden: hidden,
       });
       await product.save();
@@ -129,7 +127,7 @@ describe("products route", () => {
         _id: product._id,
         name: product.name,
         price: product.price,
-        image: pngImg.filePath,
+        image: pngImg,
       });
       expect(res.status).toBe(200);
     });
@@ -164,7 +162,7 @@ describe("products route", () => {
         _id: product._id,
         name: product.name,
         price: product.price,
-        image: pngImg.filePath,
+        image: pngImg,
       });
       expect(res.status).toBe(200);
     });
@@ -173,7 +171,6 @@ describe("products route", () => {
   describe("POST /", () => {
     let imagePath;
     let product;
-    let token;
 
     beforeEach(async () => {
       product = {
@@ -189,7 +186,6 @@ describe("products route", () => {
     });
 
     afterEach(async () => {
-      await deleteUsers();
       // delete all files after test
       const dir = config.get("public") + "images/products/";
       await fs.readdir(dir, (err, files) => {
@@ -216,7 +212,7 @@ describe("products route", () => {
     };
 
     it("return product with png if is valid", async () => {
-      imagePath = pngImg.filePath;
+      imagePath = pngImg;
       const res = await exec();
       expect(res.status).toBe(200);
       const exists = await fs.existsSync(res.body.image);
@@ -224,7 +220,7 @@ describe("products route", () => {
     });
 
     it("return product with jpg if is valid", async () => {
-      imagePath = jpgImg.filePath;
+      imagePath = jpgImg;
       const res = await exec();
       expect(res.status).toBe(200);
       const exists = await fs.existsSync(res.body.image);
@@ -232,7 +228,7 @@ describe("products route", () => {
     });
 
     it("return product with webp if is valid", async () => {
-      imagePath = webpImg.filePath;
+      imagePath = webpImg;
       const res = await exec();
       expect(res.status).toBe(200);
       const exists = await fs.existsSync(res.body.image);
@@ -240,7 +236,7 @@ describe("products route", () => {
     });
 
     it("return 404 if image is too big", async () => {
-      imagePath = tooBigImg.filePath;
+      imagePath = tooBigImg;
       const res = await exec();
       expect(res.status).toBe(400);
       const exists = await fs.existsSync(res.body.image);
@@ -248,26 +244,129 @@ describe("products route", () => {
     });
 
     it("return 403 if user is not admin", async () => {
-      imagePath = webpImg.filePath;
+      imagePath = webpImg;
       await deleteUsers();
       token = await getAuthToken();
       const res = await exec();
       expect(res.status).toBe(403);
     });
   });
+
+  describe("PUT /:id", () => {
+    let product;
+    let token;
+    let imagePath;
+    let productId;
+    let reqProduct;
+
+    beforeEach(async () => {
+      const products = await createProducts();
+      product = products[0];
+      imagePath = webpImg;
+      productId = product._id;
+      reqProduct = products[1];
+
+      token = await getAuthToken(true);
+    });
+
+    afterEach(async () => {
+      await deleteUsers();
+      // delete all files after test
+      const dir = config.get("public") + "images/products/";
+      await fs.readdir(dir, (err, files) => {
+        if (err) throw err;
+
+        for (const file of files) {
+          fs.unlink(path.join(dir, file), (err) => {
+            if (err) throw err;
+          });
+        }
+      });
+    });
+
+    const exec = () => {
+      return request(server)
+        .put(`/api/products/${productId}`)
+        .set("x-auth-token", token)
+        .attach("image", imagePath)
+        .field("name", reqProduct.name)
+        .field("description", reqProduct.description)
+        .field("slogan", reqProduct.slogan)
+        .field("price", reqProduct.price)
+        .field("numberInStock", reqProduct.numberInStock);
+    };
+
+    it("return product if no image is send", async () => {
+      imagePath = null;
+      const res = await exec();
+      expect(res.body).toHaveProperty("image", mockImgUrl);
+      expect(res.body).toHaveProperty("name", products[1].name);
+      expect(res.body).toHaveProperty("description", products[1].description);
+      expect(res.body).toHaveProperty("slogan", products[1].slogan);
+      expect(res.body).toHaveProperty("price", products[1].price);
+      expect(res.body).toHaveProperty(
+        "numberInStock",
+        products[1].numberInStock
+      );
+
+      expect(res.status).toBe(200);
+    });
+
+    it("return product if image is send", async () => {
+      const res = await exec();
+
+      expect(res.status).toBe(200);
+      expect(res.body).toHaveProperty("image");
+      expect(res.body.image).not.toBe(mockImgUrl);
+      expect(res.body).toHaveProperty("name", products[1].name);
+      expect(res.body).toHaveProperty("description", products[1].description);
+      expect(res.body).toHaveProperty("slogan", products[1].slogan);
+      expect(res.body).toHaveProperty("price", products[1].price);
+      expect(res.body).toHaveProperty(
+        "numberInStock",
+        products[1].numberInStock
+      );
+      const exists = await fs.existsSync(res.body.image);
+      expect(exists).toBeTruthy();
+    });
+
+    it("return 400 if name is not provided", async () => {
+      reqProduct.name = "";
+      const res = await exec();
+
+      expect(res.status).toBe(400);
+    });
+
+    it("return 403 if user is not admin", async () => {
+      await deleteUsers();
+      token = await getAuthToken(false);
+      const res = await exec();
+
+      expect(res.status).toBe(403);
+    });
+
+    it("return 400 if token is fake", async () => {
+      token = jwt.sign(
+        {
+          _id: mongoose.Types.ObjectId(),
+        },
+        config.get("jwtPrivateKey")
+      );
+      const res = await exec();
+      expect(res.status).toBe(400);
+    });
+  });
 });
 
-const createProduct = async () => {
-  let product = new Product({
-    name: "Star Wars I",
-    description:
-      "Set 32 years before the original trilogy, during the era of the Galactic Republic, the plot follows Jedi Master Qui-Gon Jinn and his apprentice Obi-Wan Kenobi as they try to protect Queen Padmé Amidala of Naboo in hopes of securing a peaceful end to an interplanetary trade dispute.",
-    slogan: "It's awesome movie",
-    price: 15,
-    numberInStock: 255,
-  });
-  product = await product.save();
-  return product;
+const createProducts = async () => {
+  const result = [];
+  for (const el of products) {
+    const product = new Product({ ...el, image: mockImgUrl });
+    await product.save();
+    result.push(product);
+  }
+
+  return result;
 };
 
 const deleteProducts = async () => {
@@ -275,6 +374,6 @@ const deleteProducts = async () => {
 };
 
 module.exports = {
-  createProduct,
+  createProducts,
   deleteProducts,
 };

@@ -13,6 +13,7 @@ const deliverySchema = new mongoose.Schema({
   },
   points: {
     type: Boolean,
+    required: true,
   },
   serviceId: {
     type: Number,
@@ -46,9 +47,9 @@ const Delivery = mongoose.model("deliveries", deliverySchema);
 
 function validateDelivery(delivery) {
   const schema = Joi.object({
-    name: Joi.number().required(),
+    name: Joi.string().required(),
     price: joiSchemas.price.required(),
-    point: Joi.string(),
+    points: Joi.boolean().required(),
     serviceId: Joi.number().required(),
   });
 

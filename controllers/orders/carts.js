@@ -8,6 +8,7 @@ exports.createCart = async (cartBody) => {
   const { error } = validate(cartBody);
   if (error) return error;
 
+  const currentDate = new Date();
   const products = [];
   let amount = 0;
   for (const element of cartBody.products) {
@@ -18,7 +19,7 @@ exports.createCart = async (cartBody) => {
       element.quantity
     ); // TODO: implement better update
 
-    if (!finalElem)
+    if (!finalElem || (element.release && element.release > currentDate))
       for (const previousElement of cartBody.products) {
         if (element.productId === previousElement.productId)
           return new Error("The product with the given ID was not found.");
