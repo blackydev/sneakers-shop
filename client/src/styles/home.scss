@@ -1,0 +1,16 @@
+header {
+    height: 100vh;
+    overflow: hidden;
+    position: relative;
+
+    picture {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+
+        img {
+            min-height: 100vh;
+            min-width: 100vw;
+        }
+    }
+}

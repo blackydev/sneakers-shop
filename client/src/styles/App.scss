@@ -1,0 +1,13 @@
+html {
+  scroll-behavior: smooth;
+    scroll-padding: 90px;
+}
+
+body{
+  margin: 0;
+}
+
+nav {
+  z-index: 10;
+  position: fixed;
+}
