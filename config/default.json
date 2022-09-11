@@ -18,6 +18,11 @@
       "phone": ""
     }
   },
+
+  "cors": {
+      "origin": "http://localhost:3000",
+  "credentials": true
+  },
   
   "p24": {
     "merchantId": 187534,

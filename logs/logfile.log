@@ -25,3 +25,24 @@
 {"level":"info","message":"Node environment: dev","timestamp":"2022-09-10T18:13:43.838Z"}
 {"level":"info","message":"Listening on port 3000...","timestamp":"2022-09-10T18:13:43.838Z"}
 {"level":"info","message":"Connected to mongodb://localhost/damianlikus_dev...","timestamp":"2022-09-10T18:13:43.852Z"}
+{"level":"info","message":"Node environment: dev","timestamp":"2022-09-11T20:39:09.676Z"}
+{"level":"info","message":"Listening on port 4000...","timestamp":"2022-09-11T20:39:09.677Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_dev...","timestamp":"2022-09-11T20:39:09.688Z"}
+{"level":"info","message":"Node environment: dev","timestamp":"2022-09-11T21:33:24.478Z"}
+{"level":"info","message":"Listening on port 4000...","timestamp":"2022-09-11T21:33:24.478Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_dev...","timestamp":"2022-09-11T21:33:24.490Z"}
+{"level":"info","message":"Node environment: dev","timestamp":"2022-09-11T21:33:28.723Z"}
+{"level":"info","message":"Listening on port 3000...","timestamp":"2022-09-11T21:33:28.724Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_dev...","timestamp":"2022-09-11T21:33:28.741Z"}
+{"level":"info","message":"Node environment: dev","timestamp":"2022-09-11T21:33:42.636Z"}
+{"level":"info","message":"Listening on port 3000...","timestamp":"2022-09-11T21:33:42.637Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_dev...","timestamp":"2022-09-11T21:33:42.651Z"}
+{"level":"info","message":"Node environment: dev","timestamp":"2022-09-11T21:36:13.799Z"}
+{"level":"info","message":"Listening on port 4000...","timestamp":"2022-09-11T21:36:13.799Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_dev...","timestamp":"2022-09-11T21:36:13.817Z"}
+{"level":"info","message":"Node environment: dev","timestamp":"2022-09-11T21:37:41.426Z"}
+{"level":"info","message":"Listening on port 4000...","timestamp":"2022-09-11T21:37:41.427Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_dev...","timestamp":"2022-09-11T21:37:41.441Z"}
+{"level":"info","message":"Node environment: dev","timestamp":"2022-09-11T21:38:35.558Z"}
+{"level":"info","message":"Listening on port 4000...","timestamp":"2022-09-11T21:38:35.559Z"}
+{"level":"info","message":"Connected to mongodb://localhost/damianlikus_dev...","timestamp":"2022-09-11T21:38:35.570Z"}
