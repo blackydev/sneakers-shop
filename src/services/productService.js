@@ -8,3 +8,7 @@ const apiEndpoint = apiUrl + "/products";
 export function getProducts() {
   return http.get(apiEndpoint);
 }
+
+export function getProductImg(name) {
+  return http.get(apiUrl + "/public/images/products/" + name);
+}

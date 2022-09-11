@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { getProducts } from "../services/productService";
+import ProductCard from "./productCard";
 
 class Products extends Component {
   state = {
@@ -18,7 +19,7 @@ class Products extends Component {
         <main>
           <section>
             {products.map((product) => {
-              return <div key={`${product._id}`}> {product.name} </div>;
+              return <ProductCard products={products} />;
             })}
           </section>
         </main>
