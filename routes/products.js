@@ -13,12 +13,14 @@ const hiddenQuery = { hidden: { $in: [false, null] } };
 
 router.get("/", async (req, res) => {
   try {
-    const { showHidden, select, sortBy } = req.query;
+    const { showHidden, select, sortBy, pageLength, pageNumber } = req.query;
     if (showHidden !== "true") var query = hiddenQuery;
 
     const products = await Product.find(query)
       .select(select) // ["_id", "name", "image", "price"]
-      .sort(sortBy);
+      .sort(sortBy)
+      .limit(pageLength)
+      .skip(pageLength * pageNumber);
 
     res.send(products);
   } catch (ex) {
@@ -32,19 +34,14 @@ router.get("/:id", validateObjectId, async (req, res) => {
 
   const product = await Product.findById(req.params.id, select);
 
-  if (!showHidden)
-    if (product.hidden)
-      return res
-        .status(404)
-        .send("The product with the given ID was not found.");
+  if (!product || (!showHidden && product.hidden))
+    return res.status(404).send("The product with the given ID was not found.");
 
   res.send(product);
 });
 
 router.post("/", [auth, isAdmin, upload.single("image")], async (req, res) => {
-  req.body.image = req.file
-    ? /*req.file.destination  */ "/images/products/" + req.file.filename
-    : "";
+  req.body.image = req.file ? req.file.filename : "";
 
   const { error } = validate(req.body);
   if (error) {
@@ -58,14 +55,11 @@ router.post("/", [auth, isAdmin, upload.single("image")], async (req, res) => {
   res.send(product);
 });
 
-/*
 router.put(
   "/:id",
   [auth, isAdmin, validateObjectId, validateProductId, upload.single("image")],
   async (req, res) => {
-    req.body.image = req.file
-      ? "/images/products/" + req.file.filename
-      : "NO-UPDATE";
+    req.body.image = req.file ? req.file.filename : "NO-UPDATE";
 
     const { error } = validate(req.body);
     if (error) {
@@ -86,7 +80,6 @@ router.put(
     if (req.file) await deleteFile(oldProduct.image);
   }
 );
-*/
 
 const deleteImage = async (req) => {
   req.file ? await deleteFile(req.body.image) : null;
