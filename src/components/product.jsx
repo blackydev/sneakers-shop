@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import ProductCart from "./productCart";
 import { getProduct, getProductUrl } from "../services/productService";
 import { withRouter } from "../utils/withRouter";
 
@@ -28,18 +29,26 @@ class Product extends Component {
 
     return (
       <React.Fragment>
-        <main className="p-5 container">
-          <section className="row">
-            <div className="col-md-12 col-lg-4 my-2">
-              <img
-                src={getProductUrl(product.image)}
-                className="card-img-top"
-                alt={`${product.name}`}
-              />
+        <main className="px-5">
+          <section className="container">
+            <div className="row">
+              <div className="col-sm-12 col-lg-7">
+                <img
+                  src={getProductUrl(product.image)}
+                  className="img-fluid"
+                  alt={`${product.name}`}
+                />
+              </div>
+              <div className="col-sm-12 col-lg-5 d-flex justify-content-center flex-column">
+                <ProductCart />
+              </div>
             </div>
-            <h5 className="card-title d-flex justify-content-between">
-              {product.name}
-            </h5>
+          </section>
+          <section className="description my-5">
+            <div className="container position-relative">
+              <h2 className="mb-2 fs-3">{product.name}</h2>
+              <div className="col-12 px-1 py-1">{product.description}</div>
+            </div>
           </section>
         </main>
       </React.Fragment>

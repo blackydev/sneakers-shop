@@ -14,13 +14,6 @@
   font-size: 0.95rem;
 }
 
-.home .card-product {
-  box-shadow: 0 0 30px rgb(107, 107, 107);
-}
-.home .card-product:hover {
-  box-shadow: 0 0 80px rgb(133, 133, 133);
-}
-
 .card-product > * {
   color: black;
   text-decoration: none;

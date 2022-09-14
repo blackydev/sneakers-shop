@@ -30,6 +30,12 @@ main.home section.about picture img {
 main.home section.about .about-text {
   transform: translate(-12%, 77%);
 }
+main.home .card-product {
+  box-shadow: 0 0 30px rgb(107, 107, 107);
+}
+main.home .card-product:hover {
+  box-shadow: 0 0 80px rgb(133, 133, 133);
+}
 
 @media only screen and (max-width: 992px) {
   main.home section.about {
