@@ -1,0 +1,40 @@
+.list-products {
+    list-style: none;
+}
+
+.card-product {
+    transition: .2s;
+    border: none;
+    background-color: rgba(255, 255, 255, 1);
+
+    a:hover {
+        color: rgb(0, 0, 0);
+    }
+
+    .card-text {
+            font-size: 0.95rem;
+    }
+
+}
+
+.home {
+    .card-product {
+        box-shadow: 0 0 30px rgb(107, 107, 107);
+    }
+    .card-product:hover {
+        box-shadow: 0 0 80px rgb(133, 133, 133);
+    }
+}
+
+.card-product>*{ 
+    color: black;
+    text-decoration: none;
+}
+
+.card-product:hover { 
+transform: scale(1.005);
+}
+
+.mainProduct {
+    min-height: 65vh;
+}

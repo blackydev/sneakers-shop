@@ -1,16 +1,82 @@
-header {
-    height: 100vh;
+header.home {
+    height: 90vh;
     overflow: hidden;
     position: relative;
 
     picture {
-        position: absolute;
+        position: fixed;
+        overflow: hidden;
         left: 50%;
-        transform: translateX(-50%);
+        transform: translateX(-50%) translateY(-2%);
+        z-index: -1;
 
         img {
             min-height: 100vh;
             min-width: 100vw;
         }
     }
+
+}
+
+main.home {
+    section.about {
+        margin-bottom: 200px;
+        .bg-primary {
+            box-shadow: 0 0 22px rgb(0, 0, 161);
+        }
+
+        picture {
+            transform: translate(12%, -5%);
+            img {
+            box-shadow: 0 0 10px rgb(0, 0, 0);
+            }
+        }
+            
+        .about-text {
+            transform: translate(-12%, 77%);
+        }
+    }
+
+}
+
+@media only screen and (max-width: 992px) {
+    main.home {
+    section.about {
+            margin-bottom: 0px;
+                picture {
+                        transform: translate(0%, 10%);
+                    }
+                
+                    .about-text {
+                        transform: translate(0%, -10%);
+                        padding: 0 30px;
+                    }
+        }
+
+
+}
+}
+
+@media only screen and (max-width: 575px) {
+main.home {
+    section.about {
+
+        picture {
+                transform: translate(0%, 13%);
+                z-index: 1;
+            }
+
+        .about-text {
+            transform: translate(0%, -22%);
+            padding: 0;
+
+            h4 {
+                padding-top: 100px;
+            }
+
+        }
+    }
+
+
+}
 }

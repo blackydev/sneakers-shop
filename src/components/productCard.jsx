@@ -1,21 +1,30 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
+import { getProductUrl } from "../services/productService";
 
 class ProductCard extends Component {
   render() {
     const { product } = this.props;
 
     return (
-      <div key={`${product._id}`} className="card" style="width: 18rem;">
-        <img src="head.jpg" className="card-img-top" alt={`${product.name}`} />
-        <div className="card-body">
-          <h5 className="card-title"></h5>
-          <p className="card-text">{product.slogan}</p>
-          <Link to={`sklep/${product._id}`} className="btn btn-primary">
-            Go somewhere
+      <React.Fragment>
+        <div key={`${product._id}`} className="card card-product">
+          <Link to={`sklep/${product._id}`}>
+            <img
+              src={getProductUrl(product.image)}
+              className="card-img-top"
+              alt={`${product.name}`}
+            />
+
+            <div className="card-body">
+              <h4 className="card-title fw-bold text-truncate mb-1">
+                {product.name}
+              </h4>
+              <div className="card-text">{product.price} zł</div>
+            </div>
           </Link>
         </div>
-      </div>
+      </React.Fragment>
     );
   }
 }
