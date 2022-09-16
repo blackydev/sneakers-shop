@@ -42,7 +42,11 @@ webpImg = "./tests/files/star wars 6.webp";
 
 tooBigImg = "./tests/files/tooBigImg.jpg";
 
-mockImgUrl = "./path/xyz.jpg";
+mockImg = "xyz.jpg";
+
+imgReturnedPrefix = "/public/images/products/";
+
+imgLocationPrefix = config.get("public") + "images/products/";
 
 describe("products route", () => {
   let server;
@@ -98,7 +102,7 @@ describe("products route", () => {
       const hiddenProduct = new Product({
         ...products[0],
         hidden: true,
-        image: mockImgUrl,
+        image: mockImg,
       });
       await hiddenProduct.save();
 
@@ -106,6 +110,7 @@ describe("products route", () => {
       expect(res.status).toBe(200);
       expect(res.body.length).toBe(1);
     });
+    const _ = require("lodash");
   });
 
   describe("GET /:id", () => {
@@ -113,7 +118,7 @@ describe("products route", () => {
     const exec = async () => {
       let product = new Product({
         ...products[0],
-        image: pngImg,
+        image: "star-wars-1.png",
         hidden: hidden,
       });
       await product.save();
@@ -127,7 +132,7 @@ describe("products route", () => {
         _id: product._id,
         name: product.name,
         price: product.price,
-        image: pngImg,
+        image: imgReturnedPrefix + "star-wars-1.png",
       });
       expect(res.status).toBe(200);
     });
@@ -162,7 +167,7 @@ describe("products route", () => {
         _id: product._id,
         name: product.name,
         price: product.price,
-        image: pngImg,
+        image: imgReturnedPrefix + "star-wars-1.png",
       });
       expect(res.status).toBe(200);
     });
@@ -211,19 +216,25 @@ describe("products route", () => {
         .field("numberInStock", product.numberInStock);
     };
 
+    const expectImg = (path) => {
+      return request(server).get("/api" + path);
+    };
+
     it("return product with png if is valid", async () => {
       imagePath = pngImg;
-      const res = await exec();
+      let res = await exec();
       expect(res.status).toBe(200);
-      const exists = await fs.existsSync(res.body.image);
-      expect(exists).toBeTruthy();
+      res = await expectImg(res.body.image);
+      expect(res.status).toBe(200);
     });
 
     it("return product with jpg if is valid", async () => {
       imagePath = jpgImg;
       const res = await exec();
       expect(res.status).toBe(200);
-      const exists = await fs.existsSync(res.body.image);
+      const exists = await fs.existsSync(
+        imgLocationPrefix + path.basename(res.body.image)
+      );
       expect(exists).toBeTruthy();
     });
 
@@ -231,7 +242,9 @@ describe("products route", () => {
       imagePath = webpImg;
       const res = await exec();
       expect(res.status).toBe(200);
-      const exists = await fs.existsSync(res.body.image);
+      const exists = await fs.existsSync(
+        imgLocationPrefix + path.basename(res.body.image)
+      );
       expect(exists).toBeTruthy();
     });
 
@@ -239,8 +252,6 @@ describe("products route", () => {
       imagePath = tooBigImg;
       const res = await exec();
       expect(res.status).toBe(400);
-      const exists = await fs.existsSync(res.body.image);
-      expect(exists).toBeFalsy();
     });
 
     it("return 403 if user is not admin", async () => {
@@ -277,6 +288,7 @@ describe("products route", () => {
         if (err) throw err;
 
         for (const file of files) {
+          console.log(file);
           fs.unlink(path.join(dir, file), (err) => {
             if (err) throw err;
           });
@@ -299,7 +311,7 @@ describe("products route", () => {
     it("return product if no image is send", async () => {
       imagePath = null;
       const res = await exec();
-      expect(res.body).toHaveProperty("image", mockImgUrl);
+      expect(res.body).toHaveProperty("image", imgReturnedPrefix + mockImg);
       expect(res.body).toHaveProperty("name", products[1].name);
       expect(res.body).toHaveProperty("description", products[1].description);
       expect(res.body).toHaveProperty("slogan", products[1].slogan);
@@ -317,7 +329,7 @@ describe("products route", () => {
 
       expect(res.status).toBe(200);
       expect(res.body).toHaveProperty("image");
-      expect(res.body.image).not.toBe(mockImgUrl);
+      expect(res.body.image).not.toBe(mockImg);
       expect(res.body).toHaveProperty("name", products[1].name);
       expect(res.body).toHaveProperty("description", products[1].description);
       expect(res.body).toHaveProperty("slogan", products[1].slogan);
@@ -326,7 +338,9 @@ describe("products route", () => {
         "numberInStock",
         products[1].numberInStock
       );
-      const exists = await fs.existsSync(res.body.image);
+      const exists = await fs.existsSync(
+        imgLocationPrefix + path.basename(res.body.image)
+      );
       expect(exists).toBeTruthy();
     });
 
@@ -361,7 +375,7 @@ describe("products route", () => {
 const createProducts = async () => {
   const result = [];
   for (const el of products) {
-    const product = new Product({ ...el, image: mockImgUrl });
+    const product = new Product({ ...el, image: mockImg });
     await product.save();
     result.push(product);
   }
