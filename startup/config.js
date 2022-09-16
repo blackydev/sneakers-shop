@@ -10,8 +10,10 @@ module.exports = async function async() {
   if (!config.has("p24.crc"))
     throw new Error("FATAL ERROR: crc  is not defined.");
 
-  if ((await p24.test()) !== true)
-    throw new Error(
-      "FATAL ERROR: Unsuccessful test connection with przelewy24."
-    );
+  // TODO: UPDATE ONCIFG REQUIREMENTS
+  if (process.env.NODE_ENV === "production")
+    if ((await p24.test()) !== true)
+      throw new Error(
+        "FATAL ERROR: Unsuccessful test connection with przelewy24."
+      );
 };
