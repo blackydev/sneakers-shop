@@ -1,43 +1,61 @@
-import React, { Component } from "react";
-import { Route, Routes } from "react-router-dom";
-import NavBar from "./components/navBar";
-import Footer from "./components/footer";
-import Home from "./components/home";
-// import Products from "./components/products";
-import Product from "./components/product";
-import ProductNotFound from "./components/productNotFound";
-import PrivacyPolicy from "./components/privacyPolicy";
-import ShopStatute from "./components/shopStatute";
-import ScrollToTop from "./components/scrollToTop";
-import { toast, ToastContainer } from "react-toastify";
-import "./styles/App.css";
-import "./styles/shop.css";
-import "./styles/home.css";
+import React from "react";
+import { createBrowserRouter } from "react-router-dom";
+import Root from "./routes/root";
+import Home, { loader as homeLoader } from "./routes/home";
+import Login from "./routes/login";
+import Register from "./routes/register";
+import Product, { loader as productLoader } from "./routes/product";
+import Order, { loader as orderLoader } from "./routes/order";
+import MyOrderList, { loader as myOrderListLoader } from "./routes/myOrderList";
+import MyOrder from "./routes/myOrder";
+import NotFound from "./routes/notFound";
+import BeforeOrder from "./routes/beforeOrder";
 
-class App extends Component {
-  state = {};
-  render() {
-    return (
-      <React.Fragment>
-        <ScrollToTop>
-          <ToastContainer />
-          <NavBar />
-          <Routes>
-            <Route path="/" element={<Home />} />
-            {/* <Route path="/sklep" element={<Products />} /> */}
-            <Route path="/polityka-prywatnosci" element={<PrivacyPolicy />} />
-            <Route path="/regulamin-sklepu" element={<ShopStatute />} />
-            <Route path="/sklep/:id" element={<Product />} />
-            <Route
-              path="/produkt-nieodnaleziony"
-              element={<ProductNotFound />}
-            />
-          </Routes>
-          <Footer />
-        </ScrollToTop>
-      </React.Fragment>
-    );
-  }
-}
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <Root />,
+    errorElement: <NotFound />,
+    children: [
+      {
+        path: "",
+        element: <Home />,
+        loader: homeLoader,
+      },
+      {
+        path: "/shop/:id/",
+        element: <Product />,
+        loader: productLoader,
+      },
+      {
+        path: "/order/",
+        element: <Order />,
+        loader: orderLoader,
+      },
+      {
+        path: "/my-orders/",
+        element: <MyOrderList />,
+        loader: myOrderListLoader,
+      },
+      {
+        path: "/before-order/",
+        element: <BeforeOrder />,
+      },
+      {
+        path: "/my-orders/:id",
+        element: <MyOrder />,
+        loader: myOrderListLoader,
+      },
+      {
+        path: "/login",
+        element: <Login />,
+      },
+      {
+        path: "/register",
+        element: <Register />,
+      },
+    ],
+  },
+]);
 
-export default App;
+export default router;

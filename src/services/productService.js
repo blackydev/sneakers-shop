@@ -1,22 +1,37 @@
 import http from "./httpService";
-import configInfo from "../config.json";
 
-const apiUrl = configInfo.apiUrl;
-const apiEndpoint = apiUrl + "/products";
+const apiEndpoint = "/products";
 
-export function getProducts() {
-  return http.get(apiEndpoint);
+function getProducts(options) {
+  return http.get(apiEndpoint, options);
 }
 
-export function getNewestProduct() {
-  return http.get(`${apiEndpoint}?pageLength=1`);
+async function getNewestProduct() {
+  const res = await http.get(`${apiEndpoint}?pageLength=1&sortBy=-_id`, {
+    params: {
+      pageLength: "1",
+      sortBy: "-_id",
+    },
+  });
+  return {
+    ...res,
+    data: res.data[0],
+  };
 }
 
-export function getProduct(id) {
+function getProduct(id) {
   return http.get(`${apiEndpoint}/${id}`);
 }
 
-export function getProductUrl(fileName) {
-  if (!fileName) return "";
-  return apiUrl + "/public/images/products/" + fileName;
+function isPreorder(product) {
+  return product.release && Date.parse(product.release) > new Date();
 }
+
+const productService = {
+  getProducts,
+  getNewestProduct,
+  getProduct,
+  isPreorder,
+};
+
+export default productService;

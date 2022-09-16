@@ -1,6 +1,7 @@
 import axios from "axios";
-import logger from "./logService";
 import { toast } from "react-toastify";
+
+axios.defaults.baseURL = process.env.SNEAKERS_API_URL + "/api";
 
 axios.interceptors.response.use(null, (error) => {
   const expectedError =
@@ -8,22 +9,19 @@ axios.interceptors.response.use(null, (error) => {
     error.response.status >= 400 &&
     error.response.status < 500;
 
-  if (!expectedError) {
-    logger.log(error);
-    toast.error("Wystąpił nieoczekiwany błąd.");
-  }
+  if (!expectedError) toast.error("An unexpected error occurred");
 
   return Promise.reject(error);
 });
 
-function setJwt(jwt) {
-  axios.defaults.headers.common["x-auth-token"] = jwt;
-}
+const setJwt = (jwt) => (axios.defaults.headers.common["x-auth-token"] = jwt);
 
-export default {
+const httpService = {
   get: axios.get,
   post: axios.post,
   put: axios.put,
   delete: axios.delete,
   setJwt,
 };
+
+export default httpService;

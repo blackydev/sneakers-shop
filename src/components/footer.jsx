@@ -1,51 +1,16 @@
-import React, { Component } from "react";
-import { Link, NavLink } from "react-router-dom";
-
-class Footer extends Component {
-  state = {};
-
-  render() {
-    return (
-      <footer className="bg-dark text-light p-5">
-        <div className="container p-2 justify-content-center text-center">
-          <div className="d-flex flex-wrap justify-content-center">
-            <div className="justify-content-center my-3 mx-5 px-5">
-              <h3 className="fs-5">DAMIAN LIKUS</h3>
-              <div>
-                <Link
-                  className="fw-lighter text-nowrap"
-                  to="/polityka-prywatnosci"
-                >
-                  Polityka Prywatności
-                </Link>
-              </div>
-              <div>
-                <Link className="fw-lighter text-nowrap" to="/regulamin-sklepu">
-                  Regulamin Sklepu
-                </Link>
-              </div>
-            </div>
-            <div className="justify-content-center my-3 mx-5 px-5">
-              <h3 className="fs-5">KONTAKT</h3>
-              <div>
-                <a className="fw-lighter text-nowrap" href="tel:+48883133829">
-                  +48 883 133 829
-                </a>
-              </div>
-              <div>
-                <a
-                  className="fw-lighter text-nowrap"
-                  href="mailto:hello@damianlikus.com"
-                >
-                  hello@damianlikus.com
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </footer>
-    );
-  }
+export default function Footer() {
+  return (
+    <footer className="bg-dark text-light w-100 shadow mt-5">
+      <div className="container py-3">
+        This website is not a real store and does not constitute an offer under
+        the Civil Code. The site was made for educational purposes. If you are
+        looking for a programmer who will make a fully customized website for
+        you, I invite you to{" "}
+        <a href="https://github.com/blackydev" className="text-light">
+          contact me
+        </a>
+        .
+      </div>
+    </footer>
+  );
 }
-
-export default Footer;

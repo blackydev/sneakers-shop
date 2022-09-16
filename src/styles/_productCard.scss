@@ -1,0 +1,24 @@
+.productImg {
+  overflow: hidden;
+
+  div {
+    img.product {
+      transform: rotate(-20deg) translate(-3%, -1%) scale(0.8);
+      filter: drop-shadow(0px 25px 10px rgba(0, 0, 0, 0.3));
+      width: 100%;
+    }
+  }
+}
+
+.productCard {
+  .btn-delete {
+    opacity: 0;
+    transition: 0.2s;
+  }
+}
+
+.productCard:hover {
+  .btn-delete {
+    opacity: 100%;
+  }
+}
