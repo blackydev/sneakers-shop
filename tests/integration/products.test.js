@@ -197,9 +197,10 @@ describe("products route", () => {
         if (err) throw err;
 
         for (const file of files) {
-          fs.unlink(path.join(dir, file), (err) => {
-            if (err) throw err;
-          });
+          if (file !== ".gitkeep")
+            fs.unlink(path.join(dir, file), (err) => {
+              if (err) throw err;
+            });
         }
       });
     });
@@ -288,10 +289,10 @@ describe("products route", () => {
         if (err) throw err;
 
         for (const file of files) {
-          console.log(file);
-          fs.unlink(path.join(dir, file), (err) => {
-            if (err) throw err;
-          });
+          if (file !== ".gitkeep")
+            fs.unlink(path.join(dir, file), (err) => {
+              if (err) throw err;
+            });
         }
       });
     });
