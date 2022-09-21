@@ -10,25 +10,25 @@ const deliveries = [
     name: "personal pickup",
     price: 0,
     points: false,
-    serviceId: 0, // poczta polska
+    serviceId: 0,
   },
   {
     name: "carrier",
     price: 20,
     points: false,
-    serviceId: 9603405, // poczta polska
+    serviceId: 9603405,
   },
   {
     name: "inpost",
     price: 10.9,
     points: true,
-    serviceId: 9603406, // poczta polska
+    serviceId: 9603406,
   },
   {
     name: "orlen",
     price: 9.9,
     points: true,
-    serviceId: 9603408, // poczta polska
+    serviceId: 9603408,
   },
 ];
 
