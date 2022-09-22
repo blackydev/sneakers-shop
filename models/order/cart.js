@@ -3,16 +3,13 @@ const mongoose = require("mongoose");
 const { schemas } = require("../utils/schemas");
 
 const cartSchema = new mongoose.Schema({
-  _id: { id: false },
-  products: [
+  list: [
     {
       _id: { id: false },
-      productId: { type: mongoose.Schema.Types.ObjectId, required: true },
-      name: {
-        type: String,
+      product: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "products",
         required: true,
-        maxlength: 10000,
-        trim: true,
       },
       cost: { ...schemas.price, required: true },
       quantity: {
@@ -26,19 +23,17 @@ const cartSchema = new mongoose.Schema({
       },
     },
   ],
-
-  amount: {
-    ...schemas.price,
-    required: true,
-  },
+  totalCost: { ...schemas.price },
 });
+
+const Cart = mongoose.model("carts", cartSchema);
 
 function validateCart(cart) {
   const schema = Joi.object().keys({
-    products: Joi.array().items(
+    list: Joi.array().items(
       Joi.object().keys({
         productId: Joi.objectId().required(),
-        quantity: Joi.number().integer().min(1),
+        quantity: Joi.number().integer().min(1).required(),
       })
     ),
   });
@@ -46,5 +41,18 @@ function validateCart(cart) {
   return schema.validate(cart);
 }
 
+function validateProductsList(list) {
+  const schema = Joi.array().items(
+    Joi.object().keys({
+      productId: Joi.objectId().required(),
+      quantity: Joi.number().integer().min(1).required(),
+    })
+  );
+
+  return schema.validate(list);
+}
+
 exports.validate = validateCart;
+exports.validateProducts = validateProductsList;
 exports.cartSchema = cartSchema;
+exports.Cart = Cart;

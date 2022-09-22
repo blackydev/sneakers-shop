@@ -1,48 +1,46 @@
 const {
+  findUnhiddenProduct,
   increaseProductStock,
   decreaseUnhiddenProductStock,
 } = require("../products");
 const { validate } = require("../../models/order/cart");
+const winston = require("winston");
 
-exports.createCart = async (cartBody) => {
+exports.initCart = async (cartBody) => {
   const { error } = validate(cartBody);
   if (error) return error;
 
-  const currentDate = new Date();
   const products = [];
   let amount = 0;
-  for (const element of cartBody.products) {
-    if (!element.quantity) element.quantity = 1;
+  for (const product of cartBody.products) {
+    if (!product.quantity) product.quantity = 1;
 
-    let finalElem = await decreaseUnhiddenProductStock(
-      element.productId,
-      element.quantity
-    ); // TODO: implement better update
+    let updated = await decreaseUnhiddenProductStock(
+      product.productId,
+      product.quantity
+    );
 
-    if (!finalElem || (element.release && element.release > currentDate))
-      for (const previousElement of cartBody.products) {
-        if (element.productId === previousElement.productId)
+    if (!updated)
+      for (const prevProduct of cartBody.products) {
+        if (product.productId === prevProduct.productId)
           return new Error("The product with the given ID was not found.");
 
-        await increaseProductStock(
-          previousElement.productId,
-          previousElement.quantity
-        );
+        await increaseProductStock(prevProduct.productId, prevProduct.quantity);
       }
 
     products.push({
-      productId: finalElem._id,
-      name: finalElem.name,
-      cost: finalElem.price,
-      quantity: element.quantity,
+      productId: updated._id,
+      name: updated.name,
+      cost: updated.price,
+      quantity: product.quantity,
     });
 
-    amount += finalElem.price * element.quantity;
+    totalCost += updated.price * product.quantity;
   }
 
   cart = {
     products: products,
-    amount: amount,
+    totalCost: amount,
   };
 
   return cart;
