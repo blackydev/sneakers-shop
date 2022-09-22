@@ -14,6 +14,7 @@ const productSchema = new mongoose.Schema({
     type: String,
     required: true,
     maxlength: 2560,
+    get: (filename) => `/public/images/products/${filename}`,
   },
   description: {
     type: String,
@@ -25,7 +26,7 @@ const productSchema = new mongoose.Schema({
     minlength: 0,
     maxlength: 256,
   },
-  price: { ...schemas.price, required: true },
+  price: { type: Number, required: true },
   numberInStock: {
     type: Number,
     required: true,

@@ -9,7 +9,7 @@ const increaseProductStock = async (id, quantity) => {
   let product = await Product.findByIdAndUpdate(
     id,
     {
-      $inc: { numberInStock: 1 * quantity },
+      $inc: { numberInStock: quantity },
     },
     { new: true }
   );

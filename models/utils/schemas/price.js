@@ -4,6 +4,8 @@ const winston = require("winston");
 const priceSchema = {
   type: Number,
   min: 0,
+  get: (num) => num / 100,
+  set: (num) => Math.round(num * 100),
 };
 
 const priceJoiSchema = Joi.number()

@@ -27,13 +27,18 @@ const cartSchema = new mongoose.Schema({
 });
 
 const Cart = mongoose.model("carts", cartSchema);
+const maxProductQuantity = 6;
 
 function validateCart(cart) {
   const schema = Joi.object().keys({
     list: Joi.array().items(
       Joi.object().keys({
-        productId: Joi.objectId().required(),
-        quantity: Joi.number().integer().min(1).required(),
+        product: Joi.objectId().required(),
+        quantity: Joi.number()
+          .integer()
+          .min(1)
+          .max(maxProductQuantity)
+          .required(),
       })
     ),
   });
@@ -41,18 +46,16 @@ function validateCart(cart) {
   return schema.validate(cart);
 }
 
-function validateProductsList(list) {
-  const schema = Joi.array().items(
-    Joi.object().keys({
-      productId: Joi.objectId().required(),
-      quantity: Joi.number().integer().min(1).required(),
-    })
-  );
+function validateListItem(product) {
+  const schema = Joi.object().keys({
+    product: Joi.objectId().required(),
+    quantity: Joi.number().integer().min(1).max(maxProductQuantity).required(),
+  });
 
-  return schema.validate(list);
+  return schema.validate(product);
 }
 
 exports.validate = validateCart;
-exports.validateProducts = validateProductsList;
+exports.validateListItem = validateListItem;
 exports.cartSchema = cartSchema;
 exports.Cart = Cart;

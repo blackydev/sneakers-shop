@@ -96,30 +96,13 @@ describe("products route", () => {
       );
       expect(res.status).toBe(400);
     });
-
-    it("should return 200 with hidden products", async () => {
-      await Product.deleteMany({});
-      const hiddenProduct = new Product({
-        ...products[0],
-        hidden: true,
-        image: mockImg,
-      });
-      await hiddenProduct.save();
-
-      const res = await request(server).get("/api/products?showHidden=true");
-      expect(res.status).toBe(200);
-      expect(res.body.length).toBe(1);
-    });
-    const _ = require("lodash");
   });
 
   describe("GET /:id", () => {
-    let hidden;
     const exec = async () => {
       let product = new Product({
         ...products[0],
         image: "star-wars-1.png",
-        hidden: hidden,
       });
       await product.save();
       return product;
