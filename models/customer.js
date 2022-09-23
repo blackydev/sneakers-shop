@@ -1,6 +1,6 @@
 const Joi = require("joi");
 const mongoose = require("mongoose");
-const { schemas, joiSchemas } = require("../utils/schemas");
+const { schemas, joiSchemas } = require("./utils/schemas");
 
 const customerSchema = new mongoose.Schema({
   _id: { id: false },

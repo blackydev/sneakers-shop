@@ -2,7 +2,7 @@ const Joi = require("joi");
 const mongoose = require("mongoose");
 const { customerSchema } = require("./customer");
 const { cartSchema } = require("./cart");
-const { schemas, joiSchemas } = require("../utils/schemas");
+const { schemas, joiSchemas } = require("./utils/schemas");
 
 const statuses = ["pending", "interrupted", "paid", "accepted", "shipped"];
 
@@ -58,7 +58,7 @@ const paymentTimeLimit = 30; /* IN MINUTES */
 function validateOrder(order) {
   const schema = Joi.object({
     customer: Joi.object().required(),
-    cart: Joi.object().required(),
+    cart: Joi.objectId().required(),
     status: Joi.string()
       .max(256)
       .custom((v, helper) => {

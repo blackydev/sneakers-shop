@@ -2,24 +2,31 @@ const Joi = require("joi");
 const mongoose = require("mongoose");
 const { schemas, joiSchemas } = require("./utils/schemas");
 
-const deliverySchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true,
+const deliverySchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: true,
+    },
+    price: {
+      ...schemas.price,
+      required: true,
+    },
+    points: {
+      type: Boolean,
+      required: true,
+    },
+    serviceId: {
+      type: Number,
+      required: true,
+    },
   },
-  price: {
-    ...schemas.price,
-    required: true,
-  },
-  points: {
-    type: Boolean,
-    required: true,
-  },
-  serviceId: {
-    type: Number,
-    required: true,
-  },
-});
+  {
+    toObject: { setters: true },
+    toJSON: { getters: true, setters: true },
+    runSettersOnQuery: true,
+  }
+);
 
 /*[{
     "name": "personal pickup",

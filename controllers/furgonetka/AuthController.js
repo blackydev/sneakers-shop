@@ -1,7 +1,6 @@
 const axios = require("axios").default;
 const config = require("config");
 const { setDaysInterval } = require("../../utils/timers");
-const winston = require("winston");
 
 const furgonetkaURL =
   process.env.NODE_ENV === "production"

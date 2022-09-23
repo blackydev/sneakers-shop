@@ -1,30 +1,45 @@
 const Joi = require("joi");
 const mongoose = require("mongoose");
-const { schemas } = require("../utils/schemas");
+const { schemas } = require("./utils/schemas");
 
-const cartSchema = new mongoose.Schema({
-  list: [
-    {
-      _id: { id: false },
-      product: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "products",
-        required: true,
-      },
-      cost: { ...schemas.price, required: true },
-      quantity: {
-        type: Number,
-        min: 1,
-        default: 1,
-        validate: {
-          validator: Number.isInteger,
-          message: "{VALUE} is not an integer value",
-        },
+const listItemSchema = new mongoose.Schema(
+  {
+    _id: { id: false },
+    product: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "products",
+      required: true,
+    },
+    cost: { ...schemas.price, required: true },
+    quantity: {
+      type: Number,
+      min: 1,
+      default: 1,
+      validate: {
+        validator: Number.isInteger,
+        message: "{VALUE} is not an integer value",
       },
     },
-  ],
-  totalCost: { ...schemas.price },
-});
+  },
+  {
+    toObject: { getters: true, setters: true },
+    toJSON: { getters: true, setters: true },
+    runSettersOnQuery: true,
+  }
+);
+
+const cartSchema = new mongoose.Schema(
+  {
+    list: [listItemSchema],
+    totalCost: { ...schemas.price },
+  },
+  {
+    toObject: { setters: true },
+    toJSON: { getters: true, setters: true },
+    runSettersOnQuery: true,
+    timestamps: true,
+  }
+);
 
 const Cart = mongoose.model("carts", cartSchema);
 const maxProductQuantity = 6;

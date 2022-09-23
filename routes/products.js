@@ -22,9 +22,6 @@ router.get("/", async (req, res) => {
       .limit(pageLength)
       .skip(pageLength * pageNumber);
 
-    products.map((product) => {
-      product.image = product.image;
-    });
     res.send(products);
   } catch (ex) {
     res.status(400).send(ex.message);
@@ -40,7 +37,6 @@ router.get("/:id", validateObjectId, async (req, res) => {
   if (!product || (!showHidden && product.hidden))
     return res.status(404).send("The product with the given ID was not found.");
 
-  product.image = product.image;
   res.send(product);
 });
 
@@ -56,7 +52,6 @@ router.post("/", [auth, isAdmin, upload.single("image")], async (req, res) => {
   const product = new Product(getProperties(req.body));
   await product.save();
 
-  product.image = product.image;
   res.send(product);
 });
 
@@ -81,7 +76,6 @@ router.put(
 
     const product = await Product.findById({ _id: req.params.id });
 
-    product.image = product.image;
     res.send(product);
     if (req.file) await deleteFile(oldProduct.image);
   }

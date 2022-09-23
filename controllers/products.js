@@ -1,10 +1,5 @@
 const { Product } = require("../models/product");
 
-const findUnhiddenProduct = async (id) => {
-  let product = await Product.findById(id);
-  if (!product.hidden) return product;
-};
-
 const increaseProductStock = async (id, quantity) => {
   let product = await Product.findByIdAndUpdate(
     id,

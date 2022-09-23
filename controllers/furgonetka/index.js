@@ -1,9 +1,8 @@
-const axios = require("axios").default;
-const _ = require("lodash");
-const { schemas, joiSchemas } = require("../../models/utils/schemas");
+const { joiSchemas } = require("../../models/utils/schemas");
 const authController = require("./AuthController");
 const Joi = require("joi");
-authController.init();
+
+if (process.env.offline) authController.init();
 
 validatePickup = (pickup) => {
   const schema = Joi.object({

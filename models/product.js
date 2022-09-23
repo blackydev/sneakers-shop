@@ -2,43 +2,52 @@ const Joi = require("joi");
 const mongoose = require("mongoose");
 const { schemas, joiSchemas } = require("./utils/schemas");
 
-const productSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true,
-    minlength: 3,
-    maxlength: 512,
-    trim: true,
+const productSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: true,
+      minlength: 3,
+      maxlength: 512,
+      trim: true,
+    },
+    image: {
+      type: String,
+      required: true,
+      maxlength: 2560,
+      get: (filename) => {
+        return `/public/images/products/${filename}`;
+      },
+    },
+    description: {
+      type: String,
+      required: true,
+      minlength: 32,
+    },
+    slogan: {
+      type: String,
+      minlength: 0,
+      maxlength: 256,
+    },
+    price: { ...schemas.price, required: true },
+    numberInStock: {
+      type: Number,
+      required: true,
+      min: 0,
+    },
+    release: {
+      type: Date,
+    },
+    hidden: {
+      type: Boolean,
+    },
   },
-  image: {
-    type: String,
-    required: true,
-    maxlength: 2560,
-    get: (filename) => `/public/images/products/${filename}`,
-  },
-  description: {
-    type: String,
-    required: true,
-    minlength: 32,
-  },
-  slogan: {
-    type: String,
-    minlength: 0,
-    maxlength: 256,
-  },
-  price: { type: Number, required: true },
-  numberInStock: {
-    type: Number,
-    required: true,
-    min: 0,
-  },
-  release: {
-    type: Date,
-  },
-  hidden: {
-    type: Boolean,
-  },
-});
+  {
+    toObject: { getters: true, setters: true },
+    toJSON: { getters: true, setters: true },
+    runSettersOnQuery: true,
+  }
+);
 
 const Product = mongoose.model("products", productSchema);
 

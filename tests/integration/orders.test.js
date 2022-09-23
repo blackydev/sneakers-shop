@@ -225,6 +225,7 @@ describe("orders route", () => {
         products: [
           {
             productId: products[0]._id,
+            quantity: 1,
           },
           {
             productId: products[1]._id,

@@ -3,7 +3,6 @@ const config = require("config");
 const _ = require("lodash");
 const { calculateSHA384 } = require("../utils/hash");
 const { paymentTimeLimit } = require("../models/order");
-const winston = require("winston");
 
 const merchantId = config.get("p24.merchantId");
 const posId = config.get("p24.posId");
@@ -25,7 +24,6 @@ const client = axios.create({
 const createTransaction = async (order, hostURL) => {
   try {
     const customer = order.customer;
-    const cart = order.cart;
     const delivery = order.delivery;
 
     const hashData = {

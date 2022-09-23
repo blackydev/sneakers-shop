@@ -1,16 +1,13 @@
-const { validate } = require("../../models/order");
-const { createCart } = require("./carts");
+const { validate } = require("../models/order");
+const { useCart } = require("./carts");
 const { createCustomer } = require("./customers");
-const { createDelivery } = require("../delivery");
-const { Order } = require("../../models/order");
+const { createDelivery } = require("./delivery");
+const { Order } = require("../models/order");
 const _ = require("lodash");
 
 const createOrder = async (orderBody) => {
   const { error } = validate(orderBody);
   if (error) return error;
-
-  const cart = await createCart(orderBody.cart);
-  if (_.isError(cart)) return cart;
 
   const customer = await createCustomer(orderBody.customer);
   if (_.isError(customer)) return customer;
@@ -19,6 +16,10 @@ const createOrder = async (orderBody) => {
   if (_.isError(delivery)) return delivery;
 
   const status = orderBody.status;
+
+  const cart = await useCart(orderBody.cart);
+  if (_.isError(cart)) return cart;
+
   const properties = getOrderProperties(customer, cart, delivery, status);
 
   const order = new Order(properties);

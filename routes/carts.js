@@ -1,15 +1,12 @@
 const express = require("express");
 const _ = require("lodash");
-const { createCart } = require("../controllers/orders/carts");
 const validateObjectId = require("../middleware/validateObjectId");
 const {
   increaseProductStock,
   decreaseUnhiddenProductStock,
 } = require("../controllers/products");
 const router = express.Router();
-const { validate, validateListItem, Cart } = require("../models/order/cart");
-const winston = require("winston");
-const { createTransaction } = require("../controllers/p24");
+const { validate, validateListItem, Cart } = require("../models/cart");
 
 router.get("/:id", validateObjectId, async (req, res) => {
   let cart = await Cart.findById(req.params.id).populate(
@@ -24,6 +21,13 @@ router.get("/:id", validateObjectId, async (req, res) => {
 });
 
 router.post("/", async (req, res) => {
+  /* 
+  req: 
+  list: [{
+    product,
+    quantity
+  }]
+  */
   const { error } = validate(req.body);
   if (error) return res.status(400).send(error.message);
 
@@ -114,6 +118,10 @@ router.delete("/:id/list-item", async (req, res) => {
     return res.status(400).send("The cart with the given ID was not found.");
 
   let list = cart.list;
+  if (list.length === 1) {
+    await cart.remove();
+    return res.status(204).send();
+  }
 
   const index = list.findIndex((item) => item.product == body.product);
   if (index === -1)
