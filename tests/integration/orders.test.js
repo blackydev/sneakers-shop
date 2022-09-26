@@ -3,8 +3,9 @@ const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 const config = require("config");
 const { getAuthToken, deleteUsers } = require("./users.test");
-const { createProducts, deleteProducts } = require("./products.test");
 const { createDeliveries, deleteDeliveries } = require("./deliveries.test");
+const { createCart, deleteCarts } = require("./carts.test");
+const { createProducts } = require("./products.test");
 const { Order } = require("../../models/order");
 
 describe("orders route", () => {
@@ -41,14 +42,16 @@ describe("orders route", () => {
 
     it("return orders if token is provided", async () => {
       const res = await exec();
-      expect(res.body.length).toBe(2);
+      expect(res.body[0]).toHaveProperty("customer.name");
+      expect(res.body[0]).toHaveProperty("cart.list");
+      expect(res.body[0]).toHaveProperty("delivery.model");
+      expect(res.body[0]).toHaveProperty("delivery.cost");
       expect(res.status).toBe(200);
     });
 
     it("return orders just with pending status", async () => {
       query = "?statusLike=pending";
       const res = await exec();
-      expect(res.body.length).toBe(2);
       expect(res.status).toBe(200);
     });
 
@@ -56,39 +59,6 @@ describe("orders route", () => {
       query = "?statusLike=interrupted";
       const res = await exec();
       expect(res.body.length).toBe(0);
-      expect(res.status).toBe(200);
-    });
-
-    it("return orders just with selected property if select query exists", async () => {
-      query = "?select=customer";
-      const res = await exec();
-      for (const order of res.body) {
-        expect(order).toHaveProperty("_id");
-        expect(order).toHaveProperty("customer");
-        expect(order.cart).toBeUndefined();
-        expect(order.status).toBeUndefined();
-        expect(order.totalCost).toBeUndefined();
-        expect(order.delivery).toBeUndefined();
-      }
-
-      expect(res.body.length).toBe(2);
-      expect(res.status).toBe(200);
-    });
-
-    it("return orders just with selected properties if select query exists", async () => {
-      query = "?select=cart&select=customer";
-      const res = await exec();
-
-      for (const order of res.body) {
-        expect(order).toHaveProperty("_id");
-        expect(order).toHaveProperty("customer");
-        expect(order).toHaveProperty("cart");
-        expect(order.status).toBeUndefined();
-        expect(order.totalCost).toBeUndefined();
-        expect(order.delivery).toBeUndefined();
-      }
-
-      expect(res.body.length).toBe(2);
       expect(res.status).toBe(200);
     });
 
@@ -104,40 +74,6 @@ describe("orders route", () => {
       expect(res.body.length).toBe(1);
       expect(res.status).toBe(200);
       expect(res.body[0]._id != checker._id).toBeTruthy();
-    });
-
-    it("return orders sorted by query", async () => {
-      query = "?sortBy=totalCost";
-      const res = await exec();
-      expect(res.body[0].totalCost < res.body[1].totalCost).toBeTruthy();
-      expect(res.body.length).toBe(2);
-      expect(res.status).toBe(200);
-    });
-
-    it("return orders sorted by query", async () => {
-      query = "?sortBy=-totalCost";
-      const res = await exec();
-      expect(res.body[0].totalCost > res.body[1].totalCost).toBeTruthy();
-      expect(res.body.length).toBe(2);
-      expect(res.status).toBe(200);
-    });
-
-    it("return 401 if no token is provided", async () => {
-      token = "";
-      const res = await exec();
-      expect(res.status).toBe(401);
-    });
-
-    it("return 400 if JWT is faked", async () => {
-      token = jwt.sign(
-        {
-          _id: mongoose.Types.ObjectId(),
-          authNumber: "19kbciesksf",
-        },
-        config.get("jwtPrivateKey")
-      );
-      const res = await exec();
-      expect(res.status).toBe(400);
     });
   });
 
@@ -168,7 +104,6 @@ describe("orders route", () => {
       expect(res.body).toHaveProperty("cart");
       expect(res.body).toHaveProperty("status");
       expect(res.body).toHaveProperty("delivery");
-      expect(res.body).toHaveProperty("totalCost");
       expect(res.status).toBe(200);
     });
 
@@ -212,30 +147,18 @@ describe("orders route", () => {
       deliveries = await createDeliveries();
       products = await createProducts();
 
-      customer = {
-        name: "Jan Kowalski",
-        email: "jankowalski@gmail.com",
-        address: "Wiczeslawa 97",
-        zip: "32-501",
-        city: "Chrzanow",
-        phone: "48123456789",
-      };
-
-      cart = {
-        products: [
-          {
-            productId: products[0]._id,
-            quantity: 1,
-          },
-          {
-            productId: products[1]._id,
-            quantity: 3,
-          },
-        ],
-      };
-
+      cart = await createCart([products[0], products[2]], [1, 2]);
       delivery = {
-        methodId: deliveries[0]._id,
+        model: deliveries[1]._id,
+      };
+
+      customer = {
+        name: "Anna Czarnecka",
+        email: "annaCzarnecka1337@gmail.com",
+        address: "wislana 67",
+        zip: "32-532",
+        city: "Jaworzno",
+        phone: "48987654321",
       };
     });
 
@@ -245,8 +168,8 @@ describe("orders route", () => {
 
     const exec = () => {
       return request(server)
-        .post(`/api/orders/`)
-        .send({ customer, cart, delivery });
+        .post(`/api/orders`)
+        .send({ customer, cart: cart._id, delivery });
     };
 
     it("return order if valid data is passed", async () => {
@@ -255,7 +178,6 @@ describe("orders route", () => {
       expect(res.body).toHaveProperty("cart");
       expect(res.body).toHaveProperty("status");
       expect(res.body).toHaveProperty("delivery");
-      expect(res.body).toHaveProperty("totalCost");
       expect(res.status).toBe(200);
     });
 
@@ -311,7 +233,7 @@ describe("orders route", () => {
         .send({ paymentMethodId: 154 });
     };
 
-    it("return 302", async () => {
+    it("return 302 status (redirect)", async () => {
       const res = await exec();
       expect(res.status).toBe(302);
     });
@@ -342,9 +264,8 @@ describe("orders route", () => {
     it("return order information", async () => {
       const res = await exec();
       expect(res.body).toHaveProperty("status", orders[0].status);
-      expect(res.body).toHaveProperty("cart", orders[0].cart);
+      expect(res.body).toHaveProperty("cart.list");
       expect(res.body).toHaveProperty("delivery");
-      expect(res.body).toHaveProperty("totalCost", orders[0].totalCost);
 
       expect(res.status).toBe(200);
     });
@@ -353,10 +274,9 @@ describe("orders route", () => {
       await Order.findByIdAndUpdate(orders[0]._id, { status: "accepted" });
       const res = await exec();
       expect(res.body).toHaveProperty("status", "accepted");
-      expect(res.body).toHaveProperty("cart", orders[0].cart);
+      expect(res.body).toHaveProperty("cart");
       expect(res.body).toHaveProperty("delivery");
-      expect(res.body).toHaveProperty("totalCost", orders[0].totalCost);
-      expect(res.body).toHaveProperty("customer", orders[0].customer);
+      expect(res.body).toHaveProperty("customer.name");
 
       expect(res.status).toBe(200);
     });
@@ -367,7 +287,7 @@ describe("orders route", () => {
       expect(res.status).toBe(404);
     });
   });
-
+  /*
   describe("PUT /:id/status", () => {
     let token, orders, orderId, status;
 
@@ -395,7 +315,6 @@ describe("orders route", () => {
       expect(res.body).toHaveProperty("status", status);
       expect(res.body).toHaveProperty("cart", orders[0].cart);
       expect(res.body).toHaveProperty("delivery");
-      expect(res.body).toHaveProperty("totalCost", orders[0].totalCost);
       expect(res.status).toBe(200);
     });
 
@@ -410,85 +329,75 @@ describe("orders route", () => {
       const res = await exec();
       expect(res.status).toBe(404);
     });
-  });
+  });*/
 });
 
-const createOrders = async (products, productsAmount, deliveries) => {
+const createOrders = async (carts, deliveries, customers) => {
   if (!deliveries) deliveries = await createDeliveries();
 
-  if (!products) products = await createProducts();
+  if (!carts) {
+    carts = [];
+    const products = await createProducts();
+    let cart = await createCart([products[0], products[2]], [1, 2]);
+    carts.push(cart);
+    cart = await createCart([products[0], products[1]], [3, 1]);
+    carts.push(cart);
+  }
 
-  if (!productsAmount) productsAmount = [undefined, 7, 1];
+  if (!customers)
+    customers = [
+      {
+        name: "Anna Czarnecka",
+        email: "annaCzarnecka1337@gmail.com",
+        address: "wislana 67",
+        zip: "32-532",
+        city: "Jaworzno",
+        phone: "48987654321",
+      },
+      {
+        name: "Jan Kowalski",
+        email: "jankowalski@gmail.com",
+        address: "wiczeslawa 97",
+        zip: "32-501",
+        city: "Chrzanow",
+        phone: "48123456789",
+      },
+    ];
 
-  const arr = getOrderObject(products, productsAmount, deliveries);
   const result = [];
 
-  let res = await request(server).post("/api/orders").send(arr[0]);
-  result.push(res.body);
+  let order = new Order({
+    customer: customers[0],
+    cart: { list: carts[0].list },
+    delivery: {
+      model: deliveries[1]._id,
+      cost: deliveries[1].price,
+    },
+    status: "pending",
+  });
+  await order.save();
+  result.push(order);
 
-  res = await request(server).post("/api/orders").send(arr[1]);
-  result.push(res.body);
+  order = new Order({
+    customer: customers[1],
+    cart: { list: carts[1].list },
+    delivery: {
+      model: deliveries[2]._id,
+      cost: deliveries[2].price,
+      point: "Krakow",
+    },
+    status: "pending",
+  });
+  await order.save();
+  result.push(order);
 
   return result;
 };
 
 const deleteOrders = async () => {
   await deleteDeliveries();
-  await deleteProducts();
+  await deleteCarts();
   await Order.deleteMany({});
-};
-
-const getOrderObject = (products, quantities, deliveries) => {
-  return [
-    {
-      customer: {
-        name: "Jan Kowalski",
-        email: "jankowalski@gmail.com",
-        address: "Wiczeslawa 97",
-        zip: "32-501",
-        city: "Chrzanow",
-        phone: "48123456789",
-      },
-
-      cart: {
-        products: [
-          {
-            productId: products[0]._id,
-            quantity: quantities[0],
-          },
-        ],
-      },
-      delivery: {
-        methodId: deliveries[0]._id,
-      },
-    },
-    {
-      customer: {
-        name: "Anna Czarnecka",
-        email: "annaCzarnecka1337@gmail.com",
-        address: "Wislana 67",
-        zip: "32-532",
-        city: "Jaworzno",
-        phone: "48987654321",
-      },
-
-      cart: {
-        products: [
-          {
-            productId: products[1]._id,
-            quantity: quantities[1],
-          },
-          {
-            productId: products[2]._id,
-            quantity: quantities[2],
-          },
-        ],
-      },
-      delivery: {
-        methodId: deliveries[1]._id,
-      },
-    },
-  ];
 };
 
 module.exports = {

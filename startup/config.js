@@ -1,19 +1,35 @@
 const config = require("config");
 const p24 = require("../controllers/p24");
 
+function checkConfig(properties) {
+  properties.map((property) => {
+    if (!config.has(property))
+      throw new Error(`FATAL ERROR: ${property} is not defined.`);
+  });
+}
+
 module.exports = async function async() {
-  if (!config.has("jwtPrivateKey"))
-    throw new Error("FATAL ERROR: jwtPrivateKey is not defined.");
+  const properties = [
+    "clientUrl",
+    "jwtPrivateKey",
+    "db",
+    "public",
+    "p24.merchantId",
+    "p24.posId",
+    "p24.raportKey",
+    "p24.crc",
+    "furgonetka.username",
+    "furgonetka.password",
+    "furgonetka.clientId",
+    "furgonetka.clientSecret",
+  ];
+  checkConfig(properties);
 
-  if (!config.has("db")) throw new Error("FATAL ERROR: db is not defined.");
-
-  if (!config.has("p24.crc"))
-    throw new Error("FATAL ERROR: crc  is not defined.");
-
-  // TODO: UPDATE ONCIFG REQUIREMENTS
-  if (process.env.NODE_ENV === "production")
-    if ((await p24.test()) !== true)
+  if (!process.env.offline) {
+    const res = await p24.test();
+    if (!res)
       throw new Error(
         "FATAL ERROR: Unsuccessful test connection with przelewy24."
       );
+  }
 };

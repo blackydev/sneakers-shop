@@ -1,12 +1,15 @@
 const express = require("express");
 const _ = require("lodash");
+const { validate } = require("../models/order");
 const router = express.Router();
 const { Order, statuses } = require("../models/order");
-const { createOrder } = require("../controllers/orders");
+const { Delivery } = require("../models/delivery");
 const p24 = require("../controllers/p24");
 const { getHostURL } = require("../utils/url");
 const { auth, isAdmin } = require("../middleware/authorization");
 const validateObjectId = require("../middleware/validateObjectId");
+const { Cart } = require("../models/cart");
+const { isLength } = require("lodash");
 
 router.get("/", [auth, isAdmin], async (req, res) => {
   const { select, sortBy, statusLike, pageLength, pageNumber } = req.query;
@@ -18,7 +21,6 @@ router.get("/", [auth, isAdmin], async (req, res) => {
     .limit(pageLength)
     .skip(pageLength * pageNumber)
     .sort(sortBy);
-
   res.send(orders);
 });
 
@@ -35,16 +37,48 @@ router.post("/", async (req, res) => {
   /*
 request: 
 {
-  cart: {...}, customer: {...}, delivery: {methodId, ?point}
+  cart: `ref`, customer: {}, delivery: {model, ?point}}
 }
   */
-  req.body.status = "pending";
-  const orderObject = await createOrder(req.body);
-  if (_.isError(orderObject)) return res.status(400).send(orderObject.message);
+  const body = req.body;
+  body.status = "pending";
 
-  const order = new Order(orderObject);
+  const { error } = validate(body);
+  if (error) return res.status(400).send(error.details[0].message);
+
+  // GET DELIVERY PROPS
+  let delivery = await Delivery.findById(body.delivery.model);
+
+  if (!delivery)
+    return res
+      .status(404)
+      .send("The delivery with the given ID was not found.");
+
+  if (delivery.furgonetka.points && !body.delivery.point)
+    return res
+      .status(400)
+      .send("The delivery with the given ID should have point send.");
+
+  // GET CART
+  const cart = await Cart.findByIdAndRemove(body.cart).select(
+    "-createdAt -updatedAt -_id -__v"
+  );
+
+  if (!cart)
+    return res.status(404).send("The cart with the given ID was not found.");
+
+  const order = new Order({
+    customer: getCustomerProps(body.customer),
+    cart: cart,
+    delivery: {
+      model: delivery._id,
+      cost: delivery.price,
+      point: body.delivery.point,
+    },
+    status: body.status,
+  });
+
   await order.save();
-
   res.send(order);
 });
 
@@ -59,7 +93,8 @@ router.post("/:id/payment", validateObjectId, async (req, res) => {
   if (!order || order.status == "interrupted")
     return res.status(404).send("The order with the given ID was not found.");
 
-  order.paymentMethodId = req.paymentMethodId;
+  order.paymentMethodId = req.body.paymentMethodId;
+  order.totalCost = await order.getTotalCost();
   const hostUrl = getHostURL(req);
 
   const result = await p24.createTransaction(order, hostUrl);
@@ -69,7 +104,11 @@ router.post("/:id/payment", validateObjectId, async (req, res) => {
 });
 
 router.get("/:id/status", validateObjectId, async (req, res) => {
-  const order = await Order.findById(req.params.id);
+  let order = await Order.findById(req.params.id).populate(
+    "delivery.model",
+    "name"
+  );
+
   if (!order)
     return res.status(404).send("The order with the given ID was not found.");
 
@@ -80,12 +119,7 @@ router.get("/:id/status", validateObjectId, async (req, res) => {
     status: order.status,
     customer: customer,
     cart: order.cart,
-    delivery: {
-      name: order.delivery.name,
-      cost: order.delivery.cost,
-      point: order.delivery.point,
-    },
-    totalCost: order.totalCost,
+    delivery: order.delivery,
   });
 });
 
@@ -136,8 +170,7 @@ router.post("/:id/p24Callback", validateObjectId, async (req, res) => {
 
   const result = await p24.verifyTransaction(order);
 
-  if (_.isError(result))
-    return res.status(400).send("Something has gone wrong.");
+  if (_.isError(result)) return res.status(400).send();
 
   await Order.findByIdAndUpdate(
     req.params.id,
@@ -149,5 +182,17 @@ router.post("/:id/p24Callback", validateObjectId, async (req, res) => {
 
   res.status(204);
 });
+
+function getCustomerProps(customerBody) {
+  return _.pick(customerBody, [
+    "name",
+    "email",
+    "company",
+    "address",
+    "zip",
+    "city",
+    "phone",
+  ]);
+}
 
 module.exports = router;

@@ -12,9 +12,7 @@ const productSchema = new mongoose.Schema(
       trim: true,
     },
     image: {
-      type: String,
-      required: true,
-      maxlength: 2560,
+      ...schemas.filename,
       get: (filename) => {
         return `/public/images/products/${filename}`;
       },
@@ -51,10 +49,32 @@ const productSchema = new mongoose.Schema(
 
 const Product = mongoose.model("products", productSchema);
 
+Product.findByIdAndIncreaseStock = function (id, quantity) {
+  return this.findByIdAndUpdate(
+    id,
+    {
+      $inc: { numberInStock: quantity },
+    },
+    { new: true }
+  );
+};
+
+Product.findByIdAndDecreaseStock = function (id, quantity, decreaseHidden) {
+  if (decreaseHidden) return this.findByIdAndIncreaseStock(id, quantity * -1);
+  else
+    return this.findOneAndUpdate(
+      { _id: id, hidden: { $in: [false, null] } },
+      {
+        $inc: { numberInStock: -1 * quantity },
+      },
+      { new: true }
+    );
+};
+
 function validateProduct(product) {
   const schema = Joi.object({
     name: Joi.string().min(3).max(512).required(),
-    image: Joi.string().max(2560).required(),
+    image: joiSchemas.filename.required(),
     description: Joi.string().min(32).required(),
     slogan: Joi.string().max(256),
     price: joiSchemas.price.required(),

@@ -30,47 +30,44 @@ const listItemSchema = new mongoose.Schema(
 
 const cartSchema = new mongoose.Schema(
   {
+    _id: { id: false },
     list: [listItemSchema],
-    totalCost: { ...schemas.price },
   },
   {
-    toObject: { setters: true },
+    toObject: { getters: true, setters: true },
     toJSON: { getters: true, setters: true },
     runSettersOnQuery: true,
+  }
+);
+
+const modelSchema = new mongoose.Schema(
+  { list: [listItemSchema] },
+  {
+    toObject: { getters: true, setters: true },
+    toJSON: { getters: true, setters: true },
     timestamps: true,
   }
 );
 
-const Cart = mongoose.model("carts", cartSchema);
+const Cart = mongoose.model("carts", modelSchema);
+
+Cart.findById = function (id) {
+  return this.findByIdAndUpdate(id, { updatedAt: new Date() }).select(
+    "-createdAt -updatedAt"
+  );
+};
+
 const maxProductQuantity = 6;
 
-function validateCart(cart) {
-  const schema = Joi.object().keys({
-    list: Joi.array().items(
-      Joi.object().keys({
-        product: Joi.objectId().required(),
-        quantity: Joi.number()
-          .integer()
-          .min(1)
-          .max(maxProductQuantity)
-          .required(),
-      })
-    ),
-  });
-
-  return schema.validate(cart);
-}
-
-function validateListItem(product) {
+function validate(cartElement) {
   const schema = Joi.object().keys({
     product: Joi.objectId().required(),
     quantity: Joi.number().integer().min(1).max(maxProductQuantity).required(),
   });
 
-  return schema.validate(product);
+  return schema.validate(cartElement);
 }
 
-exports.validate = validateCart;
-exports.validateListItem = validateListItem;
+exports.validate = validate;
 exports.cartSchema = cartSchema;
 exports.Cart = Cart;

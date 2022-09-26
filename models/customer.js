@@ -13,19 +13,20 @@ const customerSchema = new mongoose.Schema({
   phone: { ...schemas.phone, required: true },
 });
 
-function validateCustomer(customer) {
-  const schema = Joi.object({
-    name: joiSchemas.fullname.required(),
-    email: joiSchemas.email.required(),
-    company: joiSchemas.company,
-    address: joiSchemas.address.required(),
-    zip: joiSchemas.zip.required(),
-    city: joiSchemas.city.required(),
-    phone: joiSchemas.phone.required(),
-  });
+const joiSchema = Joi.object({
+  name: joiSchemas.fullname.required(),
+  email: joiSchemas.email.required(),
+  company: joiSchemas.company,
+  address: joiSchemas.address.required(),
+  zip: joiSchemas.zip.required(),
+  city: joiSchemas.city.required(),
+  phone: joiSchemas.phone.required(),
+});
 
-  return schema.validate(customer);
+function validate(customer) {
+  return joiSchema.validate(customer);
 }
 
 exports.customerSchema = customerSchema;
-exports.validate = validateCustomer;
+exports.validate = validate;
+exports.joiSchema = joiSchema;

@@ -5,6 +5,7 @@ const { zipSchema, zipJoiSchema } = require("./schemas/zip");
 const { citySchema, cityJoiSchema } = require("./schemas/city");
 const { addressSchema, addressJoiSchema } = require("./schemas/address");
 const { companySchema, companyJoiSchema } = require("./schemas/company");
+const { filenameSchema, filenameJoiSchema } = require("./schemas/filename");
 const { priceSchema, priceJoiSchema } = require("./schemas/price");
 
 exports.schemas = {
@@ -16,6 +17,7 @@ exports.schemas = {
   address: addressSchema,
   company: companySchema,
   price: priceSchema,
+  filename: filenameSchema,
 };
 
 exports.joiSchemas = {
@@ -27,4 +29,5 @@ exports.joiSchemas = {
   address: addressJoiSchema,
   company: companyJoiSchema,
   price: priceJoiSchema,
+  filename: filenameJoiSchema,
 };

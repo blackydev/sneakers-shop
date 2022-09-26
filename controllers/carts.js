@@ -1,19 +1,30 @@
 const { Cart } = require("../models/cart");
 const dayjs = require("dayjs");
+const { Product } = require("../models/product");
 
-exports.deleteCartInterval = () => {
+exports.deleteCartsInterval = () => {
   const minute = 60 * 1000;
-  setInterval(function () {
+  const hour = 60 * minute;
+
+  // deletion of unused carts
+  setInterval(async function () {
     const limit = dayjs().subtract(20, "minute");
-    Cart.deleteMany({ updatedAt: { $lt: limit } });
+    const carts = await Cart.find({ updatedAt: { $lt: limit } });
+    await deleteCarts(carts);
   }, 5 * minute);
 
-  setInterval(function () {
-    const limit = dayjs().subtract(1, "hour");
-    Cart.deleteMany({ createdAt: { $lt: limit } });
-  }, 30 * minute);
+  // deletion deprecated carts
+  setInterval(async function () {
+    const limit = dayjs().subtract(3, "hour");
+    const carts = await Cart.find({ createdAt: { $lt: limit } });
+    await deleteCarts(carts);
+  }, 3 * hour);
 };
 
-exports.useCart = async (id) => {
-  return Cart.findByIdAndRemove(id).select("-_id -createdAt -updatedAt -__v");
-};
+async function deleteCarts(carts) {
+  carts.map(async (cart) => {
+    for (const item of cart.list)
+      await Product.findByIdAndIncreaseStock(item.product, item.quantity);
+    await cart.remove();
+  });
+}

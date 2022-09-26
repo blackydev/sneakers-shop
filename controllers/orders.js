@@ -1,7 +1,4 @@
 const { validate } = require("../models/order");
-const { useCart } = require("./carts");
-const { createCustomer } = require("./customers");
-const { createDelivery } = require("./delivery");
 const { Order } = require("../models/order");
 const _ = require("lodash");
 
@@ -17,8 +14,11 @@ const createOrder = async (orderBody) => {
 
   const status = orderBody.status;
 
-  const cart = await useCart(orderBody.cart);
-  if (_.isError(cart)) return cart;
+  const cart = await Cart.findByIdAndRemove(orderBody.cart).select(
+    "-_id -createdAt -updatedAt -__v"
+  );
+
+  if (!cart) return new Error("The cart with the given ID was not found.");
 
   const properties = getOrderProperties(customer, cart, delivery, status);
 

@@ -25,7 +25,6 @@ const createTransaction = async (order, hostURL) => {
   try {
     const customer = order.customer;
     const delivery = order.delivery;
-
     const hashData = {
       sessionId: order._id,
       merchantId: merchantId,
@@ -33,15 +32,15 @@ const createTransaction = async (order, hostURL) => {
       currency: "PLN",
       crc: crcKey,
     };
-
+    const totalCost = (await order.getTotalCost()) * 100;
     const sign = calculateSHA384(JSON.stringify(hashData));
     const request = {
       merchantId: merchantId,
       posId: posId,
       sessionId: order._id,
-      amount: order.totalCost * 100,
+      amount: totalCost,
       currency: "PLN",
-      description: config.get("websiteName"),
+      description: `Zamówienie nr. ${order._id}`,
       email: customer.email,
       client: customer.name,
       address: customer.address,
@@ -56,7 +55,7 @@ const createTransaction = async (order, hostURL) => {
       timeLimit: paymentTimeLimit,
       waitForResult: true,
       shipping: delivery.cost * 100,
-      transferLabel: config.get("websiteName"),
+      transferLabel: `Zamówienie`,
       sign: sign,
     };
     const { data: result } = await client.post(

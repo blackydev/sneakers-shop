@@ -1,5 +1,15 @@
 {
+  "clientUrl": "damianlikus_clientUrl",
   "jwtPrivateKey": "damianlikus_jwtPrivateKey",
   "db": "damianlikus_db",
-  "p24_crc": "damianlikus_p24_crc"
+
+  "p24": {
+    "crc": "damianlikus_p24.crc"
+  },
+
+  "furgonetka": {
+    "password": "damianlikus_furgonetka.crc",
+    "clientId": "damianlikus_furgonetka.clientId",
+    "clientSecret": "damianlikus_furgonetka.clientSecret"
+  }
 }

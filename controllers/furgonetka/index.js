@@ -2,8 +2,6 @@ const { joiSchemas } = require("../../models/utils/schemas");
 const authController = require("./AuthController");
 const Joi = require("joi");
 
-if (process.env.offline) authController.init();
-
 validatePickup = (pickup) => {
   const schema = Joi.object({
     street: joiSchemas.address.required(),
@@ -60,6 +58,7 @@ const getPoints = async (services, searchPhrase) => {
       "/points/map",
       request
     );
+
     return data;
   } catch (error) {
     return new Error(error.message);

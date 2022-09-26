@@ -13,16 +13,16 @@ const products = [
     description:
       "Set 32 years before the original trilogy, during the era of the Galactic Republic, the plot follows Jedi Master Qui-Gon Jinn and his apprentice Obi-Wan Kenobi as they try to protect Queen Padmé Amidala of Naboo in hopes of securing a peaceful end to an interplanetary trade dispute.",
     slogan: "It's awesome movie",
-    price: 15,
+    price: 10.2,
     numberInStock: 255,
   },
   {
     name: "Star Wars IV",
     description:
       "It is a period of civil war. Rebel spaceships, striking from a hidden base, have won their first victory against the evil Galactic Empire.",
-    price: 10,
+    price: 15,
     slogan: "It's good movie",
-    numberInStock: 5,
+    numberInStock: 55,
     release: new Date("1979-07-19").toISOString(),
   },
   {
@@ -80,29 +80,104 @@ describe("products route", () => {
       ]);
     });
 
-    afterEach(async () => {
-      await Product.deleteMany({});
-    });
-
     it("should return all products", async () => {
       const res = await request(server).get("/api/products");
       expect(res.status).toBe(200);
       expect(res.body.length).toBe(3);
     });
 
-    it("should return 400 with error if sort query is an array", async () => {
-      const res = await request(server).get(
-        "/api/products?sortBy=name&sortBy=_id&sortBy=name"
-      );
-      expect(res.status).toBe(400);
+    describe("queries", () => {
+      describe("sortBy", () => {
+        it("should return 200 if valid query is passed", async () => {
+          let res = await request(server).get("/api/products?sortBy=price");
+          expect(res.body[0].price < res.body[1].price).toBeTruthy();
+          expect(res.status).toBe(200);
+
+          res = await request(server).get("/api/products?sortBy=-price");
+          expect(res.body[0].price > res.body[1].price).toBeTruthy();
+          expect(res.status).toBe(200);
+        });
+
+        it("should return 400 if query is an array", async () => {
+          const res = await request(server).get(
+            "/api/products?sortBy=name&sortBy=_id&sortBy=name"
+          );
+          expect(res.status).toBe(400);
+        });
+
+        it("should return 400 if query is an array", async () => {
+          const res = await request(server).get(
+            "/api/products?sortBy=name&sortBy=lol"
+          );
+          expect(res.status).toBe(400);
+        });
+      });
+
+      describe("select", () => {
+        it("should return 200 if valid query is passed", async () => {
+          let res = await request(server).get(
+            "/api/products?select=name&select=price"
+          );
+
+          for (const item of res.body) {
+            expect(item).toHaveProperty("_id");
+            expect(item).toHaveProperty("id");
+            expect(item).toHaveProperty("name");
+            expect(item).toHaveProperty("price");
+            expect(item).not.toHaveProperty("image");
+            expect(item).not.toHaveProperty("numberInStock");
+          }
+
+          expect(res.status).toBe(200);
+        });
+      });
+
+      describe("paginate", () => {
+        it("should return 200 if valid query is passed", async () => {
+          const res1 = await request(server).get(
+            "/api/products?pageLength=1&pageNumber=0"
+          );
+
+          const res2 = await request(server).get(
+            "/api/products?pageLength=1&pageNumber=1"
+          );
+
+          expect(res1.body[0]._id != res2.body[0]._id).toBeTruthy();
+
+          expect(res1.body.length).toBe(1);
+          expect(res1.status).toBe(200);
+          expect(res2.body.length).toBe(1);
+          expect(res2.status).toBe(200);
+        });
+      });
+
+      describe("showHidden", () => {
+        it("should return hidden products", async () => {
+          await Product.insertMany([
+            {
+              ...products[0],
+              image: webpImg,
+              hidden: true,
+            },
+          ]);
+          const res = await request(server).get(
+            "/api/products?showHidden=true"
+          );
+
+          expect(res.body.length).toBe(4);
+          expect(res.status).toBe(200);
+        });
+      });
     });
   });
 
   describe("GET /:id", () => {
+    let hidden;
     const exec = async () => {
       let product = new Product({
         ...products[0],
         image: "star-wars-1.png",
+        hidden,
       });
       await product.save();
       return product;
@@ -207,7 +282,6 @@ describe("products route", () => {
     it("return product with png if is valid", async () => {
       imagePath = pngImg;
       let res = await exec();
-      expect(res.status).toBe(200);
       res = await expectImg(res.body.image);
       expect(res.status).toBe(200);
     });

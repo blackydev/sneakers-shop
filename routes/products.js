@@ -41,7 +41,7 @@ router.get("/:id", validateObjectId, async (req, res) => {
 });
 
 router.post("/", [auth, isAdmin, upload.single("image")], async (req, res) => {
-  req.body.image = req.file ? req.file.filename : "";
+  if (req.file) req.body.image = req.file.filename;
 
   const { error } = validate(req.body);
   if (error) {
@@ -59,7 +59,8 @@ router.put(
   "/:id",
   [auth, isAdmin, validateObjectId, validateProductId, upload.single("image")],
   async (req, res) => {
-    req.body.image = req.file ? req.file.filename : "NO-UPDATE";
+    if (req.file) req.body.image = req.file.filename;
+    else req.body.image = "";
 
     const { error } = validate(req.body);
     if (error) {
@@ -67,7 +68,7 @@ router.put(
       return res.status(400).send(error.details[0].message);
     }
 
-    if (req.body.image === "NO-UPDATE") req.body.image = undefined;
+    if (req.body.image === "") req.body.image = undefined;
 
     const oldProduct = await Product.findByIdAndUpdate(
       { _id: req.params.id },

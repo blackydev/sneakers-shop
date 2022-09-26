@@ -34,6 +34,10 @@ class AuthController {
     });
   };
 
+  constructor() {
+    if (!process.env.offline) this.init();
+  }
+
   init = async () => {
     const data = await this.#createTokens();
     this.accessToken = data.access_token;

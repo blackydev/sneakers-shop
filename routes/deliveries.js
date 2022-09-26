@@ -6,22 +6,30 @@ const { auth, isAdmin } = require("../middleware/authorization");
 const _ = require("lodash");
 
 router.get("/", async (req, res) => {
-  const methods = await Delivery.find();
-  res.status(200).send(methods);
+  const deliveries = await Delivery.find();
+  res.status(200).send(deliveries);
 });
 
 router.get("/:id", validateObjectId, async (req, res) => {
-  const method = await Delivery.findById(req.params.id);
+  const delivery = await Delivery.findById(req.params.id);
 
-  if (!method)
-    return res.status(404).send("The method with the given ID was not found.");
+  if (!delivery)
+    return res
+      .status(404)
+      .send("The delivery with the given ID was not found.");
 
-  res.send(method);
+  res.send(delivery);
+});
+router.post("/", [auth, isAdmin], async (req, res) => {
+  const { error } = validate(req.body);
+  if (error) return res.status(400).send(error.details[0].message);
+  const delivery = new Delivery(getProperties(req.body));
+  await delivery.save();
+
+  res.send(delivery);
 });
 
 router.put("/:id", [auth, isAdmin, validateObjectId], async (req, res) => {
-  if (!req.body.points) req.body.points = false;
-
   const { error } = validate(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
@@ -34,13 +42,16 @@ router.put("/:id", [auth, isAdmin, validateObjectId], async (req, res) => {
   if (!delivery)
     return res
       .status(404)
-      .send("The delivery method with the given name was not found.");
+      .send("The delivery with the given ID was not found.");
+
+  delivery.furgonetka = req.body.furgonetka;
+  await delivery.save();
 
   res.send(delivery);
 });
 
 const getProperties = (body) => {
-  return _.pick(body, ["name", "price", "points", "serviceId"]);
+  return _.pick(body, ["name", "price", "furgonetka"]);
 };
 
 module.exports = router;

@@ -10,9 +10,14 @@ const error = require("../middleware/error");
 const config = require("config");
 const cors = require("cors");
 
+const corsConfig = {
+  origin: config.get("clientUrl"),
+  credentials: true,
+};
+
 module.exports = function (app) {
+  app.use(cors(corsConfig));
   app.use(express.json());
-  app.use(cors(config.get("cors")));
   app.use("/api/public", express.static(config.get("public")));
   app.use("/api/users", users);
   app.use("/api/products", products);

@@ -18,16 +18,19 @@ router.post("/delivery", [auth, isAdmin], async (req, res) => {
   /* 
 correct request: 
 {
-  orderId, deliveryId, serviceId, packages
+  order: `ref`, delivery: 'ref' , packages
 }
 */
 
-  const order = await Order.findById(req.body.orderId);
+  const order = await Order.findById(req.body.orderId).populate(
+    "delivery.model",
+    "name furgonetka"
+  );
   if (!order)
     return res.status(404).send("The order with the given ID was not found.");
 
-  const deliveryMethod = await Delivery.findById(req.body.deliveryId);
-  if (!deliveryMethod)
+  const delivery = await Delivery.findById(req.body.deliveryId);
+  if (!delivery)
     return res
       .status(404)
       .send("The delivery method with the given ID was not found.");
@@ -37,12 +40,14 @@ correct request:
   const result = await createDelivery(
     pickup,
     order,
-    deliveryMethod.serviceId,
+    delivery.furgonetka.id,
     packages
   );
   if (_.isError(result)) return result.status(400).send(result.message);
 
-  await Order.findByIdAndUpdate(req.body.orderId, { status: "in delivery" });
+  order.status = "in delivery";
+  order.delivery.furgonetkaId = result.package_id;
+  await order.save();
 
   res.status(200).send(result); // todo: change result
 });

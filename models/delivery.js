@@ -12,17 +12,19 @@ const deliverySchema = new mongoose.Schema(
       ...schemas.price,
       required: true,
     },
-    points: {
-      type: Boolean,
-      required: true,
-    },
-    serviceId: {
-      type: Number,
-      required: true,
+
+    furgonetka: {
+      id: {
+        type: Number,
+      },
+
+      points: {
+        type: String, // if exists write here name which is used to get points at furgonetka.pl
+      },
     },
   },
   {
-    toObject: { setters: true },
+    toObject: { getters: true, setters: true },
     toJSON: { getters: true, setters: true },
     runSettersOnQuery: true,
   }
@@ -56,8 +58,10 @@ function validateDelivery(delivery) {
   const schema = Joi.object({
     name: Joi.string().required(),
     price: joiSchemas.price.required(),
-    points: Joi.boolean().required(),
-    serviceId: Joi.number().required(),
+    furgonetka: Joi.object().keys({
+      id: Joi.number(),
+      points: Joi.string(),
+    }),
   });
 
   return schema.validate(delivery);

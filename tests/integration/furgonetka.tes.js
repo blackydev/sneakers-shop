@@ -1,37 +1,4 @@
 const request = require("supertest");
-const mongoose = require("mongoose");
-const jwt = require("jsonwebtoken");
-const config = require("config");
-const { getAuthToken, deleteUsers } = require("./users.test");
-const { createOrders, deleteOrders } = require("./Orders.test");
-const { Delivery } = require("../../models/delivery");
-
-const deliveries = [
-  {
-    name: "personal pickup",
-    price: 0,
-    points: false,
-    serviceId: 0, // poczta polska
-  },
-  {
-    name: "carrier",
-    price: 20,
-    points: false,
-    serviceId: 9603405, // poczta polska
-  },
-  {
-    name: "inpost",
-    price: 10.9,
-    points: true,
-    serviceId: 9603406, // poczta polska
-  },
-  {
-    name: "orlen",
-    price: 9.9,
-    points: true,
-    serviceId: 9603408, // poczta polska
-  },
-];
 
 describe("deliveries route", () => {
   let server;

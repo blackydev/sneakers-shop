@@ -1,3 +1,17 @@
 {
-  "public": "./public/development/"
+  "public": "./public/development/",
+
+  "p24": {
+    "merchantId": 187534,
+    "posId": 187534,
+    "raportKey": "ce33570a9af0e85291c966f09c9ad973",
+    "crc": "fed5ac7ea50f655f"
+  },
+
+  "furgonetka": {
+    "username": "blackyfrompoland@gmail.com",
+    "password": "Furgonetka69",
+    "clientId": "damianlikustest-c139221414383197bfb05c0f10166e16",
+    "clientSecret": "c01932223ba597d2c40ac37663687767a0cbd615bd35a282b14c87c27290ada5"
+  }
 }
