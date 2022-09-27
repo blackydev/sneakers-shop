@@ -5,7 +5,6 @@ const orders = require("../routes/orders");
 const carts = require("../routes/carts");
 const p24 = require("../routes/p24");
 const deliveries = require("../routes/deliveries");
-const furgonetka = require("../routes/furgonetka");
 const error = require("../middleware/error");
 const config = require("config");
 const cors = require("cors");
@@ -25,7 +24,6 @@ module.exports = function (app) {
   app.use("/api/orders", orders);
   app.use("/api/p24", p24);
   app.use("/api/deliveries", deliveries);
-  app.use("/api/furgonetka", furgonetka);
 
   app.use(error);
 };

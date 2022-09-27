@@ -13,25 +13,19 @@ const deliveries = [
   {
     name: "carrier",
     price: 20,
-    furgonetka: {
-      id: 9603405,
-    },
+    serviceId: 9603405,
   },
   {
     name: "inpost package robot",
     price: 10.9,
-    furgonetka: {
-      id: 9603406,
-      points: "inpost",
-    },
+    serviceId: 9603406,
+    points: "inpost",
   },
   {
     name: "orlen package",
     price: 9.9,
-    furgonetka: {
-      id: 9603408,
-      points: "orlen",
-    },
+    serviceId: 9603408,
+    points: "orlen",
   },
 ];
 
@@ -61,7 +55,7 @@ describe("deliveries route", () => {
 
     beforeEach(async () => {
       const deliveries = await createDeliveries();
-      deliveryId = deliveries[0]._id;
+      deliveryId = deliveries[3]._id;
     });
 
     afterEach(async () => {
@@ -77,6 +71,8 @@ describe("deliveries route", () => {
       expect(res.status).toBe(200);
       expect(res.body).toHaveProperty("name");
       expect(res.body).toHaveProperty("price");
+      expect(res.body).toHaveProperty("serviceId");
+      expect(res.body).toHaveProperty("points");
     });
 
     it("return 404 if invalid id is passed", async () => {
@@ -110,31 +106,12 @@ describe("deliveries route", () => {
       delivery = {
         name: "DHL packages",
         price: 9.9,
-        furgonetka: {
-          id: 9603408,
-          points: "DHLPoint",
-        },
+        serviceId: 9603409,
       };
       const res = await exec();
       expect(res.body).toHaveProperty("_id");
       expect(res.body).toHaveProperty("name", "DHL packages");
       expect(res.body).toHaveProperty("price", 9.9);
-      expect(res.body).toHaveProperty("furgonetka");
-      expect(res.body).toHaveProperty("furgonetka.id", 9603408);
-      expect(res.body).toHaveProperty("furgonetka.points", "DHLPoint");
-      expect(res.status).toBe(200);
-    });
-
-    it("return delivery if no furgonetka data is passsed", async () => {
-      delivery = {
-        name: "personal pickup",
-        price: 0,
-      };
-      const res = await exec();
-      expect(res.body).toHaveProperty("_id");
-      expect(res.body).toHaveProperty("name", "personal pickup");
-      expect(res.body).toHaveProperty("price", 0);
-      expect(res.body).not.toHaveProperty("furgonetka");
       expect(res.status).toBe(200);
     });
 
@@ -156,10 +133,6 @@ describe("deliveries route", () => {
       delivery = new Delivery({
         name: "DHL",
         price: 9.9,
-        furgonetka: {
-          id: 9603408,
-          points: "DHLPackagePoint",
-        },
       });
       await delivery.save();
     });
@@ -176,23 +149,7 @@ describe("deliveries route", () => {
         .send(newDelivery);
     };
 
-    it("return delivery if updated data does not have some unrequired values which old had", async () => {
-      newDelivery = {
-        name: "new DHL",
-        price: 10.9,
-        furgonetka: {
-          id: 1,
-        },
-      };
-      const res = await exec();
-      expect(res.body).toHaveProperty("name", "new DHL");
-      expect(res.body).toHaveProperty("price", 10.9);
-      expect(res.body).toHaveProperty("furgonetka.id", 1);
-      expect(res.body).not.toHaveProperty("furgonetka.points");
-      expect(res.status).toBe(200);
-    });
-
-    it("return delivery if updated data does not have unrequired values which old had", async () => {
+    it("return delivery", async () => {
       newDelivery = {
         name: "new DHL",
         price: 10.9,
@@ -200,7 +157,6 @@ describe("deliveries route", () => {
       const res = await exec();
       expect(res.body).toHaveProperty("name", "new DHL");
       expect(res.body).toHaveProperty("price", 10.9);
-      expect(res.body).not.toHaveProperty("furgonetka");
       expect(res.status).toBe(200);
     });
 

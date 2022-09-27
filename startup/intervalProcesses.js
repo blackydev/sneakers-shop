@@ -1,4 +1,4 @@
-const { deleteCartsInterval } = require("../controllers/carts");
+const { deleteCartsInterval } = require("../models/cart");
 
 module.exports = function () {
   if (process.env.NODE_ENV != "test") {

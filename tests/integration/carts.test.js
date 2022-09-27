@@ -67,14 +67,13 @@ describe("carts route", () => {
 
     it("should return valid cart", async () => {
       const res = await exec();
-      expect(res).toBe(1);
       expect(res.body).toHaveProperty("list");
 
-      const item = req.body.list[0];
+      const item = res.body.list[0];
       expect(item.product).toHaveProperty("_id");
-      expect(item).toHaveProperty("cost", item.price);
-      expect(item.product).toHaveProperty("image", item.image);
-      expect(item.product).toHaveProperty("name", item.name);
+      expect(item).toHaveProperty("cost", product.price);
+      expect(item.product).toHaveProperty("image", product.image);
+      expect(item.product).toHaveProperty("name", product.name);
 
       expect(res.status).toBe(200);
     });
@@ -87,137 +86,150 @@ describe("carts route", () => {
       expect(numberInStock === inStock - 2);
     });
 
-    it("should return 400 if invalid data is passed", async () => {
-      products = [];
+    it("should return 404 if invalid product ID is passed", async () => {
+      product._id = mongoose.Types.ObjectId();
+      const res = await exec();
+      expect(res.status).toBe(404);
+    });
+
+    it("should return 400 if invalid quantity is passed", async () => {
+      quantity = 0;
       const res = await exec();
       expect(res.status).toBe(400);
     });
   });
 
-  // describe("POST /:id/list", () => {
-  //   let cart, products, quantities;
-  //   let productId, quantity;
-  //   beforeEach(async () => {
-  //     products = await createProducts();
-  //     quantities = [1, 2];
-  //     cart = await createCart([products[0], products[1]], quantities);
-  //     productId = products[2]._id;
-  //     quantity = 1;
-  //   });
+  describe("PUT /:id", () => {
+    let cart, products, quantities;
+    let productId, quantity;
+    beforeEach(async () => {
+      products = await createProducts();
+      quantities = [1, 2];
+      cart = await createCart([products[0], products[1]], quantities);
+      productId = products[2]._id;
+      quantity = 1;
+    });
 
-  //   const exec = () => {
-  //     return request(server)
-  //       .post(`/api/carts/${cart._id}/list`)
-  //       .send({ product: productId, quantity });
-  //   };
+    const exec = () => {
+      return request(server)
+        .put(`/api/carts/${cart._id}`)
+        .send({ product: productId, quantity });
+    };
 
-  //   it("should return valid cart", async () => {
-  //     expect(cart.list.length).toBe(2);
-  //     const res = await exec();
-  //     expect(res.body.list.length).toBe(3);
-  //     expect(res.status).toBe(200);
-  //   });
+    it("should return valid cart", async () => {
+      expect(cart.list.length).toBe(2);
+      const res = await exec();
+      expect(res.body.list.length).toBe(3);
+      expect(res.status).toBe(200);
+    });
 
-  //   it("should return 404 if invalid cart id is passed", async () => {
-  //     cart._id = new mongoose.Types.ObjectId();
-  //     const res = await exec();
-  //     expect(res.status).toBe(404);
-  //   });
+    it("should return 404 if invalid cart id is passed", async () => {
+      cart._id = new mongoose.Types.ObjectId();
+      const res = await exec();
+      expect(res.status).toBe(404);
+    });
 
-  //   it("should return 400 if invalid data is passed", async () => {
-  //     productId = "";
-  //     const res = await exec();
-  //     expect(res.status).toBe(400);
-  //   });
+    it("should return 400 if invalid data is passed", async () => {
+      productId = "";
+      const res = await exec();
+      expect(res.status).toBe(400);
+    });
 
-  //   it("should return 404 if invalid product ID is passed", async () => {
-  //     productId = new mongoose.Types.ObjectId();
-  //     const res = await exec();
-  //     expect(res.status).toBe(404);
-  //   });
+    it("should return 404 if invalid product ID is passed", async () => {
+      productId = new mongoose.Types.ObjectId();
+      const res = await exec();
+      expect(res.status).toBe(404);
+    });
 
-  //   it("should return 404 if invalid product ID is passed", async () => {
-  //     productId = products[1]._id;
-  //     quantity = 3;
-  //     const res = await exec();
-  //     res.body.list.some((item) => {
-  //       if (item == productId) expect(item.quantity).toBe(quantity);
-  //     });
-  //     expect(res.status).toBe(200);
-  //   });
-  // });
+    it("should return 200 if valid product is passed which is already in cart", async () => {
+      productId = products[1]._id;
+      quantity = 4;
+      const res = await exec();
+      res.body.list.some((item) => {
+        if (item == productId) expect(item.quantity).toBe(quantity);
+      });
+      expect(res.status).toBe(200);
+    });
 
-  // describe("DELETE /:id/list/:productId", () => {
-  //   let cart, products, quantities;
-  //   let productId, quantity;
-  //   beforeEach(async () => {
-  //     products = await createProducts();
-  //     quantities = [1, 2];
-  //     cart = await createCart([products[0], products[1]], quantities);
-  //     productId = products[1]._id;
-  //     quantity = 1;
-  //   });
+    it("should return 400 if passed quantity are higher then limit", async () => {
+      quantity = 100000;
+      const res = await exec();
+      expect(res.status).toBe(400);
+    });
+  });
 
-  //   const exec = () => {
-  //     return request(server).delete(`/api/carts/${cart._id}/list/${productId}`);
-  //   };
+  describe("DELETE /:id/list/:productId", () => {
+    let cart, products, quantities;
+    let productId;
+    beforeEach(async () => {
+      products = await createProducts();
+      quantities = [1, 2];
+      cart = await createCart([products[0], products[1]], quantities);
+      productId = products[1]._id;
+    });
 
-  //   it("should return 200 if valid data is passed", async () => {
-  //     const res = await exec();
-  //     expect(res.status).toBe(200);
-  //   });
+    const exec = () => {
+      return request(server)
+        .delete(`/api/carts/${cart._id}`)
+        .send({ product: productId });
+    };
 
-  //   it("should return 204 and change the stock if last product is deleted", async () => {
-  //     await deleteCarts();
-  //     products = await createProducts();
-  //     cart = await createCart([products[0]], [2]);
-  //     productId = products[0]._id;
-  //     const { numberInStock: stockBefore } = await Product.findById(productId);
-  //     const res = await exec();
-  //     const { numberInStock: stockAfter } = await Product.findById(productId);
+    it("should return 200 if valid data is passed", async () => {
+      const res = await exec();
+      expect(res.status).toBe(200);
+    });
 
-  //     expect(stockBefore + 2 === stockAfter).toBeTruthy();
-  //     expect(res.status).toBe(204);
-  //   });
+    it("should return 204 and change the stock if last product is deleted", async () => {
+      await deleteCarts();
+      products = await createProducts();
+      cart = await createCart([products[0]], [2]);
+      productId = products[0]._id;
+      const { numberInStock: stockBefore } = await Product.findById(productId);
+      const res = await exec();
+      const { numberInStock: stockAfter } = await Product.findById(productId);
 
-  //   it("should return 400 if product is not in cart", async () => {
-  //     productId = products[2]._id;
-  //     const res = await exec();
-  //     expect(res.status).toBe(400);
-  //   });
+      expect(stockBefore + 2 === stockAfter).toBeTruthy();
+      expect(res.status).toBe(204);
+    });
 
-  //   it("should return 404 if invalid cart id is passed", async () => {
-  //     cart._id = new mongoose.Types.ObjectId();
-  //     const res = await exec();
-  //     expect(res.status).toBe(404);
-  //   });
+    it("should return 400 if product is not in cart", async () => {
+      productId = products[2]._id;
+      const res = await exec();
+      expect(res.status).toBe(400);
+    });
 
-  //   it("should return 400 if cart does not have product with given id", async () => {
-  //     await deleteCarts();
-  //     products = await createProducts();
-  //     cart = await createCart([products[0]], [2]);
-  //     productId = products[1]._id;
-  //     const res = await exec();
-  //     expect(res.status).toBe(400);
-  //   });
+    it("should return 404 if invalid cart id is passed", async () => {
+      cart._id = new mongoose.Types.ObjectId();
+      const res = await exec();
+      expect(res.status).toBe(404);
+    });
 
-  //   it("should return 400 and do not change stock if invalid id is passed", async () => {
-  //     await deleteCarts();
-  //     products = await createProducts();
-  //     cart = await createCart([products[0]], [2]);
-  //     productId = products[1]._id;
-  //     const res = await exec();
-  //     expect(res.status).toBe(400);
-  //     const updated = await Product.findById(products[0]._id);
-  //     expect(updated.numberInStock != products[0].numberInStock);
-  //   });
+    it("should return 400 if cart does not have product with given id", async () => {
+      await deleteCarts();
+      products = await createProducts();
+      cart = await createCart([products[0]], [2]);
+      productId = products[1]._id;
+      const res = await exec();
+      expect(res.status).toBe(400);
+    });
 
-  //   it("should return 404 if product with given ID does not exist", async () => {
-  //     await Product.findByIdAndDelete(productId);
-  //     const res = await exec();
-  //     expect(res.status).toBe(404);
-  //   });
-  // });
+    it("should return 400 and do not change stock if invalid id is passed", async () => {
+      await deleteCarts();
+      products = await createProducts();
+      cart = await createCart([products[0]], [2]);
+      productId = products[1]._id;
+      const res = await exec();
+      expect(res.status).toBe(400);
+      const updated = await Product.findById(products[0]._id);
+      expect(updated.numberInStock != products[0].numberInStock);
+    });
+
+    it("should return 404 if product with given ID does not exist", async () => {
+      await Product.findByIdAndDelete(productId);
+      const res = await exec();
+      expect(res.status).toBe(404);
+    });
+  });
 });
 
 const createCart = async (products, quantities) => {

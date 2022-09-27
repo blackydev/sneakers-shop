@@ -17,6 +17,7 @@ router.get("/", [auth, isAdmin], async (req, res) => {
   if (statusLike) var findQuery = { status: statusLike };
 
   const orders = await Order.find(findQuery)
+    .populate("delivery.method", "name")
     .select(select)
     .limit(pageLength)
     .skip(pageLength * pageNumber)
@@ -25,7 +26,10 @@ router.get("/", [auth, isAdmin], async (req, res) => {
 });
 
 router.get("/:id", [auth, isAdmin], async (req, res) => {
-  const order = await Order.findById(req.params.id);
+  const order = await Order.findById(req.params.id).populate(
+    "delivery.method",
+    "name"
+  );
 
   if (!order)
     return res.status(404).send("The order with the given ID was not found.");
@@ -37,7 +41,7 @@ router.post("/", async (req, res) => {
   /*
 request: 
 {
-  cart: `ref`, customer: {}, delivery: {model, ?point}}
+  cart: `ref`, customer: {}, delivery: {method, ?point}}
 }
   */
   const body = req.body;
@@ -47,17 +51,12 @@ request:
   if (error) return res.status(400).send(error.details[0].message);
 
   // GET DELIVERY PROPS
-  let delivery = await Delivery.findById(body.delivery.model);
+  let delivery = await Delivery.findById(body.delivery.method);
 
   if (!delivery)
     return res
       .status(404)
       .send("The delivery with the given ID was not found.");
-
-  if (delivery.furgonetka.points && !body.delivery.point)
-    return res
-      .status(400)
-      .send("The delivery with the given ID should have point send.");
 
   // GET CART
   const cart = await Cart.findByIdAndRemove(body.cart).select(
@@ -71,7 +70,7 @@ request:
     customer: getCustomerProps(body.customer),
     cart: cart,
     delivery: {
-      model: delivery._id,
+      method: delivery._id,
       cost: delivery.price,
       point: body.delivery.point,
     },
@@ -105,7 +104,7 @@ router.post("/:id/payment", validateObjectId, async (req, res) => {
 
 router.get("/:id/status", validateObjectId, async (req, res) => {
   let order = await Order.findById(req.params.id).populate(
-    "delivery.model",
+    "delivery.method",
     "name"
   );
 
@@ -168,8 +167,7 @@ router.post("/:id/p24Callback", validateObjectId, async (req, res) => {
   if (order.status === "interrupted")
     return res.status(400).send("Order is interrupted.");
 
-  const result = await p24.verifyTransaction(order);
-
+  let result = await p24.verifyTransaction(order);
   if (_.isError(result)) return res.status(400).send();
 
   await Order.findByIdAndUpdate(

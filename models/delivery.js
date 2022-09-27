@@ -8,19 +8,21 @@ const deliverySchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+
     price: {
       ...schemas.price,
       required: true,
     },
 
-    furgonetka: {
-      id: {
-        type: Number,
-      },
+    serviceId: {
+      type: Number,
+      default: 0,
+    },
 
-      points: {
-        type: String, // if exists write here name which is used to get points at furgonetka.pl
-      },
+    points: {
+      // string to get access for data if points exists
+      type: String,
+      default: "",
     },
   },
   {
@@ -30,38 +32,14 @@ const deliverySchema = new mongoose.Schema(
   }
 );
 
-/*[{
-    "name": "personal pickup",
-    "price": 0,
-    "point": false,
-  },
-  {
-    "name": "carrier",
-    "price": 20,
-    "point": false,
-  },
-  {
-    "name": "inpost",
-    "price": 10,
-    "point": true,
-  },
-  {
-    "name": "orlen",
-    "price": 10,
-    "point": true,
-  }]
-  */
-
 const Delivery = mongoose.model("deliveries", deliverySchema);
 
 function validateDelivery(delivery) {
   const schema = Joi.object({
     name: Joi.string().required(),
     price: joiSchemas.price.required(),
-    furgonetka: Joi.object().keys({
-      id: Joi.number(),
-      points: Joi.string(),
-    }),
+    points: Joi.string(),
+    serviceId: Joi.number(),
   });
 
   return schema.validate(delivery);

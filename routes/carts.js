@@ -33,10 +33,10 @@ router.post("/", async (req, res) => {
   );
 
   if (!product)
-    res.status(404).send("The product with the given ID was not found.");
+    return res.status(404).send("The product with the given ID was not found.");
 
   let cart = new Cart({
-    list: [product],
+    list: [{ product: product._id, cost: product.price }],
   });
 
   await cart.save();
@@ -103,7 +103,7 @@ router.delete("/:id", async (req, res) => {
       .send("The cart doesn't have product with the given ID.");
 
   let product = await Product.findByIdAndIncreaseStock(
-    params.product,
+    req.body.product,
     list[index].quantity
   );
   if (!product)

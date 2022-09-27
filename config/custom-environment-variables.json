@@ -1,15 +1,16 @@
 {
-  "clientUrl": "damianlikus_clientUrl",
-  "jwtPrivateKey": "damianlikus_jwtPrivateKey",
-  "db": "damianlikus_db",
+  "clientUrl": "ecommerce_clientUrl",
+  "jwtPrivateKey": "ecommerce_jwtPrivateKey",
+  "db": "ecommerce_db",
 
   "p24": {
-    "crc": "damianlikus_p24.crc"
+    "crc": "ecommerce_p24.crc"
   },
 
   "furgonetka": {
-    "password": "damianlikus_furgonetka.crc",
-    "clientId": "damianlikus_furgonetka.clientId",
-    "clientSecret": "damianlikus_furgonetka.clientSecret"
+    "password": "ecommerce_p24_furgonetka.crc",
+    "clientId": "ecommerce_p24_furgonetka.clientId",
+    "clientSecret": "ecommerce_p24_furgonetka.clientSecret"
   }
+
 }

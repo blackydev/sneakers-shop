@@ -1,6 +1,9 @@
 const Joi = require("joi");
 const mongoose = require("mongoose");
 const { schemas } = require("./utils/schemas");
+const dayjs = require("dayjs");
+
+const maxProductQuantity = 6;
 
 const listItemSchema = new mongoose.Schema(
   {
@@ -14,6 +17,7 @@ const listItemSchema = new mongoose.Schema(
     quantity: {
       type: Number,
       min: 1,
+      max: maxProductQuantity,
       default: 1,
       validate: {
         validator: Number.isInteger,
@@ -51,14 +55,6 @@ const modelSchema = new mongoose.Schema(
 
 const Cart = mongoose.model("carts", modelSchema);
 
-Cart.findById = function (id) {
-  return this.findByIdAndUpdate(id, { updatedAt: new Date() }).select(
-    "-createdAt -updatedAt"
-  );
-};
-
-const maxProductQuantity = 6;
-
 function validate(cartElement) {
   const schema = Joi.object().keys({
     product: Joi.objectId().required(),
@@ -68,6 +64,42 @@ function validate(cartElement) {
   return schema.validate(cartElement);
 }
 
-exports.validate = validate;
-exports.cartSchema = cartSchema;
-exports.Cart = Cart;
+Cart.findById = function (id) {
+  return this.findByIdAndUpdate(id, { updatedAt: new Date() }).select(
+    "-createdAt -updatedAt"
+  );
+};
+
+async function deleteCarts(carts) {
+  carts.map(async (cart) => {
+    for (const item of cart.list)
+      await Product.findByIdAndIncreaseStock(item.product, item.quantity);
+    await cart.remove();
+  });
+}
+
+function deleteCartsInterval() {
+  const minute = 60 * 1000;
+  const hour = 60 * minute;
+
+  setInterval(async function () {
+    // deletion of unupdated carts
+    const limit = dayjs().subtract(20, "minute");
+    const carts = await Cart.find({ updatedAt: { $lt: limit } });
+    await deleteCarts(carts);
+  }, 5 * minute);
+
+  setInterval(async function () {
+    // deletion deprecated carts
+    const limit = dayjs().subtract(6, "hour");
+    const carts = await Cart.find({ createdAt: { $lt: limit } });
+    await deleteCarts(carts);
+  }, 3 * hour);
+}
+
+module.exports = {
+  validate,
+  cartSchema,
+  Cart,
+  deleteCartsInterval,
+};

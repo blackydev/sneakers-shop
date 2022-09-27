@@ -18,27 +18,6 @@ const orderSchema = new mongoose.Schema(
       required: true,
     },
 
-    delivery: {
-      model: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "deliveries",
-        required: true,
-      },
-
-      furgonetkaId: {
-        type: String,
-      },
-
-      cost: {
-        ...schemas.price,
-        required: true,
-      },
-
-      point: {
-        type: String,
-      },
-    },
-
     p24Id: {
       type: Number,
     },
@@ -49,6 +28,27 @@ const orderSchema = new mongoose.Schema(
       default: "pending",
       maxlength: 256,
     },
+
+    delivery: {
+      method: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "deliveries",
+        required: true,
+      },
+
+      cost: {
+        ...schemas.price,
+        required: true,
+      },
+
+      point: {
+        type: String,
+      },
+
+      packageId: {
+        type: Number,
+      },
+    },
   },
   {
     toObject: { getters: true, setters: true },
@@ -57,7 +57,7 @@ const orderSchema = new mongoose.Schema(
   }
 );
 
-orderSchema.methods.getTotalCost = async function () {
+orderSchema.methods.getTotalCost = function () {
   let totalCost = this.delivery.cost;
   for (const item of this.cart.list) {
     totalCost += item.cost * item.quantity;
@@ -81,8 +81,8 @@ function validate(order) {
       })
       .required(),
 
-    delivery: Joi.object().required().keys({
-      model: Joi.objectId().required(),
+    delivery: Joi.object({
+      method: Joi.objectId().required(),
       point: Joi.string(),
     }),
   });

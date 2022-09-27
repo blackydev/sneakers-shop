@@ -20,6 +20,7 @@ router.get("/:id", validateObjectId, async (req, res) => {
 
   res.send(delivery);
 });
+
 router.post("/", [auth, isAdmin], async (req, res) => {
   const { error } = validate(req.body);
   if (error) return res.status(400).send(error.details[0].message);
@@ -44,14 +45,13 @@ router.put("/:id", [auth, isAdmin, validateObjectId], async (req, res) => {
       .status(404)
       .send("The delivery with the given ID was not found.");
 
-  delivery.furgonetka = req.body.furgonetka;
   await delivery.save();
 
   res.send(delivery);
 });
 
 const getProperties = (body) => {
-  return _.pick(body, ["name", "price", "furgonetka"]);
+  return _.pick(body, ["name", "price", "serviceId", "points"]);
 };
 
 module.exports = router;

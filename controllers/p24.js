@@ -24,7 +24,6 @@ const client = axios.create({
 const createTransaction = async (order, hostURL) => {
   try {
     const customer = order.customer;
-    const delivery = order.delivery;
     const hashData = {
       sessionId: order._id,
       merchantId: merchantId,
@@ -54,7 +53,7 @@ const createTransaction = async (order, hostURL) => {
       urlStatus: `${hostURL}/api/orders/${order._id}/p24Callback`,
       timeLimit: paymentTimeLimit,
       waitForResult: true,
-      shipping: delivery.cost * 100,
+      shipping: order.deliveryCost * 100,
       transferLabel: `Zamówienie`,
       sign: sign,
     };

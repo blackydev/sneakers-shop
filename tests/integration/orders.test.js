@@ -44,7 +44,7 @@ describe("orders route", () => {
       const res = await exec();
       expect(res.body[0]).toHaveProperty("customer.name");
       expect(res.body[0]).toHaveProperty("cart.list");
-      expect(res.body[0]).toHaveProperty("delivery.model");
+      expect(res.body[0]).toHaveProperty("delivery.method");
       expect(res.body[0]).toHaveProperty("delivery.cost");
       expect(res.status).toBe(200);
     });
@@ -148,9 +148,7 @@ describe("orders route", () => {
       products = await createProducts();
 
       cart = await createCart([products[0], products[2]], [1, 2]);
-      delivery = {
-        model: deliveries[1]._id,
-      };
+      delivery = { method: deliveries[1]._id };
 
       customer = {
         name: "Anna Czarnecka",
@@ -193,25 +191,16 @@ describe("orders route", () => {
       expect(res.status).toBe(400);
     });
 
-    it("return 400 if invalid cart is passed", async () => {
-      cart = {
-        products: [
-          {
-            productId: mongoose.Types.ObjectId(),
-          },
-        ],
-      };
-
+    it("return 404 if invalid cart is passed", async () => {
+      cart = mongoose.Types.ObjectId();
       const res = await exec();
-      expect(res.status).toBe(400);
+      expect(res.status).toBe(404);
     });
 
-    it("return 400 if invalid delivery is passed", async () => {
-      delivery = {
-        methodId: mongoose.Types.ObjectId(),
-      };
+    it("return 404 if invalid delivery is passed", async () => {
+      delivery = { method: mongoose.Types.ObjectId() };
       const res = await exec();
-      expect(res.status).toBe(400);
+      expect(res.status).toBe(404);
     });
   });
 
@@ -287,7 +276,7 @@ describe("orders route", () => {
       expect(res.status).toBe(404);
     });
   });
-  /*
+
   describe("PUT /:id/status", () => {
     let token, orders, orderId, status;
 
@@ -313,7 +302,7 @@ describe("orders route", () => {
     it("return order if valid status is passsed", async () => {
       const res = await exec();
       expect(res.body).toHaveProperty("status", status);
-      expect(res.body).toHaveProperty("cart", orders[0].cart);
+      expect(res.body).toHaveProperty("cart");
       expect(res.body).toHaveProperty("delivery");
       expect(res.status).toBe(200);
     });
@@ -329,7 +318,7 @@ describe("orders route", () => {
       const res = await exec();
       expect(res.status).toBe(404);
     });
-  });*/
+  });
 });
 
 const createOrders = async (carts, deliveries, customers) => {
@@ -369,10 +358,7 @@ const createOrders = async (carts, deliveries, customers) => {
   let order = new Order({
     customer: customers[0],
     cart: { list: carts[0].list },
-    delivery: {
-      model: deliveries[1]._id,
-      cost: deliveries[1].price,
-    },
+    delivery: { method: deliveries[1]._id, cost: deliveries[1].price },
     status: "pending",
   });
   await order.save();
@@ -381,11 +367,7 @@ const createOrders = async (carts, deliveries, customers) => {
   order = new Order({
     customer: customers[1],
     cart: { list: carts[1].list },
-    delivery: {
-      model: deliveries[2]._id,
-      cost: deliveries[2].price,
-      point: "Krakow",
-    },
+    delivery: { method: deliveries[2]._id, cost: deliveries[2].price },
     status: "pending",
   });
   await order.save();
