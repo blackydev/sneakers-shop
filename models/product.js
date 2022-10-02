@@ -1,6 +1,7 @@
 const Joi = require("joi");
 const mongoose = require("mongoose");
 const { schemas, joiSchemas } = require("./utils/schemas");
+const { categorySchema } = require("./category");
 
 const productSchema = new mongoose.Schema(
   {
@@ -38,6 +39,11 @@ const productSchema = new mongoose.Schema(
     },
     hidden: {
       type: Boolean,
+    },
+    category: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "categories",
+      required: true,
     },
   },
   {
@@ -81,6 +87,7 @@ function validateProduct(product) {
     numberInStock: Joi.number().min(0).required(),
     release: Joi.date(),
     hidden: Joi.boolean(),
+    category: Joi.objectId().required(),
   });
 
   return schema.validate(product);

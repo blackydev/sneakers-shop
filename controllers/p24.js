@@ -39,7 +39,7 @@ const createTransaction = async (order, hostURL) => {
       sessionId: order._id,
       amount: totalCost,
       currency: "PLN",
-      description: `Zamówienie nr. ${order._id}`,
+      description: `Order ${order._id}`,
       email: customer.email,
       client: customer.name,
       address: customer.address,
@@ -54,7 +54,7 @@ const createTransaction = async (order, hostURL) => {
       timeLimit: paymentTimeLimit,
       waitForResult: true,
       shipping: order.deliveryCost * 100,
-      transferLabel: `Zamówienie`,
+      transferLabel: `Order`,
       sign: sign,
     };
     const { data: result } = await client.post(

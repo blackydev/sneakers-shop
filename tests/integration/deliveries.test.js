@@ -11,9 +11,9 @@ const deliveries = [
     price: 0,
   },
   {
-    name: "carrier",
+    name: "carrier DPD",
     price: 20,
-    serviceId: 9603405,
+    serviceId: 9603401,
   },
   {
     name: "inpost package robot",

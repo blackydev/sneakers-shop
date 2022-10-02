@@ -19,9 +19,10 @@
   },
 
   "pickup": {
-    "street": "Jagielonska 8",
+    "name": "Karol Wojtyla",
+    "street": "Szymanowskiego 8",
     "postcode": "32-500",
-    "city": "Krakow"
+    "city": "Pogorzyce"
   }
 
 }

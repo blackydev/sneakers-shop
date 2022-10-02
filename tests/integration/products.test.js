@@ -6,6 +6,7 @@ const request = require("supertest");
 const fs = require("fs");
 const path = require("path");
 const { getAuthToken, deleteUsers } = require("./users.test");
+const { createCategory, deleteCategories } = require("./categories.todo");
 
 const products = [
   {
@@ -59,23 +60,28 @@ describe("products route", () => {
     await server.close();
     await Product.deleteMany({});
     await deleteUsers();
+    await deleteCategories();
   });
 
   describe("GET /", () => {
     let finalProducts;
     beforeEach(async () => {
+      const { _id: categoryId } = await createCategory();
       finalProducts = await Product.insertMany([
         {
           ...products[0],
           image: pngImg,
+          category: categoryId,
         },
         {
           ...products[1],
           image: jpgImg,
+          category: categoryId,
         },
         {
           ...products[2],
           image: webpImg,
+          category: categoryId,
         },
       ]);
     });
@@ -153,11 +159,13 @@ describe("products route", () => {
 
       describe("showHidden", () => {
         it("should return hidden products", async () => {
+          const { _id: categoryId } = await createCategory();
           await Product.insertMany([
             {
               ...products[0],
               image: webpImg,
               hidden: true,
+              category: categoryId,
             },
           ]);
           const res = await request(server).get(
@@ -174,10 +182,12 @@ describe("products route", () => {
   describe("GET /:id", () => {
     let hidden;
     const exec = async () => {
+      const { _id: categoryId } = await createCategory();
       let product = new Product({
         ...products[0],
         image: "star-wars-1.png",
         hidden,
+        category: categoryId,
       });
       await product.save();
       return product;
@@ -236,6 +246,7 @@ describe("products route", () => {
     let product;
 
     beforeEach(async () => {
+      const { _id: categoryId } = await createCategory();
       product = {
         name: "Star Wars I",
         description:
@@ -243,6 +254,7 @@ describe("products route", () => {
         slogan: "It's awesome movie",
         price: 15,
         numberInStock: 255,
+        category: JSON.parse(JSON.stringify(categoryId)),
       };
 
       token = await getAuthToken(true);
@@ -272,7 +284,8 @@ describe("products route", () => {
         .field("description", product.description)
         .field("slogan", product.slogan)
         .field("price", product.price)
-        .field("numberInStock", product.numberInStock);
+        .field("numberInStock", product.numberInStock)
+        .field("category", product.category);
     };
 
     const expectImg = (path) => {
@@ -327,9 +340,11 @@ describe("products route", () => {
     let imagePath;
     let productId;
     let reqProduct;
+    let category;
 
     beforeEach(async () => {
-      const products = await createProducts();
+      category = await createCategory();
+      const products = await createProducts(category);
       product = products[0];
       imagePath = webpImg;
       productId = product._id;
@@ -363,7 +378,8 @@ describe("products route", () => {
         .field("description", reqProduct.description)
         .field("slogan", reqProduct.slogan)
         .field("price", reqProduct.price)
-        .field("numberInStock", reqProduct.numberInStock);
+        .field("numberInStock", reqProduct.numberInStock)
+        .field("category", JSON.parse(JSON.stringify(category._id)));
     };
 
     it("return product if no image is send", async () => {
@@ -430,10 +446,15 @@ describe("products route", () => {
   });
 });
 
-const createProducts = async () => {
+const createProducts = async (category) => {
   const result = [];
+  if (!category) category = await createCategory();
   for (const el of products) {
-    const product = new Product({ ...el, image: mockImg });
+    const product = new Product({
+      ...el,
+      image: mockImg,
+      category: category._id,
+    });
     await product.save();
     result.push(product);
   }
@@ -443,6 +464,7 @@ const createProducts = async () => {
 
 const deleteProducts = async () => {
   await Product.deleteMany({});
+  await deleteCategories({});
 };
 
 module.exports = {

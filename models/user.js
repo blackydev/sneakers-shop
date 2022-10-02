@@ -55,8 +55,6 @@ function validateUser(user) {
   const schema = Joi.object({
     email: joiSchemas.email.required(),
     password: passwordComplexity(complexityOptions).required(),
-    authDate: Joi.date(),
-    isAdmin: Joi.boolean(),
   });
 
   return schema.validate(user);

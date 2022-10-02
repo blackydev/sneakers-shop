@@ -32,25 +32,35 @@ const getPoints = async (services, searchPhrase) => {
   }
 };
 
-const createDelivery = async (order, serviceId) => {
+const createDelivery = async (order) => {
+  await order.populate("delivery.method", "serviceId");
   const customer = order.customer;
-
   const request = {
     pickup: config.get("pickup"),
+    sender: config.get("pickup"),
     receiver: {
       street: customer.address,
       postCode: customer.zip,
       city: customer.city,
       name: customer.name,
-      company: customer.companyName,
+      company: customer.company,
       email: customer.email,
-      phone: customer.phone,
-      point: order.deliveryPoint,
+      phone: "533507969",
+      point: order.delivery.point,
     },
-    service_id: serviceId,
-    parcels: [{ type: "package" }],
+    service_id: order.delivery.method.serviceId,
+    parcels: [
+      {
+        type: "package",
+        value: order.getTotalCost(),
+        description: "Order",
+        width: 50,
+        depth: 50,
+        height: 50,
+        weight: 1,
+      },
+    ],
   };
-
   try {
     const { data } = await Auth.axiosClient.post("/packages", request);
     return data;

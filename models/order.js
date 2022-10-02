@@ -78,8 +78,7 @@ function validate(order) {
         return statuses.includes(v)
           ? true
           : helper.message("Invalid order status.");
-      })
-      .required(),
+      }),
 
     delivery: Joi.object({
       method: Joi.objectId().required(),

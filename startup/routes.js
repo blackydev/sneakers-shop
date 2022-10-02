@@ -5,6 +5,8 @@ const orders = require("../routes/orders");
 const carts = require("../routes/carts");
 const p24 = require("../routes/p24");
 const deliveries = require("../routes/deliveries");
+const furgonetka = require("../routes/furgonetka");
+const categories = require("../routes/categories");
 const error = require("../middleware/error");
 const config = require("config");
 const cors = require("cors");
@@ -20,8 +22,10 @@ module.exports = function (app) {
   app.use("/api/public", express.static(config.get("public")));
   app.use("/api/users", users);
   app.use("/api/products", products);
+  app.use("/api/categories", categories);
   app.use("/api/carts", carts);
   app.use("/api/orders", orders);
+  app.use("/api/furgonetka", furgonetka);
   app.use("/api/p24", p24);
   app.use("/api/deliveries", deliveries);
 

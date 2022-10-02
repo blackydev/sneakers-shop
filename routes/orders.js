@@ -8,6 +8,7 @@ const p24 = require("../controllers/p24");
 const { getHostURL } = require("../utils/url");
 const { auth, isAdmin } = require("../middleware/authorization");
 const validateObjectId = require("../middleware/validateObjectId");
+const { createDelivery } = require("../controllers/furgonetka");
 const { Cart } = require("../models/cart");
 const { isLength } = require("lodash");
 
@@ -45,8 +46,6 @@ request:
 }
   */
   const body = req.body;
-  body.status = "pending";
-
   const { error } = validate(body);
   if (error) return res.status(400).send(error.details[0].message);
 
@@ -74,7 +73,6 @@ request:
       cost: delivery.price,
       point: body.delivery.point,
     },
-    status: body.status,
   });
 
   await order.save();
@@ -162,21 +160,21 @@ router.post("/:id/p24Callback", validateObjectId, async (req, res) => {
       p24Id: req.body.orderId,
     },
     { new: true }
-  );
+  ).populate("delivery.method", "serviceId");
 
   if (order.status === "interrupted")
     return res.status(400).send("Order is interrupted.");
 
+  if (order.delivery.method.serviceId) {
+    result = await createDelivery(order);
+    if (_.isError(result)) return res.status(400).send();
+    order.delivery.packageId = result.package_id;
+  }
+
   let result = await p24.verifyTransaction(order);
   if (_.isError(result)) return res.status(400).send();
 
-  await Order.findByIdAndUpdate(
-    req.params.id,
-    {
-      status: "paid",
-    },
-    { new: true }
-  );
+  order.status = "paid";
 
   res.status(204);
 });
