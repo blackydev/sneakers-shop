@@ -1,0 +1,97 @@
+[{
+  "_id": {
+    "$oid": "6334a93aa8c38c294bf46a49"
+  },
+  "name": "Nike Dunk Retro",
+  "image": "Nike-dunk-high-retro-yellow-purple.png",
+  "description": "Stworzone z myślą o parkiecie, ale zawładnęły też modą uliczną. Nowa odsłona ikony koszykówki z lat 80. powraca z połyskującymi powłokami i uniwersyteckimi kolorami z oryginalnego modelu. Nike Dunk High Retro o klasycznym kroju butów do koszykówki z lat 80. wprowadzają styl retro na ulice. Wyściełany, wysoki kołnierz nadaje im oldschoolowy wygląd, jednocześnie zapewniając komfort.",
+  "price": 54999,
+  "numberInStock": 2000,
+  "category": {
+    "$oid": "63335c5fcba1f1057808aecf"
+  },
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "6334a98ca8c38c294bf46a4d"
+  },
+  "name": "Nike Blazer",
+  "image": "Nike-Blazer-'77-Pro-Club-white.png",
+  "description": "Zapuszczenie korzeni nie oznacza, że nie możesz iść naprzód. Zachowująca klasyczną prostotę i wygodę, które kochasz, ten ulubiony element Twojej garderoby zyskał nowoczesną odsłonę. Dodatkowa guma rozciąga się od podeszwy środkowej aż po logo Swoosh, co nadaje całości wyrazisty charakter (i stanowi ukłon w stronę innowacji Nike z lat 70.). Patchworkowa cholewka nadaje całości charakter retro.",
+  "price": 49999,
+  "numberInStock": 3500,
+  "category": {
+    "$oid": "63335c63cba1f1057808aed2"
+  },
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "6334a9e3a8c38c294bf46a51"
+  },
+  "name": "Air Jordan 11",
+  "image": "Air-Jordan-11-CMFT-Low-white.png",
+  "description": "Reprezentuj Michaela Jordana w wielkim stylu i niezrównanej wygodzie. Buty są ozdobione wyjątkowymi elementami zaczerpniętymi z oryginalnego modelu AJ11, takimi jak elastyczne pętelki na sznurowadła z taśmy parcianej i otok otaczający palce. Lekka pianka i poduszka gazowa Zoom Air zapewniają wygodę każdego kroku, a wyściełany kołnierz i język dają komfort, dopasowanie i uczucie miękkości przez cały dzień.",
+  "price": 49999,
+  "numberInStock": 5000,
+  "category": {
+    "$oid": "63335c5fcba1f1057808aecf"
+  },
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "6334aa45a8c38c294bf46a55"
+  },
+  "name": "Air Jordan XXXVI FS",
+  "image": "Air-Jordan-XXXVI-FS.png",
+  "description": "Kolejna wersja kultowego modelu AJ to demonstracja energii i pragnienia, które wywołały koszykarską rewolucję. Ma minimalistyczną, ale trwałą konstrukcję, która jest jedną z najlżejszych, jakie do tej pory pojawiły się w rodzinie Air Jordan. Pełnowymiarowa poduszka gazowa Zoom Air Strobel umieszczona nad poduszką gazową Zoom Air w przedniej części buta zapewnia zwrot energii i doskonałą sprężystość, kiedy jej potrzebujesz. Wejdź na boisko pewnym krokiem, wiedząc, że wszystko będzie przychodzić Ci z lekkością.",
+  "price": 44999,
+  "numberInStock": 5000,
+  "category": {
+    "$oid": "63335c5fcba1f1057808aecf"
+  },
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "6334aacda8c38c294bf46a5e"
+  },
+  "name": "Nike Air Force 1",
+  "image": "Nike-Air-Force-1-Low.png",
+  "description": "Dobrze znasz kultowy model AF1.Efektowne powłoki, wyraziste akcenty i amortyzacja Air-Sole od dziesięcioleci nawiązują do inspirowanego koszykówką dziedzictwa.Nadaj butom wyjątkowy charakter, dodając wysokiej jakości skórę i zamsz. Wybierz rodzaj gumowego bieżnika, a na koniec uzupełnij całość charakterystycznym dla siebie elementem.Teraz to Twój model.",
+  "price": 44999,
+  "numberInStock": 5000,
+  "category": {
+    "$oid": "63335c63cba1f1057808aed2"
+  },
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "6336d2e0fe0090b0f48a9ba2"
+  },
+  "name": "Nike Dunk Retro",
+  "image": "Nike-Dunk-High-Retro-green.png",
+  "description": "Stworzony w latach osiemdziesiątych z myślą o koszykówce model, który potem zawładnął ulicami, powraca w odważnej wersji o różnych fakturach. Klasyczny krój inspirowany koszykówką oraz wyściełany kołnierz średniej wysokości zapewniają wygodę i stylowy wygląd w każdej sytuacji.",
+  "price": 59999,
+  "numberInStock": 10000,
+  "category": {
+    "$oid": "63335c63cba1f1057808aed2"
+  },
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "6336d43ffe0090b0f48a9bb4"
+  },
+  "name": "Air Jordan XXXVI\n",
+  "image": "Air-Jordan-XXXVI-SE-Kia-Global-Game.png",
+  "description": "Zanim zadebiutowała w zawodowym sporcie w 2018 roku, Kia dominowała na arenie światowej ze swoją drużyną narodową, od kiedy skończyła 16 lat.Kia, która dała wielki pokaz i poprowadziła swój kraj, zdobywając punkty na arenie międzynarodowej w 2016 roku, wie, że znalazła się tu nie przez przypadek.Buty Air Jordan XXXVI „Global Game”, inspirowane wszystkimi miejscami odwiedzonymi przez Kię, nawiązują do jej misji i wyrażają dumę z reprezentowania barw narodowych.",
+  "price": 84999,
+  "numberInStock": 10000,
+  "category": {
+    "$oid": "63335c5fcba1f1057808aecf"
+  },
+  "__v": 0,
+  "release": {
+    "$date": {
+      "$numberLong": "2524651759182"
+    }
+  }
+}]
