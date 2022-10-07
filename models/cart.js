@@ -1,9 +1,10 @@
 const Joi = require("joi");
 const mongoose = require("mongoose");
 const { schemas } = require("./utils/schemas");
+const { Product } = require("./product");
 const dayjs = require("dayjs");
 
-const maxProductQuantity = 6;
+const maxProductQuantity = 9;
 
 const listItemSchema = new mongoose.Schema(
   {

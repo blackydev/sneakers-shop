@@ -13,17 +13,6 @@ const deliverySchema = new mongoose.Schema(
       ...schemas.price,
       required: true,
     },
-
-    serviceId: {
-      type: Number,
-      default: 0,
-    },
-
-    points: {
-      // string to get access for data if points exists
-      type: String,
-      default: "",
-    },
   },
   {
     toObject: { getters: true, setters: true },
@@ -38,8 +27,6 @@ function validateDelivery(delivery) {
   const schema = Joi.object({
     name: Joi.string().required(),
     price: joiSchemas.price.required(),
-    points: Joi.string(),
-    serviceId: Joi.number(),
   });
 
   return schema.validate(delivery);

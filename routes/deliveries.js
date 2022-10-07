@@ -51,7 +51,7 @@ router.put("/:id", [auth, isAdmin, validateObjectId], async (req, res) => {
 });
 
 const getProperties = (body) => {
-  return _.pick(body, ["name", "price", "serviceId", "points"]);
+  return _.pick(body, ["name", "price"]);
 };
 
 module.exports = router;
