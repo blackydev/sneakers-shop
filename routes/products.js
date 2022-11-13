@@ -1,23 +1,20 @@
 const _ = require("lodash");
 const mongoose = require("mongoose");
 const express = require("express");
+const path = require("path");
 const router = express.Router();
+const { Category } = require("../models/category");
+const { Product, validate } = require("../models/product");
 const validateObjectId = require("../middleware/validateObjectId");
 const { auth, isAdmin } = require("../middleware/authorization");
-const { upload } = require("../middleware/productUpload");
-const { Product, validate } = require("../models/product");
+const { upload, dirPath } = require("../middleware/productUpload");
 const { validateProductId } = require("../middleware/validateObjectsId");
 const { deleteFile } = require("../utils/deleteFile");
-const { Category } = require("../models/category");
-
-const hiddenQuery = { hidden: { $in: [false, null] } };
 
 router.get("/", async (req, res) => {
   try {
-    const { showHidden, select, sortBy, pageLength, pageNumber, category } =
-      req.query;
-    if (showHidden !== "true") var query = hiddenQuery;
-    if (category) query = { ...query, category };
+    const { select, sortBy, pageLength, pageNumber, category } = req.query;
+    if (category) var query = { category };
     if (sortBy) var sort = sortBy;
     else sort = "-release";
 
@@ -35,15 +32,14 @@ router.get("/", async (req, res) => {
 });
 
 router.get("/:id", validateObjectId, async (req, res) => {
-  let { showHidden, select } = req.query;
-  showHidden = showHidden === "true" ? true : false;
+  let { select } = req.query;
 
   const product = await Product.findById(req.params.id, select).populate(
     "category",
     "name"
   );
 
-  if (!product || (!showHidden && product.hidden))
+  if (!product)
     return res.status(404).send("The product with the given ID was not found.");
 
   res.send(product);
@@ -54,7 +50,7 @@ router.post("/", [auth, isAdmin, upload.single("image")], async (req, res) => {
 
   const { error } = validate(req.body);
   if (error) {
-    deleteImage(req);
+    if (req.file) await deleteImage(req.body.image);
     return res.status(400).send(error.details[0].message);
   }
 
@@ -79,7 +75,7 @@ router.put(
 
     const { error } = validate(req.body);
     if (error) {
-      deleteImage(req);
+      if (req.file) await deleteImage(req.body.image);
       return res.status(400).send(error.details[0].message);
     }
 
@@ -91,32 +87,28 @@ router.put(
         .status(404)
         .send("The category with the given ID was not found.");
 
-    const oldProduct = await Product.findByIdAndUpdate(
+    const { image: oldImage } = await Product.findByIdAndUpdate(
       { _id: req.params.id },
       { $set: req.body }
     );
 
     const product = await Product.findById({ _id: req.params.id });
 
+    if (req.file) await deleteImage(oldImage);
     res.send(product);
-    if (req.file) await deleteFile(oldProduct.image);
   }
 );
 
-const deleteImage = async (req) => {
-  req.file ? await deleteFile(req.body.image) : null;
-};
+const deleteImage = (image) => deleteFile(dirPath + path.basename(image));
 
 const getProperties = (productBody) => {
   return _.pick(productBody, [
     "name",
     "image",
     "description",
-    "slogan",
     "price",
     "numberInStock",
     "release",
-    "hidden",
     "category",
   ]);
 };

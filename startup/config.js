@@ -1,5 +1,5 @@
 const config = require("config");
-const p24 = require("../controllers/p24");
+const p24 = require("../utils/p24");
 
 function checkConfig(properties) {
   properties.map((property) => {
@@ -18,10 +18,6 @@ module.exports = async function async() {
     "p24.posId",
     "p24.raportKey",
     "p24.crc",
-    "furgonetka.username",
-    "furgonetka.password",
-    "furgonetka.clientId",
-    "furgonetka.clientSecret",
   ];
   checkConfig(properties);
 

@@ -22,7 +22,7 @@ const listItemSchema = new mongoose.Schema(
       default: 1,
       validate: {
         validator: Number.isInteger,
-        message: "{VALUE} is not an integer value",
+        message: `${Number} is not an integer value`,
       },
     },
   },
@@ -58,7 +58,7 @@ const Cart = mongoose.model("carts", modelSchema);
 
 function validate(cartElement) {
   const schema = Joi.object().keys({
-    product: Joi.objectId().required(),
+    productId: Joi.objectId().required(),
     quantity: Joi.number().integer().min(1).max(maxProductQuantity).required(),
   });
 
@@ -71,17 +71,18 @@ Cart.findById = function (id) {
   );
 };
 
-async function deleteCarts(carts) {
-  carts.map(async (cart) => {
-    for (const item of cart.list)
-      await Product.findByIdAndIncreaseStock(item.product, item.quantity);
-    await cart.remove();
-  });
+async function deleteCart(cart) {
+  for (const item of cart.list)
+    await Product.findByIdAndIncreaseStock(item.product, item.quantity);
+  await cart.remove();
 }
 
-function deleteCartsInterval() {
+async function deleteCartsInterval() {
   const minute = 60 * 1000;
   const hour = 60 * minute;
+
+  const deleteCarts = async (carts) =>
+    carts.map(async (cart) => await deleteCart(cart));
 
   setInterval(async function () {
     // deletion of unupdated carts
@@ -92,7 +93,7 @@ function deleteCartsInterval() {
 
   setInterval(async function () {
     // deletion deprecated carts
-    const limit = dayjs().subtract(6, "hour");
+    const limit = dayjs().subtract(3, "hour");
     const carts = await Cart.find({ createdAt: { $lt: limit } });
     await deleteCarts(carts);
   }, 3 * hour);
@@ -102,5 +103,6 @@ module.exports = {
   validate,
   cartSchema,
   Cart,
+  deleteCart,
   deleteCartsInterval,
 };

@@ -26,74 +26,42 @@ describe("deliveries route", () => {
   afterEach(async () => {
     await server.close();
     await deleteDeliveries();
+    await deleteUsers();
   });
 
   describe("GET /", () => {
-    it("return all deliveries", async () => {
+    const exec = () => request(server).get("/api/deliveries");
+
+    it("should return deliveries", async () => {
       await createDeliveries();
-      const res = await request(server).get("/api/deliveries");
-      expect(res.status).toBe(200);
-      expect(res.body.length).toBe(4);
-    });
-  });
-
-  describe("GET /:id", () => {
-    let deliveryId;
-
-    beforeEach(async () => {
-      const deliveries = await createDeliveries();
-      deliveryId = deliveries[3]._id;
+      const res = await exec();
+      expect(res.body.length).toBe(2);
     });
 
-    afterEach(async () => {
-      await deleteDeliveries();
-    });
-
-    const exec = () => {
-      return request(server).get(`/api/deliveries/${deliveryId}`);
-    };
-
-    it("return delivery if valid id is passed", async () => {
+    it("should return 200", async () => {
+      await createDeliveries();
       const res = await exec();
       expect(res.status).toBe(200);
-      expect(res.body).toHaveProperty("name");
-      expect(res.body).toHaveProperty("price");
-      expect(res.body).toHaveProperty("serviceId");
-      expect(res.body).toHaveProperty("points");
-    });
-
-    it("return 404 if invalid id is passed", async () => {
-      deliveryId = mongoose.Types.ObjectId();
-      const res = await exec();
-      expect(res.status).toBe(404);
     });
   });
 
   describe("POST /", () => {
-    let token;
-    let delivery;
+    let token, delivery;
 
     beforeEach(async () => {
       token = await getAuthToken(true);
     });
 
-    afterEach(async () => {
-      await deleteDeliveries();
-      await deleteUsers();
-    });
-
-    const exec = () => {
-      return request(server)
+    const exec = () =>
+      request(server)
         .post(`/api/deliveries`)
         .set("x-auth-token", token)
         .send(delivery);
-    };
 
-    it("return delivery if valid data is passed", async () => {
+    it("should return delivery if valid data is passed", async () => {
       delivery = {
         name: "DHL packages",
         price: 9.9,
-        serviceId: 9603409,
       };
       const res = await exec();
       expect(res.body).toHaveProperty("_id");
@@ -102,18 +70,40 @@ describe("deliveries route", () => {
       expect(res.status).toBe(200);
     });
 
-    it("return 400 if no name is passed", async () => {
+    it("should return 400 if no name is passed", async () => {
       delivery = {
-        name: "",
         price: 9.9,
       };
       const res = await exec();
       expect(res.status).toBe(400);
     });
+
+    it("should return 400 if invalid price is passed", async () => {
+      delivery = {
+        name: "DHL",
+        price: "invalid",
+      };
+      const res = await exec();
+      expect(res.status).toBe(400);
+    });
+
+    it("should return 401 if no token is provided", async () => {
+      token = "";
+      const res = await exec();
+      expect(res.status).toBe(401);
+    });
+
+    it("should return 403 if user is not an admin", async () => {
+      await deleteUsers();
+      token = await getAuthToken(false);
+
+      const res = await exec();
+      expect(res.status).toBe(403);
+    });
   });
 
-  describe("POST /", () => {
-    let token, delivery, newDelivery;
+  describe("PUT /:id", () => {
+    let token, delivery, newDelivery, deliveryId;
 
     beforeEach(async () => {
       token = await getAuthToken(true);
@@ -122,21 +112,16 @@ describe("deliveries route", () => {
         price: 9.9,
       });
       await delivery.save();
+      deliveryId = delivery._id;
     });
 
-    afterEach(async () => {
-      await deleteDeliveries();
-      await deleteUsers();
-    });
-
-    const exec = () => {
-      return request(server)
-        .put(`/api/deliveries/${delivery._id}`)
+    const exec = () =>
+      request(server)
+        .put(`/api/deliveries/${deliveryId}`)
         .set("x-auth-token", token)
         .send(newDelivery);
-    };
 
-    it("return delivery", async () => {
+    it("should return delivery if request is correct", async () => {
       newDelivery = {
         name: "new DHL",
         price: 10.9,
@@ -144,22 +129,50 @@ describe("deliveries route", () => {
       const res = await exec();
       expect(res.body).toHaveProperty("name", "new DHL");
       expect(res.body).toHaveProperty("price", 10.9);
+    });
+
+    it("should return 200 if request is correct", async () => {
+      newDelivery = {
+        name: "new DHL",
+        price: 10.9,
+      };
+      const res = await exec();
       expect(res.status).toBe(200);
     });
 
-    it("return 404 if invalid ID is passed", async () => {
-      delivery._id = mongoose.Types.ObjectId();
+    it("should return 404 if delivery with given ID doesn't exist", async () => {
+      deliveryId = mongoose.Types.ObjectId();
       const res = await exec();
       expect(res.status).toBe(404);
     });
 
-    it("return 400 if invalid data is passed", async () => {
+    it("should return 400 if invalid data is passed", async () => {
       newDelivery = {
         name: "DHL",
         price: "invalidData",
       };
       const res = await exec();
       expect(res.status).toBe(400);
+    });
+
+    it("should return 404 if ID is invalid", async () => {
+      deliveryId = 1;
+      const res = await exec();
+      expect(res.status).toBe(404);
+    });
+
+    it("should return 401 if no token is provided", async () => {
+      token = "";
+      const res = await exec();
+      expect(res.status).toBe(401);
+    });
+
+    it("should return 403 if user is not an admin", async () => {
+      await deleteUsers();
+      token = await getAuthToken(false);
+
+      const res = await exec();
+      expect(res.status).toBe(403);
     });
   });
 });

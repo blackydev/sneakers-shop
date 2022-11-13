@@ -91,11 +91,17 @@ describe("users route", () => {
         .send({ email: email, password: password });
     };
 
-    it("should return token", async () => {
+    it("should return token if request is correct", async () => {
       const res = await exec();
       let token = jwt.verify(res.text, config.get("jwtPrivateKey"));
       expect(token).toHaveProperty("_id");
       expect(token).toHaveProperty("authNumber");
+      expect(res.status).toBe(200);
+    });
+
+    it("should return 200 if request is correct", async () => {
+      const res = await exec();
+      let token = jwt.verify(res.text, config.get("jwtPrivateKey"));
       expect(res.status).toBe(200);
     });
 

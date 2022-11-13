@@ -16,195 +16,229 @@ describe("carts route", () => {
     await deleteCarts();
   });
 
+  describe("GET /", () => {
+    const exec = () => {
+      return request(server).get(`/api/carts`);
+    };
+
+    it("should return new empty cart if request is correct", async () => {
+      const res = await exec();
+      expect(res.body).toHaveProperty("list");
+      expect(res.body).toHaveProperty("_id");
+    });
+
+    it("should return 200 if request is correct", async () => {
+      const res = await exec();
+      expect(res.status).toBe(200);
+    });
+  });
+
   describe("GET /:id", () => {
-    let cart, id;
+    let cart, cartId;
     beforeEach(async () => {
       cart = await createCart();
-      id = cart._id;
+      cartId = cart._id;
     });
 
     const exec = () => {
-      return request(server).get(`/api/carts/${id}`);
+      return request(server).get(`/api/carts/${cartId}`);
     };
 
-    it("should return cart with populated products", async () => {
+    it("should return cart with populated products on the list if request is correct", async () => {
       const res = await exec();
       expect(res.body).toHaveProperty("_id");
       expect(res.body).toHaveProperty("list");
       expect(res.body.list.length).toBe(3);
-      for (const item of res.body.list) {
-        expect(item).toHaveProperty("product");
-        expect(item).toHaveProperty("cost");
-        expect(item).toHaveProperty("quantity");
-        expect(item.product).toHaveProperty("_id");
-        expect(item.product).toHaveProperty("image");
-        expect(item.product).toHaveProperty("name");
-      }
+
+      const mustHaveProperties = [
+        "product",
+        "cost",
+        "quantity",
+        "product._id",
+        "product.image",
+        "product.name",
+      ];
+
+      for (const item of res.body.list)
+        for (const prop of mustHaveProperties)
+          expect(item).toHaveProperty(prop);
+    });
+
+    it("should return 200 if request is correct", async () => {
+      const res = await exec();
       expect(res.status).toBe(200);
     });
 
-    it("should return 404 if invalid id is passed", async () => {
-      id = new mongoose.Types.ObjectId();
-      const res = await exec();
-      expect(res.status).toBe(404);
-    });
-  });
-
-  describe("POST", () => {
-    let product, quantity;
-    beforeEach(async () => {
-      const products = await createProducts();
-      product = products[0];
-      quantity = 1;
-    });
-
-    const exec = () => {
-      return request(server).post("/api/carts").send({
-        product: product._id,
-        quantity,
-      });
-    };
-
-    it("should return valid cart", async () => {
-      const res = await exec();
-      expect(res.body).toHaveProperty("list");
-
-      const item = res.body.list[0];
-      expect(item.product).toHaveProperty("_id");
-      expect(item).toHaveProperty("cost", product.price);
-      expect(item.product).toHaveProperty("image", product.image);
-      expect(item.product).toHaveProperty("name", product.name);
-
-      expect(res.status).toBe(200);
-    });
-
-    it("should change stock of product if valid cart is passed", async () => {
-      quantity = 2;
-      const inStock = product.numberInStock;
-      await exec();
-      const { numberInStock } = await Product.findById(product._id);
-      expect(numberInStock === inStock - 2);
-    });
-
-    it("should return 404 if invalid product ID is passed", async () => {
-      product._id = mongoose.Types.ObjectId();
+    it("should return 404 if cart with given ID doesn't exist", async () => {
+      cartId = new mongoose.Types.ObjectId();
       const res = await exec();
       expect(res.status).toBe(404);
     });
 
-    it("should return 400 if invalid quantity is passed", async () => {
-      quantity = 0;
+    it("should return 404 if ID is invalid", async () => {
+      cartId = 1;
       const res = await exec();
-      expect(res.status).toBe(400);
+      expect(res.status).toBe(404);
     });
   });
 
   describe("PUT /:id", () => {
-    let cart, products, quantities;
-    let productId, quantity;
+    let cart, products, productId, quantity;
+
     beforeEach(async () => {
+      const res = await request(server).get("/api/carts");
+      cart = res.body;
       products = await createProducts();
-      quantities = [1, 2];
-      cart = await createCart([products[0], products[1]], quantities);
-      productId = products[2]._id;
       quantity = 1;
     });
 
-    const exec = () => {
+    const exec = async () => {
       return request(server)
         .put(`/api/carts/${cart._id}`)
-        .send({ product: productId, quantity });
+        .send({ productId, quantity });
     };
 
-    it("should return valid cart", async () => {
-      expect(cart.list.length).toBe(2);
+    it("should add product to cart if request is correct", async () => {
+      productId = products[0]._id;
       const res = await exec();
-      expect(res.body.list.length).toBe(3);
+      const list = res.body.list;
+      expect(list.length).toBe(1);
+      expect(list[0]).toHaveProperty("product");
+      expect(list[0].quantity).toBe(1);
+      expect(list[0].cost).toBe(products[0].price);
       expect(res.status).toBe(200);
     });
 
-    it("should return 404 if invalid cart id is passed", async () => {
+    it("should return 404 if cart ID is invalid", async () => {
       cart._id = new mongoose.Types.ObjectId();
       const res = await exec();
       expect(res.status).toBe(404);
     });
 
-    it("should return 400 if invalid data is passed", async () => {
+    it("should return 400 if data is invalid", async () => {
       productId = "";
       const res = await exec();
       expect(res.status).toBe(400);
     });
 
-    it("should return 404 if invalid product ID is passed", async () => {
+    it("should return 404 if product ID is invalid", async () => {
       productId = new mongoose.Types.ObjectId();
       const res = await exec();
       expect(res.status).toBe(404);
     });
 
-    it("should return 200 if valid product is passed which is already in cart", async () => {
-      productId = products[1]._id;
-      quantity = 4;
-      const res = await exec();
-      res.body.list.some((item) => {
-        if (item == productId) expect(item.quantity).toBe(quantity);
-      });
-      expect(res.status).toBe(200);
-    });
-
-    it("should return 400 if passed quantity are higher then limit", async () => {
-      quantity = 100000;
+    it("should return 400 if given quantity are higher then limit", async () => {
+      quantity = 1000;
       const res = await exec();
       expect(res.status).toBe(400);
     });
+
+    describe("when one product is already in the cart", () => {
+      beforeEach(async () => {
+        productId = products[0]._id;
+        quantity = 3;
+        await exec();
+      });
+
+      describe("correct request", () => {
+        it("should add second product to cart", async () => {
+          productId = products[1]._id;
+          quantity = 1;
+          const res = await exec();
+          const list = res.body.list;
+          expect(list.length).toBe(2);
+          expect(res.status).toBe(200);
+        });
+
+        it("should edit product in cart", async () => {
+          quantity = 4;
+          await Product.findByIdAndUpdate(productId, { price: 999.9 });
+          const res = await exec();
+          const list = res.body.list;
+          expect(list.length).toBe(1);
+          expect(list[0].quantity).toBe(4);
+          expect(list[0].cost).not.toBe(999.9);
+          expect(res.status).toBe(200);
+        });
+
+        it("should edit product in cart and increase a stock of product", async () => {
+          quantity = 7;
+          const { numberInStock: before } = await Product.findById(productId);
+          await exec();
+          const { numberInStock: after } = await Product.findById(productId);
+          expect(before > after).toBeTruthy();
+          expect(before === after + 4).toBeTruthy();
+        });
+
+        it("should edit product in cart and decrease a stock of product", async () => {
+          quantity = 2;
+          const { numberInStock: before } = await Product.findById(productId);
+          await exec();
+          const { numberInStock: after } = await Product.findById(productId);
+          expect(before < after).toBeTruthy();
+          expect(before === after - 1).toBeTruthy();
+        });
+      });
+    });
   });
 
-  describe("DELETE /:id/list/:productId", () => {
-    let cart, products, quantities;
-    let productId;
+  describe("DELETE /:id/:productId", () => {
+    let cart, products, productId;
     beforeEach(async () => {
       products = await createProducts();
-      quantities = [1, 2];
-      cart = await createCart([products[0], products[1]], quantities);
+      cart = await createCart([products[0], products[1]]);
       productId = products[1]._id;
     });
 
     const exec = () => {
-      return request(server)
-        .delete(`/api/carts/${cart._id}`)
-        .send({ product: productId });
+      return request(server).delete(`/api/carts/${cart._id}/${productId}`);
     };
 
-    it("should return 200 if valid data is passed", async () => {
+    it("should return cart with deleted product if request is correct", async () => {
       const res = await exec();
+      expect(res.body.list.length).toBe(1);
+      expect(res.body.list[0]).toHaveProperty(
+        "product",
+        products[0]._id.toString()
+      );
       expect(res.status).toBe(200);
     });
 
-    it("should return 204 and change the stock if last product is deleted", async () => {
+    it("should return 204 if the last product was removed", async () => {
+      await deleteCarts();
+      products = await createProducts();
+      cart = await createCart([products[0]]);
+      productId = products[0]._id;
+      const res = await exec();
+      expect(res.status).toBe(204);
+    });
+
+    it("should change the stock of product if the last product was removed", async () => {
       await deleteCarts();
       products = await createProducts();
       cart = await createCart([products[0]], [2]);
       productId = products[0]._id;
       const { numberInStock: stockBefore } = await Product.findById(productId);
-      const res = await exec();
+      await exec();
       const { numberInStock: stockAfter } = await Product.findById(productId);
 
+      expect(stockBefore < stockAfter).toBeTruthy();
       expect(stockBefore + 2 === stockAfter).toBeTruthy();
-      expect(res.status).toBe(204);
     });
 
-    it("should return 400 if product is not in cart", async () => {
+    it("should return 400 if product is not in the cart", async () => {
       productId = products[2]._id;
       const res = await exec();
       expect(res.status).toBe(400);
     });
 
-    it("should return 404 if invalid cart id is passed", async () => {
+    it("should return 404 if cart ID is invalid", async () => {
       cart._id = new mongoose.Types.ObjectId();
       const res = await exec();
       expect(res.status).toBe(404);
     });
 
-    it("should return 400 if cart does not have product with given id", async () => {
+    it("should return 400 if the cart doesn't have product with given ID", async () => {
       await deleteCarts();
       products = await createProducts();
       cart = await createCart([products[0]], [2]);
@@ -213,13 +247,18 @@ describe("carts route", () => {
       expect(res.status).toBe(400);
     });
 
-    it("should return 400 and do not change stock if invalid id is passed", async () => {
+    it("should return 400 if product ID is invalid", async () => {
+      productId = products[2]._id;
+      const res = await exec();
+      expect(res.status).toBe(400);
+    });
+
+    it("should do not change stock of other product if product ID is invalid", async () => {
       await deleteCarts();
       products = await createProducts();
       cart = await createCart([products[0]], [2]);
       productId = products[1]._id;
       const res = await exec();
-      expect(res.status).toBe(400);
       const updated = await Product.findById(products[0]._id);
       expect(updated.numberInStock != products[0].numberInStock);
     });

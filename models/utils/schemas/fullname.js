@@ -3,11 +3,11 @@ const Joi = require("joi");
 const Schema = {
   type: String,
   minlength: 3,
-  maxlength: 512,
+  maxlength: 256,
   trim: true,
 };
 
-const JoiSchema = Joi.string().min(3);
+const JoiSchema = Joi.string().min(3).max(256);
 
 exports.fullnameSchema = Schema;
 exports.fullnameJoiSchema = JoiSchema;

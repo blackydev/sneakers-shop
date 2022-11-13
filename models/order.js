@@ -1,8 +1,9 @@
 const Joi = require("joi");
+const dayjs = require("dayjs");
 const mongoose = require("mongoose");
 const { schemas, joiSchemas } = require("./utils/schemas");
 const { customerSchema, joiSchema: customerJoiSchema } = require("./customer");
-const { cartSchema } = require("./cart");
+const { cartSchema, deleteCart } = require("./cart");
 
 const statuses = ["pending", "interrupted", "paid", "accepted", "shipped"];
 
@@ -66,32 +67,39 @@ orderSchema.methods.getTotalCost = function () {
 };
 
 const Order = mongoose.model("orders", orderSchema);
-const paymentTimeLimit = 30; /* IN MINUTES */
 
 function validate(order) {
   const schema = Joi.object({
     customer: customerJoiSchema.required(),
-    cart: Joi.objectId().required(),
-    status: Joi.string()
-      .max(256)
-      .custom((v, helper) => {
-        return statuses.includes(v)
-          ? true
-          : helper.message("Invalid order status.");
-      }),
+    cartId: Joi.objectId().required(),
+    status: Joi.string().max(256),
 
-    delivery: Joi.object({
-      method: Joi.objectId().required(),
-      point: Joi.string(),
-    }),
+    deliveryId: Joi.objectId().required(),
   });
 
   return schema.validate(order);
 }
 
+async function deleteOrdersInterval() {
+  const minute = 1000 * 60;
+  const hour = 60 * minute;
+
+  setInterval(async function () {
+    // deletion deprecated orders
+    const limit = dayjs().subtract(3, "hour");
+    const orders = await Order.find({ createdAt: { $lt: limit } });
+    orders.map(async (order) => {
+      for (const item of order.cart.list)
+        await Product.findByIdAndIncreaseStock(item.product, item.quantity);
+      order.status = "interrupted";
+      await order.save();
+    });
+  }, 3 * hour);
+}
+
 module.exports = {
   Order,
   validate,
-  paymentTimeLimit,
   statuses,
+  deleteOrdersInterval,
 };

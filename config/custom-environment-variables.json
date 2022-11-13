@@ -5,12 +5,5 @@
 
   "p24": {
     "crc": "ecommerce_p24.crc"
-  },
-
-  "furgonetka": {
-    "password": "ecommerce_p24_furgonetka.crc",
-    "clientId": "ecommerce_p24_furgonetka.clientId",
-    "clientSecret": "ecommerce_p24_furgonetka.clientSecret"
   }
-
 }

@@ -1,14 +1,13 @@
 const multer = require("multer");
 const config = require("config");
 const generateFilename = require("../utils/generateFilename");
-const filesPath = config.get("public") + "images/products/";
-const winston = require("winston");
+const dirPath = config.get("public") + "images/products/";
 
 const maxSize = 1024 * 1024 * 1.3;
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, filesPath);
+    cb(null, dirPath);
   },
   filename: async function (req, file, cb) {
     let filename = generateFilename(file.originalname);
@@ -32,7 +31,9 @@ const fileFilter = (req, file, cb) => {
 exports.upload = multer({
   storage: storage,
   limits: {
-    fileSize: maxSize, //TODO: dont create image if too big
+    fileSize: maxSize,
   },
   fileFilter: fileFilter,
 });
+
+exports.dirPath = dirPath;

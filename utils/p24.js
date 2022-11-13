@@ -1,7 +1,7 @@
 const axios = require("axios").default;
 const config = require("config");
 const _ = require("lodash");
-const { calculateSHA384 } = require("../utils/hash");
+const { calculateSHA384 } = require("./hash");
 const { paymentTimeLimit } = require("../models/order");
 
 const merchantId = config.get("p24.merchantId");
@@ -21,14 +21,14 @@ const client = axios.create({
   },
 });
 
-const createTransaction = async (order, hostURL) => {
+const createTransaction = async (order, hostURL, paymentMethod) => {
   try {
     const customer = order.customer;
     const hashData = {
       sessionId: order._id,
       merchantId: merchantId,
       amount: order.totalCost * 100,
-      currency: "PLN",
+      currency: "USD",
       crc: crcKey,
     };
     const totalCost = (await order.getTotalCost()) * 100;
@@ -38,7 +38,7 @@ const createTransaction = async (order, hostURL) => {
       posId: posId,
       sessionId: order._id,
       amount: totalCost,
-      currency: "PLN",
+      currency: "USD",
       description: `Order ${order._id}`,
       email: customer.email,
       client: customer.name,
@@ -46,7 +46,7 @@ const createTransaction = async (order, hostURL) => {
       zip: customer.zip,
       city: customer.city,
       country: "PL",
-      //   method: order.p24.methodId,
+      method: paymentMethod,
       phone: customer.phone,
       language: "pl",
       urlReturn: `${hostURL}/api/orders/${order._id}/status`,
@@ -95,7 +95,7 @@ const verifyTransaction = async (order) => {
       sessionId: order._id,
       orderId: order.p24Id,
       amount: cart.amount * 100,
-      currency: "PLN",
+      currency: "USD",
       crc: crcKey,
     };
 
@@ -106,7 +106,7 @@ const verifyTransaction = async (order) => {
       posId: posId,
       sessionId: order._id,
       amount: cart.amount * 100,
-      currency: "PLN",
+      currency: "USD",
       orderId: order.p24Id,
       sign: sign,
     };
@@ -136,22 +136,10 @@ const test = async () => {
   }
 };
 
-const getTransactionData = async (p24Id) => {
-  try {
-    const { data: result } = await client.get(
-      `/transaction/by/sessionId/${p24Id}`
-    );
-    return result.data;
-  } catch (error) {
-    return new Error(error.message);
-  }
-};
-
 module.exports = {
   createTransaction,
   verifyNotification,
   verifyTransaction,
   getPaymentMethods,
   test,
-  getTransactionData,
 };

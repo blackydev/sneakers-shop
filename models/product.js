@@ -23,11 +23,7 @@ const productSchema = new mongoose.Schema(
       required: true,
       minlength: 32,
     },
-    slogan: {
-      type: String,
-      minlength: 0,
-      maxlength: 256,
-    },
+
     price: { ...schemas.price, required: true },
     numberInStock: {
       type: Number,
@@ -36,9 +32,6 @@ const productSchema = new mongoose.Schema(
     },
     release: {
       type: Date,
-    },
-    hidden: {
-      type: Boolean,
     },
     category: {
       type: mongoose.Schema.Types.ObjectId,
@@ -65,16 +58,8 @@ Product.findByIdAndIncreaseStock = function (id, quantity) {
   );
 };
 
-Product.findByIdAndDecreaseStock = function (id, quantity, decreaseHidden) {
-  if (decreaseHidden) return this.findByIdAndIncreaseStock(id, quantity * -1);
-  else
-    return this.findOneAndUpdate(
-      { _id: id, hidden: { $in: [false, null] } },
-      {
-        $inc: { numberInStock: -1 * quantity },
-      },
-      { new: true }
-    );
+Product.findByIdAndDecreaseStock = function (id, quantity) {
+  return this.findByIdAndIncreaseStock(id, quantity * -1);
 };
 
 function validateProduct(product) {
@@ -82,11 +67,9 @@ function validateProduct(product) {
     name: Joi.string().min(3).max(512).required(),
     image: joiSchemas.filename.required(),
     description: Joi.string().min(32).required(),
-    slogan: Joi.string().max(256),
     price: joiSchemas.price.required(),
     numberInStock: Joi.number().min(0).required(),
     release: Joi.date(),
-    hidden: Joi.boolean(),
     category: Joi.objectId().required(),
   });
 

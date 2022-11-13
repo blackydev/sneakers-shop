@@ -5,6 +5,30 @@ const router = express.Router();
 const { validate, Cart } = require("../models/cart");
 const { Product } = require("../models/product");
 
+/* 
+INSTRUCTION:
+  GET /
+    creates and returns new empty cart
+
+  GET /:id
+    get cart
+
+  PUT /:id
+    req: { product, quantity }
+    put product to cart
+
+  DELETE /:id/:productId
+    delete product in cart
+*/
+
+router.get("/", async (req, res) => {
+  const cart = new Cart({
+    list: [],
+  });
+  await cart.save();
+  res.send(cart);
+});
+
 router.get("/:id", validateObjectId, async (req, res) => {
   let cart = await Cart.findById(req.params.id).populate(
     "list.product",
@@ -17,79 +41,45 @@ router.get("/:id", validateObjectId, async (req, res) => {
   res.send(cart);
 });
 
-router.post("/", async (req, res) => {
-  /*  
-  req: {
-    product,
-    quantity
-  }
-  */
-  const { error } = validate(req.body);
-  if (error) return res.status(400).send(error.message);
-
-  let product = await Product.findByIdAndDecreaseStock(
-    req.body.product,
-    req.body.quantity
-  );
-
-  if (!product)
-    return res.status(404).send("The product with the given ID was not found.");
-
-  let cart = new Cart({
-    list: [{ product: product._id, cost: product.price }],
-  });
-
-  await cart.save();
-
-  cart = await cart.populate("list.product", "name image");
-
-  res.send(cart);
-});
-
 router.put("/:id", async (req, res) => {
   /* 
   req: {
-    product,
+    productId,
     quantity
   }
   */
-  const body = req.body;
-  const { error } = validate(body);
+  const { productId, quantity: reqQuantity } = req.body;
+  const { error } = validate(req.body);
   if (error) return res.status(400).send(error.message);
-  let cart = await Cart.findById(req.params.id);
+  const cart = await Cart.findById(req.params.id);
   if (!cart)
     return res.status(404).send("The cart with the given ID was not found.");
 
-  const index = cart.list.findIndex((item) => item.product == body.product);
-  if (index !== -1) var quantity = body.quantity - cart.list[index].quantity;
-  else var quantity = body.quantity;
+  const index = cart.list.findIndex((item) => item.product == productId);
 
-  let product = await Product.findByIdAndDecreaseStock(body.product, quantity);
+  if (index === -1) var quantity = reqQuantity;
+  else quantity = reqQuantity - cart.list[index].quantity;
+
+  const product = await Product.findByIdAndDecreaseStock(productId, quantity);
   if (!product)
     return res.status(404).send("The product with the given ID was not found.");
 
-  if (index !== -1) {
-    cart.list[index].quantity = body.quantity;
-  } else {
+  if (index === -1)
     cart.list.push({
-      product: product._id,
+      product: productId,
       cost: product.price,
-      quantity: body.quantity,
+      quantity: reqQuantity,
     });
-  }
+  else cart.list[index].quantity = reqQuantity;
 
   await cart.save();
   res.send(cart);
 });
-router.delete("/:id/:productId", async (req, res) => {
-  /* 
-  req: {
-    product,
-  }
-  */
+
+router.delete("/:cartId/:productId", async (req, res) => {
   const { params } = req;
 
-  let cart = await Cart.findById(params.id);
+  let cart = await Cart.findById(params.cartId);
   if (!cart)
     return res.status(404).send("The cart with the given ID was not found.");
 

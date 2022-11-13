@@ -4,18 +4,16 @@ const { validate } = require("../models/order");
 const router = express.Router();
 const { Order, statuses } = require("../models/order");
 const { Delivery } = require("../models/delivery");
-const p24 = require("../controllers/p24");
+const p24 = require("../utils/p24");
 const { getHostURL } = require("../utils/url");
 const { auth, isAdmin } = require("../middleware/authorization");
 const validateObjectId = require("../middleware/validateObjectId");
-const { createDelivery } = require("../controllers/furgonetka");
 const { Cart } = require("../models/cart");
-const { isLength } = require("lodash");
 
 router.get("/", [auth, isAdmin], async (req, res) => {
-  const { select, sortBy, statusLike, pageLength, pageNumber } = req.query;
+  const { select, sortBy, status, pageLength, pageNumber } = req.query;
 
-  if (statusLike) var findQuery = { status: statusLike };
+  if (status) var findQuery = { status: status };
 
   const orders = await Order.find(findQuery)
     .populate("delivery.method", "name")
@@ -26,7 +24,7 @@ router.get("/", [auth, isAdmin], async (req, res) => {
   res.send(orders);
 });
 
-router.get("/:id", [auth, isAdmin], async (req, res) => {
+router.get("/:id", [validateObjectId, auth, isAdmin], async (req, res) => {
   const order = await Order.findById(req.params.id).populate(
     "delivery.method",
     "name"
@@ -42,15 +40,15 @@ router.post("/", async (req, res) => {
   /*
 request: 
 {
-  cart: `ref`, customer: {}, delivery: {method, ?point}}
+  cartId: `ref`, customer: {}, deliveryId: 'ref'}
 }
   */
-  const body = req.body;
-  const { error } = validate(body);
+  const { customer, deliveryId, cartId } = req.body;
+  const { error } = validate(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
   // GET DELIVERY PROPS
-  let delivery = await Delivery.findById(body.delivery.method);
+  let delivery = await Delivery.findById(deliveryId);
 
   if (!delivery)
     return res
@@ -58,7 +56,7 @@ request:
       .send("The delivery with the given ID was not found.");
 
   // GET CART
-  const cart = await Cart.findByIdAndRemove(body.cart).select(
+  const cart = await Cart.findByIdAndRemove(cartId).select(
     "-createdAt -updatedAt -_id -__v"
   );
 
@@ -66,12 +64,11 @@ request:
     return res.status(404).send("The cart with the given ID was not found.");
 
   const order = new Order({
-    customer: getCustomerProps(body.customer),
+    customer: getCustomerProps(customer),
     cart: cart,
     delivery: {
       method: delivery._id,
       cost: delivery.price,
-      point: body.delivery.point,
     },
   });
 
@@ -81,42 +78,33 @@ request:
 
 router.post("/:id/payment", validateObjectId, async (req, res) => {
   /*
-  request
-  {
-    paymentMethodId, - (from p24)
-  }
+  request: { paymentMethod (from p24) }
   */
   const order = await Order.findById(req.params.id);
   if (!order || order.status == "interrupted")
     return res.status(404).send("The order with the given ID was not found.");
 
-  order.paymentMethodId = req.body.paymentMethodId;
   order.totalCost = await order.getTotalCost();
   const hostUrl = getHostURL(req);
 
-  const result = await p24.createTransaction(order, hostUrl);
-  if (_.isError(result)) return res.status(400).send(result);
+  const result = await p24.createTransaction(
+    order,
+    hostUrl,
+    req.body.paymentMethod
+  );
+  if (_.isError(result)) return res.status(400).send(result); // if server has died
 
   res.redirect(result);
 });
 
 router.get("/:id/status", validateObjectId, async (req, res) => {
-  let order = await Order.findById(req.params.id).populate(
-    "delivery.method",
-    "name"
-  );
+  let order = await Order.findById(req.params.id);
 
   if (!order)
     return res.status(404).send("The order with the given ID was not found.");
 
-  const statuses = ["paid", "accepted", "shipped"];
-  if (statuses.includes(order.status)) var customer = order.customer;
-
   res.send({
     status: order.status,
-    customer: customer,
-    cart: order.cart,
-    delivery: order.delivery,
   });
 });
 
@@ -160,16 +148,10 @@ router.post("/:id/p24Callback", validateObjectId, async (req, res) => {
       p24Id: req.body.orderId,
     },
     { new: true }
-  ).populate("delivery.method", "serviceId");
+  ).populate("delivery.method");
 
   if (order.status === "interrupted")
     return res.status(400).send("Order is interrupted.");
-
-  if (order.delivery.method.serviceId) {
-    result = await createDelivery(order);
-    if (_.isError(result)) return res.status(400).send();
-    order.delivery.packageId = result.package_id;
-  }
 
   let result = await p24.verifyTransaction(order);
   if (_.isError(result)) return res.status(400).send();
