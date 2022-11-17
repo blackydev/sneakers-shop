@@ -2,7 +2,6 @@ const _ = require("lodash");
 const mongoose = require("mongoose");
 const express = require("express");
 const path = require("path");
-const router = express.Router();
 const { Category } = require("../models/category");
 const { Product, validate } = require("../models/product");
 const validateObjectId = require("../middleware/validateObjectId");
@@ -10,6 +9,8 @@ const { auth, isAdmin } = require("../middleware/authorization");
 const { upload, dirPath } = require("../middleware/productUpload");
 const { validateProductId } = require("../middleware/validateObjectsId");
 const { deleteFile } = require("../utils/deleteFile");
+
+const router = express.Router();
 
 router.get("/", async (req, res) => {
   try {

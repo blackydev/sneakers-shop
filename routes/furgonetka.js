@@ -1,7 +1,8 @@
 const express = require("express");
-const router = express.Router();
 const _ = require("lodash");
 const { getPoints, getDeliverers } = require("../controllers/furgonetka");
+
+const router = express.Router();
 
 router.get("/", async (req, res) => {
   const result = await getDeliverers();

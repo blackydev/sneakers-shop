@@ -1,9 +1,10 @@
 const express = require("express");
-const router = express.Router();
+const _ = require("lodash");
 const { Delivery, validate } = require("../models/delivery");
 const validateObjectId = require("../middleware/validateObjectId");
 const { auth, isAdmin } = require("../middleware/authorization");
-const _ = require("lodash");
+
+const router = express.Router();
 
 router.get("/", async (req, res) => {
   const deliveries = await Delivery.find();

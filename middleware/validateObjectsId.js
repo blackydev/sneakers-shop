@@ -8,6 +8,4 @@ const validateProductId = async (req, res, next) => {
   next();
 };
 
-module.exports = {
-  validateProductId,
-};
+module.exports = { validateProductId };

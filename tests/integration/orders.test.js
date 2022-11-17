@@ -220,19 +220,15 @@ describe("orders route", () => {
     });
   });
 
-  describe("POST /:id/payment", () => {
-    let orders, orderId, paymentMethod;
+  /*describe("POST /:id/payment", () => {
+    let orders, orderId;
 
     beforeEach(async () => {
       orders = await createOrders();
       orderId = orders[0]._id;
-      paymentMethod = 154;
     });
 
-    const exec = () =>
-      request(server)
-        .post(`/api/orders/${orderId}/payment`)
-        .send({ paymentMethod });
+    const exec = () => request(server).get(`/api/orders/${orderId}/payment`);
 
     it("should return 302 if payment method is valid", async () => {
       const res = await exec();
@@ -240,7 +236,6 @@ describe("orders route", () => {
     });
 
     it("should return 302 if payment method is empty", async () => {
-      paymentMethod = undefined;
       const res = await exec();
       expect(res.status).toBe(302);
     });
@@ -250,7 +245,7 @@ describe("orders route", () => {
       const res = await exec();
       expect(res.status).toBe(404);
     });
-  });
+  });*/
 
   describe("GET /:id/status", () => {
     let orders, orderId;

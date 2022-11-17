@@ -1,6 +1,7 @@
 const express = require("express");
-const router = express.Router();
 const { getPaymentMethods } = require("../utils/p24");
+
+const router = express.Router();
 
 router.get("/", async (req, res) => {
   const result = await getPaymentMethods("pl");

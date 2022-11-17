@@ -21,24 +21,25 @@ const client = axios.create({
   },
 });
 
-const createTransaction = async (order, hostURL, paymentMethod) => {
+const createTransaction = async (order, hostURL) => {
   try {
     const customer = order.customer;
     const hashData = {
       sessionId: order._id,
       merchantId: merchantId,
       amount: order.totalCost * 100,
-      currency: "USD",
+      currency: "PLN",
       crc: crcKey,
     };
     const totalCost = (await order.getTotalCost()) * 100;
     const sign = calculateSHA384(JSON.stringify(hashData));
     const request = {
+      channel: 16,
       merchantId: merchantId,
       posId: posId,
       sessionId: order._id,
       amount: totalCost,
-      currency: "USD",
+      currency: "PLN",
       description: `Order ${order._id}`,
       email: customer.email,
       client: customer.name,
@@ -46,10 +47,9 @@ const createTransaction = async (order, hostURL, paymentMethod) => {
       zip: customer.zip,
       city: customer.city,
       country: "PL",
-      method: paymentMethod,
       phone: customer.phone,
-      language: "pl",
-      urlReturn: `${hostURL}/api/orders/${order._id}/status`,
+      language: "en",
+      urlReturn: `${config.get("clientUrl")}/orders/${order._id}`,
       urlStatus: `${hostURL}/api/orders/${order._id}/p24Callback`,
       timeLimit: paymentTimeLimit,
       waitForResult: true,
@@ -95,7 +95,7 @@ const verifyTransaction = async (order) => {
       sessionId: order._id,
       orderId: order.p24Id,
       amount: cart.amount * 100,
-      currency: "USD",
+      currency: "PLN",
       crc: crcKey,
     };
 
@@ -106,7 +106,7 @@ const verifyTransaction = async (order) => {
       posId: posId,
       sessionId: order._id,
       amount: cart.amount * 100,
-      currency: "USD",
+      currency: "PLN",
       orderId: order.p24Id,
       sign: sign,
     };

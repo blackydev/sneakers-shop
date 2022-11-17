@@ -22,8 +22,8 @@ module.exports = async function async() {
   checkConfig(properties);
 
   if (!process.env.offline) {
-    const res = await p24.test();
-    if (!res)
+    const doesWork = await p24.test();
+    if (!doesWork)
       throw new Error(
         "FATAL ERROR: Unsuccessful test connection with przelewy24."
       );

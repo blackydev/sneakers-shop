@@ -1,9 +1,11 @@
 const express = require("express");
-const router = express.Router();
+const _ = require("lodash");
 const { Category, validate } = require("../models/category");
 const { auth, isAdmin } = require("../middleware/authorization");
 const validateObjectId = require("../middleware/validateObjectId");
-const _ = require("lodash");
+
+const router = express.Router();
+
 
 router.get("/", async (req, res) => {
   const categories = await Category.find().sort("name");

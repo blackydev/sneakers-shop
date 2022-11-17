@@ -1,7 +1,6 @@
 const Joi = require("joi");
 const mongoose = require("mongoose");
 const { schemas, joiSchemas } = require("./utils/schemas");
-const { categorySchema } = require("./category");
 
 const productSchema = new mongoose.Schema(
   {

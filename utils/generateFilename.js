@@ -1,5 +1,6 @@
 const path = require("path");
-const generateFilename = (filename) => {
+
+module.exports = (filename) => {
   const fileExt = path.extname(filename);
   let basename = path.basename(filename, fileExt);
 
@@ -14,5 +15,3 @@ const getUniqueNumber = () => {
   const number = new Date().getTime() - 1659709986000;
   return number.toString(36);
 };
-
-module.exports = generateFilename;

@@ -1,9 +1,10 @@
 const express = require("express");
 const _ = require("lodash");
 const validateObjectId = require("../middleware/validateObjectId");
-const router = express.Router();
 const { validate, Cart } = require("../models/cart");
 const { Product } = require("../models/product");
+
+const router = express.Router();
 
 /* 
 INSTRUCTION:

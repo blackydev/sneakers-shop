@@ -1,9 +1,10 @@
 const Joi = require("joi");
 const dayjs = require("dayjs");
 const mongoose = require("mongoose");
-const { schemas, joiSchemas } = require("./utils/schemas");
+const { schemas } = require("./utils/schemas");
 const { customerSchema, joiSchema: customerJoiSchema } = require("./customer");
-const { cartSchema, deleteCart } = require("./cart");
+const { cartSchema } = require("./cart");
+const { Product } = require("./product");
 
 const statuses = ["pending", "interrupted", "paid", "accepted", "shipped"];
 
@@ -40,14 +41,6 @@ const orderSchema = new mongoose.Schema(
       cost: {
         ...schemas.price,
         required: true,
-      },
-
-      point: {
-        type: String,
-      },
-
-      packageId: {
-        type: Number,
       },
     },
   },

@@ -1,8 +1,8 @@
 const multer = require("multer");
 const config = require("config");
 const generateFilename = require("../utils/generateFilename");
-const dirPath = config.get("public") + "images/products/";
 
+const dirPath = config.get("public") + "images/products/";
 const maxSize = 1024 * 1024 * 1.3;
 
 const storage = multer.diskStorage({

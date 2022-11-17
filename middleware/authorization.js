@@ -1,6 +1,6 @@
-const { User } = require("../models/user");
 const config = require("config");
 const jwt = require("jsonwebtoken");
+const { User } = require("../models/user");
 
 async function auth(req, res, next) {
   const token = req.header("x-auth-token");

@@ -1,8 +1,8 @@
 const Joi = require("joi");
 const mongoose = require("mongoose");
+const dayjs = require("dayjs");
 const { schemas } = require("./utils/schemas");
 const { Product } = require("./product");
-const dayjs = require("dayjs");
 
 const maxProductQuantity = 9;
 

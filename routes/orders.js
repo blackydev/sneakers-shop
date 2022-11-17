@@ -1,7 +1,6 @@
 const express = require("express");
 const _ = require("lodash");
 const { validate } = require("../models/order");
-const router = express.Router();
 const { Order, statuses } = require("../models/order");
 const { Delivery } = require("../models/delivery");
 const p24 = require("../utils/p24");
@@ -9,6 +8,8 @@ const { getHostURL } = require("../utils/url");
 const { auth, isAdmin } = require("../middleware/authorization");
 const validateObjectId = require("../middleware/validateObjectId");
 const { Cart } = require("../models/cart");
+
+const router = express.Router();
 
 router.get("/", [auth, isAdmin], async (req, res) => {
   const { select, sortBy, status, pageLength, pageNumber } = req.query;
@@ -76,10 +77,7 @@ request:
   res.send(order);
 });
 
-router.post("/:id/payment", validateObjectId, async (req, res) => {
-  /*
-  request: { paymentMethod (from p24) }
-  */
+router.get("/:id/payment", validateObjectId, async (req, res) => {
   const order = await Order.findById(req.params.id);
   if (!order || order.status == "interrupted")
     return res.status(404).send("The order with the given ID was not found.");
@@ -87,23 +85,24 @@ router.post("/:id/payment", validateObjectId, async (req, res) => {
   order.totalCost = await order.getTotalCost();
   const hostUrl = getHostURL(req);
 
-  const result = await p24.createTransaction(
-    order,
-    hostUrl,
-    req.body.paymentMethod
-  );
+  const result = await p24.createTransaction(order, hostUrl);
   if (_.isError(result)) return res.status(400).send(result); // if server has died
 
-  res.redirect(result);
+  res.send(result);
 });
 
 router.get("/:id/status", validateObjectId, async (req, res) => {
-  let order = await Order.findById(req.params.id);
+  const order = await Order.findById(req.params.id)
+    .populate("cart.list.product", "name image")
+    .populate("delivery.method", "name");
 
   if (!order)
     return res.status(404).send("The order with the given ID was not found.");
 
   res.send({
+    customer: order.customer,
+    cart: order.cart,
+    delivery: order.delivery,
     status: order.status,
   });
 });
