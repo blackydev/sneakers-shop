@@ -91,12 +91,15 @@ router.get("/:id/payment", validateObjectId, async (req, res) => {
   res.send(result);
 });
 
-router.get("/:id/status", validateObjectId, async (req, res) => {
+router.post("/:id/status", validateObjectId, async (req, res) => {
+  /* 
+  req body: { email }    - for auth
+  */
   const order = await Order.findById(req.params.id)
     .populate("cart.list.product", "name image")
     .populate("delivery.method", "name");
 
-  if (!order)
+  if (!order || req.body.email !== order.customer.email)
     return res.status(404).send("The order with the given ID was not found.");
 
   res.send({
