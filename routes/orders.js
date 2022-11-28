@@ -79,7 +79,7 @@ request:
 
 router.get("/:id/payment", validateObjectId, async (req, res) => {
   const order = await Order.findById(req.params.id);
-  if (!order || order.status == "interrupted")
+  if (!order)
     return res.status(404).send("The order with the given ID was not found.");
 
   order.totalCost = await order.getTotalCost();
@@ -91,23 +91,33 @@ router.get("/:id/payment", validateObjectId, async (req, res) => {
   res.send(result);
 });
 
-router.post("/:id/status", validateObjectId, async (req, res) => {
+router.get("/:id/status", validateObjectId, async (req, res) => {
   /* 
-  req body: { email }    - for auth
+  req query: { key }    - createdAt date
   */
-  const order = await Order.findById(req.params.id)
+  const { key: createdAt } = req.query;
+  if (!createdAt) return res.status(400).send("The key is required.");
+
+  const order = await Order.findOne({ _id: req.params.id, createdAt })
     .populate("cart.list.product", "name image")
     .populate("delivery.method", "name");
 
-  if (!order || req.body.email !== order.customer.email)
+  if (!order)
     return res.status(404).send("The order with the given ID was not found.");
 
-  res.send({
-    customer: order.customer,
-    cart: order.cart,
-    delivery: order.delivery,
-    status: order.status,
-  });
+  order.totalCost = order.getTotalCost();
+
+  res.send(
+    _.pick(order, [
+      "_id",
+      "customer",
+      "cart",
+      "delivery",
+      "status",
+      "createdAt",
+      "totalCost",
+    ])
+  );
 });
 
 router.put(
@@ -118,13 +128,14 @@ router.put(
   request: 
     { status }
   */
-    if (!statuses.includes(req.body.status))
+    const { status } = req.body;
+    if (!statuses.includes(status))
       return res.status(400).send("Invalid status.");
 
     const order = await Order.findByIdAndUpdate(
       req.params.id,
       {
-        status: req.body.status,
+        status,
       },
       {
         new: true,

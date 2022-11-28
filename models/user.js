@@ -3,7 +3,7 @@ const passwordComplexity = require("joi-password-complexity");
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 const config = require("config");
-const { schemas, joiSchemas } = require("./utils/schemas");
+const { schemas, joiSchemas } = require("./schemas");
 
 const authNumber = () => {
   const number = Math.floor(Math.random() * 9007199254740990);

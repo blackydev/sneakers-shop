@@ -376,13 +376,7 @@ describe("products route", () => {
   });
 
   describe("PUT /:id", () => {
-    let product, productId, token, img, categoryId;
-    const template = {
-      name: "Spider Man 2002",
-      description: "Spider-Man. Your best friend from neighbourhood.",
-      price: 59.9,
-      numberInStock: 1200,
-    };
+    let product, productId, token, img, categoryId, template;
 
     beforeEach(async () => {
       const category = await createCategory();
@@ -391,6 +385,12 @@ describe("products route", () => {
       product = products[0];
       productId = product._id;
       img = webpImg;
+      template = {
+        name: "Spider Man 2002",
+        description: "Spider-Man. Your best friend from neighbourhood.",
+        price: 59.9,
+        numberInStock: 1200,
+      };
 
       token = await getAuthToken(true);
     });
@@ -459,6 +459,12 @@ describe("products route", () => {
       const res = await exec();
 
       expect(res.status).toBe(400);
+    });
+
+    it("should return 404 if category with given ID does not exist", async () => {
+      categoryId = mongoose.Types.ObjectId();
+      const res = await exec();
+      expect(res.status).toBe(404);
     });
 
     it("should return 403 if user is not admin", async () => {

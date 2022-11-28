@@ -220,7 +220,7 @@ describe("orders route", () => {
     });
   });
 
-  /*describe("POST /:id/payment", () => {
+  describe("POST /:id/payment", () => {
     let orders, orderId;
 
     beforeEach(async () => {
@@ -230,14 +230,9 @@ describe("orders route", () => {
 
     const exec = () => request(server).get(`/api/orders/${orderId}/payment`);
 
-    it("should return 302 if payment method is valid", async () => {
+    it("should return 200", async () => {
       const res = await exec();
-      expect(res.status).toBe(302);
-    });
-
-    it("should return 302 if payment method is empty", async () => {
-      const res = await exec();
-      expect(res.status).toBe(302);
+      expect(res.status).toBe(200);
     });
 
     it("should return 404 if ID is invalid", async () => {
@@ -245,17 +240,19 @@ describe("orders route", () => {
       const res = await exec();
       expect(res.status).toBe(404);
     });
-  });*/
+  });
 
   describe("GET /:id/status", () => {
-    let orders, orderId;
+    let orders, orderId, key;
 
     beforeEach(async () => {
       orders = await createOrders();
       orderId = orders[0]._id;
+      key = orders[0].createdAt;
     });
 
-    const exec = () => request(server).get(`/api/orders/${orderId}/status`);
+    const exec = () =>
+      request(server).get(`/api/orders/${orderId}/status`).query({ key });
 
     it("should return order status if request is correct", async () => {
       const res = await exec();
@@ -269,6 +266,18 @@ describe("orders route", () => {
 
     it("should return 404 if ID is invalid", async () => {
       orderId = mongoose.Types.ObjectId();
+      const res = await exec();
+      expect(res.status).toBe(404);
+    });
+
+    it("should return 400 if key is empty", async () => {
+      key = "";
+      const res = await exec();
+      expect(res.status).toBe(400);
+    });
+
+    it("should return 404 if key is incorrect", async () => {
+      key = new Date();
       const res = await exec();
       expect(res.status).toBe(404);
     });

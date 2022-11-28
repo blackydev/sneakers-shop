@@ -8,6 +8,7 @@ const merchantId = config.get("p24.merchantId");
 const posId = config.get("p24.posId");
 const crcKey = config.get("p24.crc");
 const raportKey = config.get("p24.raportKey");
+const currency = "USD";
 const p24URL =
   process.env.NODE_ENV === "production"
     ? "https://secure.przelewy24.pl"
@@ -28,7 +29,7 @@ const createTransaction = async (order, hostURL) => {
       sessionId: order._id,
       merchantId: merchantId,
       amount: order.totalCost * 100,
-      currency: "PLN",
+      currency,
       crc: crcKey,
     };
     const totalCost = (await order.getTotalCost()) * 100;
@@ -39,8 +40,10 @@ const createTransaction = async (order, hostURL) => {
       posId: posId,
       sessionId: order._id,
       amount: totalCost,
-      currency: "PLN",
-      description: `${config.get("clientUrl")}/my-orders/${order._id}`,
+      currency,
+      description: `${config.get("clientUrl")}/my-orders/${order._id}?key=${
+        order.createdAt
+      }`,
       email: customer.email,
       client: customer.name,
       address: customer.address,
@@ -49,7 +52,9 @@ const createTransaction = async (order, hostURL) => {
       country: "PL",
       phone: customer.phone,
       language: "en",
-      urlReturn: `${config.get("clientUrl")}/my-orders/${order._id}`,
+      urlReturn: `${config.get("clientUrl")}/my-orders/${order._id}?key=${
+        order.createdAt
+      }`,
       urlStatus: `${hostURL}/api/orders/${order._id}/p24Callback`,
       timeLimit: paymentTimeLimit,
       waitForResult: true,
@@ -95,7 +100,7 @@ const verifyTransaction = async (order) => {
       sessionId: order._id,
       orderId: order.p24Id,
       amount: cart.amount * 100,
-      currency: "PLN",
+      currency,
       crc: crcKey,
     };
 
@@ -106,22 +111,13 @@ const verifyTransaction = async (order) => {
       posId: posId,
       sessionId: order._id,
       amount: cart.amount * 100,
-      currency: "PLN",
+      currency,
       orderId: order.p24Id,
       sign: sign,
     };
 
     const { data: result } = await client.put("/transaction/verify", request);
     return result.data.status === "success";
-  } catch (error) {
-    return new Error(error.message);
-  }
-};
-
-const getPaymentMethods = async (language) => {
-  try {
-    const { data: result } = await client.get(`/payment/methods/${language}`);
-    return result.data;
   } catch (error) {
     return new Error(error.message);
   }
@@ -140,6 +136,5 @@ module.exports = {
   createTransaction,
   verifyNotification,
   verifyTransaction,
-  getPaymentMethods,
   test,
 };

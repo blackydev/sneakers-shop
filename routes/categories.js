@@ -6,7 +6,6 @@ const validateObjectId = require("../middleware/validateObjectId");
 
 const router = express.Router();
 
-
 router.get("/", async (req, res) => {
   const categories = await Category.find().sort("name");
   res.send(categories);

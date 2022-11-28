@@ -1,7 +1,7 @@
 const Joi = require("joi");
 const dayjs = require("dayjs");
 const mongoose = require("mongoose");
-const { schemas } = require("./utils/schemas");
+const { schemas } = require("./schemas");
 const { customerSchema, joiSchema: customerJoiSchema } = require("./customer");
 const { cartSchema } = require("./cart");
 const { Product } = require("./product");
@@ -48,7 +48,7 @@ const orderSchema = new mongoose.Schema(
     toObject: { getters: true, setters: true },
     toJSON: { getters: true, setters: true },
     runSettersOnQuery: true,
-    timestamps: true,
+    timestamps: { createdAt: true, updatedAt: false },
   }
 );
 
