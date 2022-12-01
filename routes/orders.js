@@ -1,7 +1,6 @@
 const express = require("express");
 const _ = require("lodash");
-const { validate } = require("../models/order");
-const { Order, statuses } = require("../models/order");
+const { Order, statuses, validate } = require("../models/order");
 const { Delivery } = require("../models/delivery");
 const p24 = require("../utils/p24");
 const { getHostURL } = require("../utils/url");
@@ -66,7 +65,7 @@ request:
 
   const order = new Order({
     customer: getCustomerProps(customer),
-    cart: cart,
+    cart: cart.list,
     delivery: {
       method: delivery._id,
       cost: delivery.price,
@@ -82,7 +81,6 @@ router.get("/:id/payment", validateObjectId, async (req, res) => {
   if (!order)
     return res.status(404).send("The order with the given ID was not found.");
 
-  order.totalCost = await order.getTotalCost();
   const hostUrl = getHostURL(req);
 
   const result = await p24.createTransaction(order, hostUrl);
@@ -99,7 +97,7 @@ router.get("/:id/status", validateObjectId, async (req, res) => {
   if (!createdAt) return res.status(400).send("The key is required.");
 
   const order = await Order.findOne({ _id: req.params.id, createdAt })
-    .populate("cart.list.product", "name image")
+    .populate("cart.product", "name image")
     .populate("delivery.method", "name");
 
   if (!order)

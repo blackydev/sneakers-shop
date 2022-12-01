@@ -42,7 +42,7 @@ describe("orders route", () => {
         expect(res.body.length).toBe(2);
         const mustHaveProps = [
           "customer.name",
-          "cart.list",
+          "cart",
           "delivery.method",
           "delivery.cost",
         ];
@@ -381,7 +381,7 @@ const createOrders = async (carts, deliveries, customers) => {
 
   let order = new Order({
     customer: customers[0],
-    cart: { list: carts[0].list },
+    cart: carts[0].list,
     delivery: { method: deliveries[0]._id, cost: deliveries[0].price },
     status: "pending",
   });
@@ -390,7 +390,7 @@ const createOrders = async (carts, deliveries, customers) => {
 
   order = new Order({
     customer: customers[1],
-    cart: { list: carts[1].list },
+    cart: carts[1].list,
     delivery: { method: deliveries[1]._id, cost: deliveries[1].price },
     status: "pending",
   });

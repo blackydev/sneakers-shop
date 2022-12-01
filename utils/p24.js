@@ -23,45 +23,43 @@ const client = axios.create({
 });
 
 const createTransaction = async (order, hostURL) => {
+  const amount = (await order.getTotalCost()) * 100;
+  const { customer } = order;
+  const hashData = {
+    sessionId: order._id,
+    merchantId: merchantId,
+    amount,
+    currency,
+    crc: crcKey,
+  };
+  const sign = calculateSHA384(JSON.stringify(hashData));
+  const request = {
+    channel: 16,
+    merchantId,
+    posId: posId,
+    sessionId: order._id,
+    amount,
+    currency,
+    description: `${config.get("clientUrl")}/my-orders/${order._id}?key=${
+      order.createdAt
+    }`,
+    email: customer.email,
+    client: customer.name,
+    address: customer.address,
+    zip: customer.zip,
+    city: customer.city,
+    country: "PL",
+    phone: customer.phone,
+    language: "en",
+    urlReturn: config.get("clientUrl"),
+    urlStatus: `${hostURL}/api/orders/${order._id}/p24Callback`,
+    timeLimit: paymentTimeLimit,
+    waitForResult: true,
+    shipping: order.deliveryCost * 100,
+    transferLabel: `Order`,
+    sign: sign,
+  };
   try {
-    const customer = order.customer;
-    const hashData = {
-      sessionId: order._id,
-      merchantId: merchantId,
-      amount: order.totalCost * 100,
-      currency,
-      crc: crcKey,
-    };
-    const totalCost = (await order.getTotalCost()) * 100;
-    const sign = calculateSHA384(JSON.stringify(hashData));
-    const request = {
-      channel: 16,
-      merchantId: merchantId,
-      posId: posId,
-      sessionId: order._id,
-      amount: totalCost,
-      currency,
-      description: `${config.get("clientUrl")}/my-orders/${order._id}?key=${
-        order.createdAt
-      }`,
-      email: customer.email,
-      client: customer.name,
-      address: customer.address,
-      zip: customer.zip,
-      city: customer.city,
-      country: "PL",
-      phone: customer.phone,
-      language: "en",
-      urlReturn: `${config.get("clientUrl")}/my-orders/${order._id}?key=${
-        order.createdAt
-      }`,
-      urlStatus: `${hostURL}/api/orders/${order._id}/p24Callback`,
-      timeLimit: paymentTimeLimit,
-      waitForResult: true,
-      shipping: order.deliveryCost * 100,
-      transferLabel: `Order`,
-      sign: sign,
-    };
     const { data: result } = await client.post(
       "/transaction/register",
       request
@@ -95,11 +93,12 @@ const verifyNotification = (notificationRequest) => {
 const verifyTransaction = async (order) => {
   try {
     const cart = order.cart;
+    const amount = (await order.getTotalCost()) * 100;
 
     const hashData = {
       sessionId: order._id,
       orderId: order.p24Id,
-      amount: cart.amount * 100,
+      amount,
       currency,
       crc: crcKey,
     };
@@ -110,7 +109,7 @@ const verifyTransaction = async (order) => {
       merchantId: merchantId,
       posId: posId,
       sessionId: order._id,
-      amount: cart.amount * 100,
+      amount,
       currency,
       orderId: order.p24Id,
       sign: sign,

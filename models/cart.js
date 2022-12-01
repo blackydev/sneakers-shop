@@ -6,7 +6,7 @@ const { Product } = require("./product");
 
 const maxProductQuantity = 9;
 
-const listItemSchema = new mongoose.Schema(
+const itemListSchema = new mongoose.Schema(
   {
     _id: { id: false },
     product: {
@@ -34,19 +34,7 @@ const listItemSchema = new mongoose.Schema(
 );
 
 const cartSchema = new mongoose.Schema(
-  {
-    _id: { id: false },
-    list: [listItemSchema],
-  },
-  {
-    toObject: { getters: true, setters: true },
-    toJSON: { getters: true, setters: true },
-    runSettersOnQuery: true,
-  }
-);
-
-const modelSchema = new mongoose.Schema(
-  { list: [listItemSchema] },
+  { list: [itemListSchema] },
   {
     toObject: { getters: true, setters: true },
     toJSON: { getters: true, setters: true },
@@ -54,7 +42,7 @@ const modelSchema = new mongoose.Schema(
   }
 );
 
-const Cart = mongoose.model("carts", modelSchema);
+const Cart = mongoose.model("carts", cartSchema);
 
 function validate(cartElement) {
   const schema = Joi.object().keys({
@@ -101,7 +89,7 @@ async function deleteCartsInterval() {
 
 module.exports = {
   validate,
-  cartSchema,
+  itemListSchema,
   Cart,
   deleteCart,
   deleteCartsInterval,

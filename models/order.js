@@ -3,7 +3,7 @@ const dayjs = require("dayjs");
 const mongoose = require("mongoose");
 const { schemas } = require("./schemas");
 const { customerSchema, joiSchema: customerJoiSchema } = require("./customer");
-const { cartSchema } = require("./cart");
+const { itemListSchema } = require("./cart");
 const { Product } = require("./product");
 
 const statuses = ["pending", "interrupted", "paid", "accepted", "shipped"];
@@ -15,10 +15,12 @@ const orderSchema = new mongoose.Schema(
       required: true,
     },
 
-    cart: {
-      type: cartSchema,
-      required: true,
-    },
+    cart: [
+      {
+        type: itemListSchema,
+        required: true,
+      },
+    ],
 
     p24Id: {
       type: Number,
@@ -54,9 +56,8 @@ const orderSchema = new mongoose.Schema(
 
 orderSchema.methods.getTotalCost = function () {
   let totalCost = this.delivery.cost;
-  for (const item of this.cart.list) {
-    totalCost += item.cost * item.quantity;
-  }
+  for (const item of this.cart) totalCost += item.cost * item.quantity;
+
   return totalCost;
 };
 
@@ -83,7 +84,7 @@ async function deleteOrdersInterval() {
     const limit = dayjs().subtract(3, "hour");
     const orders = await Order.find({ createdAt: { $lt: limit } });
     orders.map(async (order) => {
-      for (const item of order.cart.list)
+      for (const item of order.cart)
         await Product.findByIdAndIncreaseStock(item.product, item.quantity);
       order.status = "interrupted";
       await order.save();
