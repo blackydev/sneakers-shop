@@ -242,7 +242,7 @@ describe("orders route", () => {
     });
   });
 
-  describe("GET /:id/status", () => {
+  describe("GET /:id/info", () => {
     let orders, orderId, key;
 
     beforeEach(async () => {
@@ -252,7 +252,7 @@ describe("orders route", () => {
     });
 
     const exec = () =>
-      request(server).get(`/api/orders/${orderId}/status`).query({ key });
+      request(server).get(`/api/orders/${orderId}/info`).query({ key });
 
     it("should return order status if request is correct", async () => {
       const res = await exec();

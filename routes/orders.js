@@ -89,14 +89,14 @@ router.get("/:id/payment", validateObjectId, async (req, res) => {
   res.send(result);
 });
 
-router.get("/:id/status", validateObjectId, async (req, res) => {
+router.get("/:id/info", validateObjectId, async (req, res) => {
   /* 
   req query: { key }    - createdAt date
   */
   const { key: createdAt } = req.query;
   if (!createdAt) return res.status(400).send("The key is required.");
 
-  const order = await Order.findOne({ _id: req.params.id, createdAt })
+  let order = await Order.findOne({ _id: req.params.id, createdAt })
     .populate("cart.product", "name image")
     .populate("delivery.method", "name");
 
@@ -104,14 +104,14 @@ router.get("/:id/status", validateObjectId, async (req, res) => {
     return res.status(404).send("The order with the given ID was not found.");
 
   order.totalCost = order.getTotalCost();
-
+  order.delivery.cost /= 100;
   res.send(
     _.pick(order, [
       "_id",
-      "customer",
-      "cart",
       "delivery",
+      "customer",
       "status",
+      "cart",
       "createdAt",
       "totalCost",
     ])
@@ -141,7 +141,6 @@ router.put(
     );
     if (!order)
       return res.status(404).send("The order with the given ID was not found.");
-
     res.send(order);
   }
 );

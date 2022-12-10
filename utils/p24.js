@@ -8,7 +8,7 @@ const merchantId = config.get("p24.merchantId");
 const posId = config.get("p24.posId");
 const crcKey = config.get("p24.crc");
 const raportKey = config.get("p24.raportKey");
-const currency = "USD";
+const currency = "PLN";
 const p24URL =
   process.env.NODE_ENV === "production"
     ? "https://secure.przelewy24.pl"
@@ -27,7 +27,7 @@ const createTransaction = async (order, hostURL) => {
   const { customer } = order;
   const hashData = {
     sessionId: order._id,
-    merchantId: merchantId,
+    merchantId,
     amount,
     currency,
     crc: crcKey,
@@ -92,7 +92,6 @@ const verifyNotification = (notificationRequest) => {
 
 const verifyTransaction = async (order) => {
   try {
-    const cart = order.cart;
     const amount = (await order.getTotalCost()) * 100;
 
     const hashData = {
@@ -106,7 +105,7 @@ const verifyTransaction = async (order) => {
     const sign = calculateSHA384(JSON.stringify(hashData));
 
     const request = {
-      merchantId: merchantId,
+      merchantId,
       posId: posId,
       sessionId: order._id,
       amount,

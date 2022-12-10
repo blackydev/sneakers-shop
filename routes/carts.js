@@ -33,7 +33,7 @@ router.get("/", async (req, res) => {
 router.get("/:id", validateObjectId, async (req, res) => {
   let cart = await Cart.findById(req.params.id).populate(
     "list.product",
-    "name image"
+    "name image release"
   );
 
   if (!cart)
