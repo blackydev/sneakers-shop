@@ -25,11 +25,9 @@ router.get("/", [auth, isAdmin], async (req, res) => {
 });
 
 router.get("/:id", [validateObjectId, auth, isAdmin], async (req, res) => {
-  const order = await Order.findById(req.params.id).populate(
-    "delivery.method",
-    "name"
-  );
-
+  const order = await Order.findById(req.params.id)
+    .populate("delivery.method", "name")
+    .populate("cart.product", "name image release");
   if (!order)
     return res.status(404).send("The order with the given ID was not found.");
 
@@ -97,7 +95,7 @@ router.get("/:id/info", validateObjectId, async (req, res) => {
   if (!createdAt) return res.status(400).send("The key is required.");
 
   let order = await Order.findOne({ _id: req.params.id, createdAt })
-    .populate("cart.product", "name image")
+    .populate("cart.product", "name image release")
     .populate("delivery.method", "name");
 
   if (!order)
