@@ -44,7 +44,7 @@ describe("orders route", () => {
           "customer.name",
           "cart",
           "delivery.method",
-          "delivery.cost",
+          "delivery.price",
         ];
         for (const prop of mustHaveProps)
           expect(res.body[0]).toHaveProperty(prop);
@@ -156,7 +156,6 @@ describe("orders route", () => {
       expect(res.status).toBe(400);
     });
   });
-
   describe("POST /", () => {
     let deliveries, products, customer, cart, deliveryId;
 
@@ -381,8 +380,8 @@ const createOrders = async (carts, deliveries, customers) => {
 
   let order = new Order({
     customer: customers[0],
-    cart: carts[0].list,
-    delivery: { method: deliveries[0]._id, cost: deliveries[0].price },
+    cart: carts[0].items,
+    delivery: { method: deliveries[0]._id, price: deliveries[0].price },
     status: "pending",
   });
   await order.save();
@@ -390,8 +389,8 @@ const createOrders = async (carts, deliveries, customers) => {
 
   order = new Order({
     customer: customers[1],
-    cart: carts[1].list,
-    delivery: { method: deliveries[1]._id, cost: deliveries[1].price },
+    cart: carts[1].items,
+    delivery: { method: deliveries[1]._id, price: deliveries[1].price },
     status: "pending",
   });
   await order.save();

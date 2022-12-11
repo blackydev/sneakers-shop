@@ -4,9 +4,9 @@ const dayjs = require("dayjs");
 const { schemas } = require("./schemas");
 const { Product } = require("./product");
 
-const maxProductQuantity = 9;
+const maxProductAmount = 9;
 
-const itemListSchema = new mongoose.Schema(
+const itemItemsSchema = new mongoose.Schema(
   {
     _id: { id: false },
     product: {
@@ -14,11 +14,11 @@ const itemListSchema = new mongoose.Schema(
       ref: "products",
       required: true,
     },
-    cost: { ...schemas.price, required: true },
-    quantity: {
+    price: { ...schemas.price, required: true },
+    amount: {
       type: Number,
       min: 1,
-      max: maxProductQuantity,
+      max: maxProductAmount,
       default: 1,
       validate: {
         validator: Number.isInteger,
@@ -34,7 +34,7 @@ const itemListSchema = new mongoose.Schema(
 );
 
 const cartSchema = new mongoose.Schema(
-  { list: [itemListSchema] },
+  { items: [itemItemsSchema] },
   {
     toObject: { getters: true, setters: true },
     toJSON: { getters: true, setters: true },
@@ -47,7 +47,7 @@ const Cart = mongoose.model("carts", cartSchema);
 function validate(cartElement) {
   const schema = Joi.object().keys({
     productId: Joi.objectId().required(),
-    quantity: Joi.number().integer().min(1).max(maxProductQuantity).required(),
+    amount: Joi.number().integer().min(1).max(maxProductAmount).required(),
   });
 
   return schema.validate(cartElement);
@@ -60,8 +60,8 @@ Cart.findById = function (id) {
 };
 
 async function deleteCart(cart) {
-  for (const item of cart.list)
-    await Product.findByIdAndIncreaseStock(item.product, item.quantity);
+  for (const item of cart.items)
+    await Product.findByIdAndIncreaseStock(item.product, item.amount);
   await cart.remove();
 }
 
@@ -89,7 +89,7 @@ async function deleteCartsInterval() {
 
 module.exports = {
   validate,
-  itemListSchema,
+  itemItemsSchema,
   Cart,
   deleteCart,
   deleteCartsInterval,

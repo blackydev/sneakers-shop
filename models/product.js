@@ -47,18 +47,18 @@ const productSchema = new mongoose.Schema(
 
 const Product = mongoose.model("products", productSchema);
 
-Product.findByIdAndIncreaseStock = function (id, quantity) {
+Product.findByIdAndIncreaseStock = function (id, amount) {
   return this.findByIdAndUpdate(
     id,
     {
-      $inc: { numberInStock: quantity },
+      $inc: { numberInStock: amount },
     },
     { new: true }
   );
 };
 
-Product.findByIdAndDecreaseStock = function (id, quantity) {
-  return this.findByIdAndIncreaseStock(id, quantity * -1);
+Product.findByIdAndDecreaseStock = function (id, amount) {
+  return this.findByIdAndIncreaseStock(id, amount * -1);
 };
 
 function validateProduct(product) {

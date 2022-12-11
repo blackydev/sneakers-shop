@@ -15,7 +15,7 @@ INSTRUCTION:
     get cart
 
   PUT /:id
-    req: { product, quantity }
+    req: { product, amount }
     put product to cart
 
   DELETE /:id/:productId
@@ -24,7 +24,7 @@ INSTRUCTION:
 
 router.get("/", async (req, res) => {
   const cart = new Cart({
-    list: [],
+    items: [],
   });
   await cart.save();
   res.send(cart);
@@ -32,7 +32,7 @@ router.get("/", async (req, res) => {
 
 router.get("/:id", validateObjectId, async (req, res) => {
   let cart = await Cart.findById(req.params.id).populate(
-    "list.product",
+    "items.product",
     "name image release"
   );
 
@@ -46,32 +46,32 @@ router.put("/:id", async (req, res) => {
   /* 
   req: {
     productId,
-    quantity
+    amount
   }
   */
-  const { productId, quantity: reqQuantity } = req.body;
+  const { productId, amount: reqAmount } = req.body;
   const { error } = validate(req.body);
   if (error) return res.status(400).send(error.message);
   const cart = await Cart.findById(req.params.id);
   if (!cart)
     return res.status(404).send("The cart with the given ID was not found.");
 
-  const index = cart.list.findIndex((item) => item.product == productId);
+  const index = cart.items.findIndex((item) => item.product == productId);
 
-  if (index === -1) var quantity = reqQuantity;
-  else quantity = reqQuantity - cart.list[index].quantity;
+  if (index === -1) var amount = reqAmount;
+  else amount = reqAmount - cart.items[index].amount;
 
-  const product = await Product.findByIdAndDecreaseStock(productId, quantity);
+  const product = await Product.findByIdAndDecreaseStock(productId, amount);
   if (!product)
     return res.status(404).send("The product with the given ID was not found.");
 
   if (index === -1)
-    cart.list.push({
+    cart.items.push({
       product: productId,
-      cost: product.price,
-      quantity: reqQuantity,
+      price: product.price,
+      amount: reqAmount,
     });
-  else cart.list[index].quantity = reqQuantity;
+  else cart.items[index].amount = reqAmount;
 
   await cart.save();
   res.send(cart);
@@ -84,9 +84,9 @@ router.delete("/:cartId/:productId", async (req, res) => {
   if (!cart)
     return res.status(404).send("The cart with the given ID was not found.");
 
-  let list = cart.list;
+  let items = cart.items;
 
-  const index = list.findIndex((item) => item.product == params.productId);
+  const index = items.findIndex((item) => item.product == params.productId);
   if (index === -1)
     return res
       .status(400)
@@ -94,13 +94,13 @@ router.delete("/:cartId/:productId", async (req, res) => {
 
   let product = await Product.findByIdAndIncreaseStock(
     params.productId,
-    list[index].quantity
+    items[index].amount
   );
   if (!product)
     return res.status(404).send("The product with the given ID was not found.");
 
-  cart.list.splice(index, 1);
-  if (cart.list.length === 0) {
+  cart.items.splice(index, 1);
+  if (cart.items.length === 0) {
     await cart.remove();
     return res.status(204).send();
   }

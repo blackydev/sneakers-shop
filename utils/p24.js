@@ -23,7 +23,7 @@ const client = axios.create({
 });
 
 const createTransaction = async (order, hostURL) => {
-  const amount = (await order.getTotalCost()) * 100;
+  const amount = (await order.getTotalPrice()) * 100;
   const { customer } = order;
   const hashData = {
     sessionId: order._id,
@@ -55,7 +55,7 @@ const createTransaction = async (order, hostURL) => {
     urlStatus: `${hostURL}/api/orders/${order._id}/p24Callback`,
     timeLimit: paymentTimeLimit,
     waitForResult: true,
-    shipping: order.deliveryCost * 100,
+    shipping: order.deliveryPrice * 100,
     transferLabel: `Order`,
     sign: sign,
   };
@@ -92,7 +92,7 @@ const verifyNotification = (notificationRequest) => {
 
 const verifyTransaction = async (order) => {
   try {
-    const amount = (await order.getTotalCost()) * 100;
+    const amount = (await order.getTotalPrice()) * 100;
 
     const hashData = {
       sessionId: order._id,

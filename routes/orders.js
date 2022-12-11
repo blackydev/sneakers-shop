@@ -65,10 +65,10 @@ request:
 
   const order = new Order({
     customer: getCustomerProps(customer),
-    cart: cart.list,
+    cart: cart.items,
     delivery: {
       method: delivery._id,
-      cost: delivery.price,
+      price: delivery.price,
     },
   });
 
@@ -103,8 +103,8 @@ router.get("/:id/info", validateObjectId, async (req, res) => {
   if (!order)
     return res.status(404).send("The order with the given ID was not found.");
 
-  order.totalCost = order.getTotalCost();
-  order.delivery.cost /= 100;
+  order.totalPrice = order.getTotalPrice();
+  order.delivery.price /= 100;
   res.send(
     _.pick(order, [
       "_id",
@@ -113,7 +113,7 @@ router.get("/:id/info", validateObjectId, async (req, res) => {
       "status",
       "cart",
       "createdAt",
-      "totalCost",
+      "totalPrice",
     ])
   );
 });

@@ -23,7 +23,7 @@ describe("carts route", () => {
 
     it("should return new empty cart if request is correct", async () => {
       const res = await exec();
-      expect(res.body).toHaveProperty("list");
+      expect(res.body).toHaveProperty("items");
       expect(res.body).toHaveProperty("_id");
     });
 
@@ -44,22 +44,22 @@ describe("carts route", () => {
       return request(server).get(`/api/carts/${cartId}`);
     };
 
-    it("should return cart with populated products on the list if request is correct", async () => {
+    it("should return cart with populated products on the items if request is correct", async () => {
       const res = await exec();
       expect(res.body).toHaveProperty("_id");
-      expect(res.body).toHaveProperty("list");
-      expect(res.body.list.length).toBe(3);
+      expect(res.body).toHaveProperty("items");
+      expect(res.body.items.length).toBe(3);
 
       const mustHaveProperties = [
         "product",
-        "cost",
-        "quantity",
+        "price",
+        "amount",
         "product._id",
         "product.image",
         "product.name",
       ];
 
-      for (const item of res.body.list)
+      for (const item of res.body.items)
         for (const prop of mustHaveProperties)
           expect(item).toHaveProperty(prop);
     });
@@ -83,29 +83,29 @@ describe("carts route", () => {
   });
 
   describe("PUT /:id", () => {
-    let cart, products, productId, quantity;
+    let cart, products, productId, amount;
 
     beforeEach(async () => {
       const res = await request(server).get("/api/carts");
       cart = res.body;
       products = await createProducts();
-      quantity = 1;
+      amount = 1;
     });
 
     const exec = async () => {
       return request(server)
         .put(`/api/carts/${cart._id}`)
-        .send({ productId, quantity });
+        .send({ productId, amount });
     };
 
     it("should add product to cart if request is correct", async () => {
       productId = products[0]._id;
       const res = await exec();
-      const list = res.body.list;
-      expect(list.length).toBe(1);
-      expect(list[0]).toHaveProperty("product");
-      expect(list[0].quantity).toBe(1);
-      expect(list[0].cost).toBe(products[0].price);
+      const items = res.body.items;
+      expect(items.length).toBe(1);
+      expect(items[0]).toHaveProperty("product");
+      expect(items[0].amount).toBe(1);
+      expect(items[0].price).toBe(products[0].price);
       expect(res.status).toBe(200);
     });
 
@@ -127,8 +127,8 @@ describe("carts route", () => {
       expect(res.status).toBe(404);
     });
 
-    it("should return 400 if given quantity are higher then limit", async () => {
-      quantity = 1000;
+    it("should return 400 if given amount are higher then limit", async () => {
+      amount = 1000;
       const res = await exec();
       expect(res.status).toBe(400);
     });
@@ -136,33 +136,33 @@ describe("carts route", () => {
     describe("when one product is already in the cart", () => {
       beforeEach(async () => {
         productId = products[0]._id;
-        quantity = 3;
+        amount = 3;
         await exec();
       });
 
       describe("correct request", () => {
         it("should add second product to cart", async () => {
           productId = products[1]._id;
-          quantity = 1;
+          amount = 1;
           const res = await exec();
-          const list = res.body.list;
-          expect(list.length).toBe(2);
+          const items = res.body.items;
+          expect(items.length).toBe(2);
           expect(res.status).toBe(200);
         });
 
         it("should edit product in cart", async () => {
-          quantity = 4;
+          amount = 4;
           await Product.findByIdAndUpdate(productId, { price: 999.9 });
           const res = await exec();
-          const list = res.body.list;
-          expect(list.length).toBe(1);
-          expect(list[0].quantity).toBe(4);
-          expect(list[0].cost).not.toBe(999.9);
+          const items = res.body.items;
+          expect(items.length).toBe(1);
+          expect(items[0].amount).toBe(4);
+          expect(items[0].price).not.toBe(999.9);
           expect(res.status).toBe(200);
         });
 
         it("should edit product in cart and increase a stock of product", async () => {
-          quantity = 7;
+          amount = 7;
           const { numberInStock: before } = await Product.findById(productId);
           await exec();
           const { numberInStock: after } = await Product.findById(productId);
@@ -171,7 +171,7 @@ describe("carts route", () => {
         });
 
         it("should edit product in cart and decrease a stock of product", async () => {
-          quantity = 2;
+          amount = 2;
           const { numberInStock: before } = await Product.findById(productId);
           await exec();
           const { numberInStock: after } = await Product.findById(productId);
@@ -196,8 +196,8 @@ describe("carts route", () => {
 
     it("should return cart with deleted product if request is correct", async () => {
       const res = await exec();
-      expect(res.body.list.length).toBe(1);
-      expect(res.body.list[0]).toHaveProperty(
+      expect(res.body.items.length).toBe(1);
+      expect(res.body.items[0]).toHaveProperty(
         "product",
         products[0]._id.toString()
       );
@@ -271,20 +271,20 @@ describe("carts route", () => {
   });
 });
 
-const createCart = async (products, quantities) => {
+const createCart = async (products, amounts) => {
   if (!products) products = await createProducts();
-  if (!quantities) quantities = [1, 3, 2];
+  if (!amounts) amounts = [1, 3, 2];
 
-  const list = [];
+  const items = [];
   let i = 0;
   for (const product of products)
-    list.push({
+    items.push({
       product: product._id,
-      cost: product.price,
-      quantity: quantities[i],
+      price: product.price,
+      amount: amounts[i],
     });
 
-  const cart = new Cart({ list: list });
+  const cart = new Cart({ items: items });
   await cart.save();
   return cart;
 };
