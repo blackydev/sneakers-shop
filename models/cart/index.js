@@ -1,40 +1,11 @@
 const Joi = require("joi");
 const mongoose = require("mongoose");
 const dayjs = require("dayjs");
-const { schemas } = require("./schemas");
-const { Product } = require("./product");
-
-const maxProductAmount = 9;
-
-const itemItemsSchema = new mongoose.Schema(
-  {
-    _id: { id: false },
-    product: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "products",
-      required: true,
-    },
-    price: { ...schemas.price, required: true },
-    amount: {
-      type: Number,
-      min: 1,
-      max: maxProductAmount,
-      default: 1,
-      validate: {
-        validator: Number.isInteger,
-        message: `${Number} is not an integer value`,
-      },
-    },
-  },
-  {
-    toObject: { getters: true, setters: true },
-    toJSON: { getters: true, setters: true },
-    runSettersOnQuery: true,
-  }
-);
+const { Product } = require("../product");
+const { itemSchema, maxProductAmount } = require("./itemSchema");
 
 const cartSchema = new mongoose.Schema(
-  { items: [itemItemsSchema] },
+  { items: [itemSchema] },
   {
     toObject: { getters: true, setters: true },
     toJSON: { getters: true, setters: true },
@@ -89,7 +60,7 @@ async function deleteCartsInterval() {
 
 module.exports = {
   validate,
-  itemItemsSchema,
+  itemSchema,
   Cart,
   deleteCart,
   deleteCartsInterval,

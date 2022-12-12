@@ -3,7 +3,7 @@ const dayjs = require("dayjs");
 const mongoose = require("mongoose");
 const { schemas } = require("./schemas");
 const { customerSchema, joiSchema: customerJoiSchema } = require("./customer");
-const { itemItemsSchema } = require("./cart");
+const { itemSchema: cartItemSchema } = require("./cart/index");
 const { Product } = require("./product");
 
 const statuses = ["pending", "interrupted", "paid", "accepted", "shipped"];
@@ -17,7 +17,7 @@ const orderSchema = new mongoose.Schema(
 
     cart: [
       {
-        type: itemItemsSchema,
+        type: cartItemSchema,
         required: true,
       },
     ],
