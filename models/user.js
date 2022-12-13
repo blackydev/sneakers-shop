@@ -69,7 +69,9 @@ function validateAuth(user) {
   return schema.validate(user);
 }
 
-exports.User = User;
-exports.validate = validateUser;
-exports.validateAuth = validateAuth;
-exports.userSchema = userSchema;
+module.exports = {
+  User,
+  validate: validateUser,
+  validateAuth,
+  userSchema,
+};

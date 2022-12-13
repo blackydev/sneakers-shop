@@ -75,6 +75,8 @@ function validateProduct(product) {
   return schema.validate(product);
 }
 
-exports.Product = Product;
-exports.validate = validateProduct;
-exports.productSchema = productSchema;
+module.exports = {
+  Product,
+  validate: validateProduct,
+  productSchema,
+};

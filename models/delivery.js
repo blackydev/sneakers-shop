@@ -34,6 +34,5 @@ function validateDelivery(delivery) {
 
 module.exports = {
   Delivery,
-  deliverySchema,
   validate: validateDelivery,
 };

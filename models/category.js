@@ -19,6 +19,8 @@ function validate(category) {
   return schema.validate(category);
 }
 
-exports.categorySchema = categorySchema;
-exports.validate = validate;
-exports.Category = Category;
+module.exports = {
+  categorySchema,
+  validate,
+  Category,
+};

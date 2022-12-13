@@ -34,6 +34,8 @@ function validate(customer) {
   return joiSchema.validate(customer);
 }
 
-exports.customerSchema = customerSchema;
-exports.validate = validate;
-exports.joiSchema = joiSchema;
+module.exports = {
+  customerSchema,
+  validate,
+  joiSchema,
+};
