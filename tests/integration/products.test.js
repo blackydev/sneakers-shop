@@ -5,33 +5,13 @@ const config = require("config");
 const request = require("supertest");
 const fs = require("fs");
 const path = require("path");
-const { getAuthToken, deleteUsers } = require("./users.test");
-const { createCategory, deleteCategories } = require("./categories.test");
-
-const products = [
-  {
-    name: "Star Wars I",
-    description:
-      "Set 32 years before the original trilogy, during the era of the Galactic Republic, the plot follows Jedi Master Qui-Gon Jinn and his apprentice Obi-Wan Kenobi as they try to protect Queen Padmé Amidala of Naboo in hopes of securing a peaceful end to an interplanetary trade dispute.",
-    price: 10.2,
-    numberInStock: 255,
-  },
-  {
-    name: "Star Wars IV",
-    description:
-      "It is a period of civil war. Rebel spaceships, striking from a hidden base, have won their first victory against the evil Galactic Empire.",
-    price: 15,
-    numberInStock: 55,
-    release: new Date("1979-07-19").toISOString(),
-  },
-  {
-    name: "Star Wars VI",
-    description:
-      " Luke Skywalker and friends travel to Tatooine to rescue their companion Han Solo from the vile Jabba the Hutt.",
-    price: 12,
-    numberInStock: 103,
-  },
-];
+const { getAuthToken, deleteUsers } = require("../utils/users");
+const { createCategory } = require("../utils/categories");
+const {
+  createProducts,
+  deleteProducts,
+  products,
+} = require("../utils/products");
 
 pngImg = "./tests/files/star wars 1.png";
 jpgImg = "./tests/files/star wars 4.jpg";
@@ -475,17 +455,6 @@ describe("products route", () => {
       expect(res.status).toBe(403);
     });
 
-    it("should return 400 if JWT token is fake", async () => {
-      token = jwt.sign(
-        {
-          _id: mongoose.Types.ObjectId(),
-        },
-        config.get("jwtPrivateKey")
-      );
-      const res = await exec();
-      expect(res.status).toBe(400);
-    });
-
     it("should return 404 if ID is invalid", async () => {
       productId = 1;
       const res = await exec();
@@ -499,29 +468,3 @@ describe("products route", () => {
     });
   });
 });
-
-const createProducts = async (category) => {
-  const result = [];
-  if (!category) category = await createCategory();
-  for (const el of products) {
-    const product = new Product({
-      ...el,
-      image: mockImg,
-      category: category._id,
-    });
-    await product.save();
-    result.push(product);
-  }
-
-  return result;
-};
-
-const deleteProducts = async () => {
-  await Product.deleteMany({});
-  await deleteCategories({});
-};
-
-module.exports = {
-  createProducts,
-  deleteProducts,
-};

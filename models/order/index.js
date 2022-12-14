@@ -1,12 +1,11 @@
 const Joi = require("joi");
 const dayjs = require("dayjs");
 const mongoose = require("mongoose");
-const { schemas } = require("./schemas");
-const { customerSchema, joiSchema: customerJoiSchema } = require("./customer");
-const { itemSchema: cartItemSchema } = require("./cart/index");
-const { Product } = require("./product");
-
-const statuses = ["pending", "interrupted", "paid", "accepted", "shipped"];
+const { schemas } = require("../schemas");
+const { customerSchema, joiSchema: customerJoiSchema } = require("../customer");
+const { itemSchema: cartItemSchema } = require("../cart/index");
+const { Product } = require("../product");
+const statuses = require("./statuses");
 
 const orderSchema = new mongoose.Schema(
   {
@@ -27,10 +26,9 @@ const orderSchema = new mongoose.Schema(
     },
 
     status: {
-      type: String,
-      enum: statuses,
-      default: "pending",
-      maxlength: 256,
+      type: Number,
+      default: 1,
+      get: (n) => statuses.getByNumber(n).name,
     },
 
     delivery: {
@@ -47,7 +45,6 @@ const orderSchema = new mongoose.Schema(
     },
   },
   {
-    toObject: { getters: true, setters: true },
     toJSON: { getters: true, setters: true },
     runSettersOnQuery: true,
     timestamps: { createdAt: true, updatedAt: false },
@@ -67,7 +64,7 @@ function validate(order) {
   const schema = Joi.object({
     customer: customerJoiSchema.required(),
     cartId: Joi.objectId().required(),
-    status: Joi.string().max(256),
+    status: Joi.number(),
 
     deliveryId: Joi.objectId().required(),
   });
@@ -86,7 +83,7 @@ async function deleteOrdersInterval() {
     orders.map(async (order) => {
       for (const item of order.cart)
         await Product.findByIdAndIncreaseStock(item.product, item.amount);
-      order.status = "interrupted";
+      order.status = -1;
       await order.save();
     });
   }, 3 * hour);
@@ -95,6 +92,6 @@ async function deleteOrdersInterval() {
 module.exports = {
   Order,
   validate,
-  statuses,
+  orderStatuses: statuses,
   deleteOrdersInterval,
 };

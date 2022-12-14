@@ -5,11 +5,6 @@ const jwt = require("jsonwebtoken");
 const config = require("config");
 const { schemas, joiSchemas } = require("./schemas");
 
-const authNumber = () => {
-  const number = Math.floor(Math.random() * 9007199254740990);
-  return (this.authNumber = number.toString(36));
-};
-
 const userSchema = new mongoose.Schema({
   email: { ...schemas.email, required: true, unique: true },
   password: {
@@ -19,10 +14,14 @@ const userSchema = new mongoose.Schema({
     maxlength: 1024,
     trim: true,
   },
-  authNumber: {
-    type: String,
-    default: authNumber(),
-  },
+  orders: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "orders",
+      required: false,
+    },
+  ],
+
   isAdmin: {
     type: Boolean,
   },
@@ -32,13 +31,11 @@ userSchema.methods.generateAuthToken = function () {
   return jwt.sign(
     {
       _id: this._id,
-      authNumber: this.authNumber,
+      isAdmin: this.isAdmin,
     },
     config.get("jwtPrivateKey")
   );
 };
-
-userSchema.methods.resetAuthNumber = authNumber;
 
 const User = mongoose.model("users", userSchema);
 

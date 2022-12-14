@@ -15,7 +15,6 @@ const deliverySchema = new mongoose.Schema(
     },
   },
   {
-    toObject: { getters: true, setters: true },
     toJSON: { getters: true, setters: true },
     runSettersOnQuery: true,
   }

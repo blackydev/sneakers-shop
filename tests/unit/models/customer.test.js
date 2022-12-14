@@ -1,4 +1,3 @@
-const { expectCt } = require("helmet");
 const { validate } = require("../../../models/customer");
 
 describe("customer", () => {

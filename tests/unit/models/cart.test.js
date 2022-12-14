@@ -1,14 +1,15 @@
 const { Cart, deleteCart } = require("../../../models/cart");
-const { createCart, deleteCarts } = require("../../integration/carts.test");
-const {
-  createProducts,
-  deleteProducts,
-} = require("../../integration/products.test");
+const { createCart, deleteCarts } = require("../../utils/carts");
+const { createProducts, deleteProducts } = require("../../utils/products");
 const { Product } = require("../../../models/product");
 
 describe("cart", () => {
+  let server;
+  beforeEach(async () => {
+    server = require("../../../index");
+  });
   afterEach(async () => {
-    await deleteProducts();
+    await server.close();
     await deleteCarts();
   });
 

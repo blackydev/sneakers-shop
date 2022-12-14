@@ -1,6 +1,5 @@
 const config = require("config");
 const jwt = require("jsonwebtoken");
-const { User } = require("../models/user");
 
 async function auth(req, res, next) {
   const token = req.header("x-auth-token");
@@ -8,17 +7,24 @@ async function auth(req, res, next) {
 
   try {
     const decoded = jwt.verify(token, config.get("jwtPrivateKey"));
-    const user = await User.findOne({
-      _id: decoded._id,
-      authNumber: decoded.authNumber,
-    });
-    if (!user) throw Error();
-
-    req.user = user;
-    next();
+    req.user = decoded;
   } catch (ex) {
     return res.status(400).send("Invalid token.");
   }
+  return next();
+}
+
+async function unrequiredAuth(req, res, next) {
+  const token = req.header("x-auth-token");
+  if (!token) return next();
+
+  try {
+    const decoded = jwt.verify(token, config.get("jwtPrivateKey"));
+    req.user = decoded;
+  } catch (ex) {
+    return next();
+  }
+  return next();
 }
 
 function isAdmin(req, res, next) {
@@ -27,5 +33,6 @@ function isAdmin(req, res, next) {
 
 module.exports = {
   auth,
+  unrequiredAuth,
   isAdmin,
 };

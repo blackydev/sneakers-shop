@@ -1,7 +1,7 @@
 const request = require("supertest");
-const { Category } = require("../../models/category");
 const mongoose = require("mongoose");
-const { getAuthToken, deleteUsers } = require("./users.test");
+const { getAuthToken, deleteUsers } = require("../utils/users");
+const { createCategory, deleteCategories } = require("../utils/categories");
 
 describe("categories route", () => {
   let server, token;
@@ -142,19 +142,3 @@ describe("categories route", () => {
     });
   });
 });
-
-const createCategory = async (name) => {
-  if (!name) name = "movies";
-  const category = new Category({ name });
-  await category.save();
-  return category;
-};
-
-const deleteCategories = async () => {
-  await Category.deleteMany({});
-};
-
-module.exports = {
-  createCategory,
-  deleteCategories,
-};

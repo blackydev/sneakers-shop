@@ -1,19 +1,35 @@
 const express = require("express");
 const _ = require("lodash");
-const { Order, statuses, validate } = require("../models/order");
+const { Order, validate, orderStatuses } = require("../models/order");
 const { Delivery } = require("../models/delivery");
+const { Cart } = require("../models/cart");
 const p24 = require("../utils/p24");
 const { getHostURL } = require("../utils/url");
-const { auth, isAdmin } = require("../middleware/authorization");
+const {
+  auth,
+  unrequiredAuth,
+  isAdmin,
+} = require("../middleware/authorization");
 const validateObjectId = require("../middleware/validateObjectId");
-const { Cart } = require("../models/cart");
+const { User } = require("../models/user");
 
 const router = express.Router();
 
 router.get("/", [auth, isAdmin], async (req, res) => {
   const { select, sortBy, status, pageLength, pageNumber } = req.query;
 
-  if (status) var findQuery = { status: status };
+  if (status) {
+    const tmp = orderStatuses.getByName(status);
+    /* if status is a string like "paid"
+     * else if status is a number like -1 or 10
+     */
+    if (tmp) {
+      var findQuery = { status: tmp.code };
+    } else {
+      const does = orderStatuses.doesExist(status);
+      if (does) findQuery = { status: status };
+    }
+  }
 
   const orders = await Order.find(findQuery)
     .populate("delivery.method", "name")
@@ -34,13 +50,14 @@ router.get("/:id", [validateObjectId, auth, isAdmin], async (req, res) => {
   res.send(order);
 });
 
-router.post("/", async (req, res) => {
+router.post("/", [unrequiredAuth], async (req, res) => {
   /*
-request: 
-{
-  cartId: `ref`, customer: {}, deliveryId: 'ref'}
-}
+  request: 
+  {
+   cartId: `ref`, customer: {}, deliveryId: 'ref'
+  }
   */
+
   const { customer, deliveryId, cartId } = req.body;
   const { error } = validate(req.body);
   if (error) return res.status(400).send(error.details[0].message);
@@ -71,12 +88,19 @@ request:
   });
 
   await order.save();
+  if (req.user) {
+    const user = await User.findById(req.user._id);
+    if (user) {
+      user.orders.push(order);
+      await user.save();
+    }
+  }
   res.send(order);
 });
 
 router.get("/:id/payment", validateObjectId, async (req, res) => {
   const order = await Order.findById(req.params.id);
-  if (!order)
+  if (!order || order.status < 0)
     return res.status(404).send("The order with the given ID was not found.");
 
   const hostUrl = getHostURL(req);
@@ -85,35 +109,6 @@ router.get("/:id/payment", validateObjectId, async (req, res) => {
   if (_.isError(result)) return res.status(400).send(result); // if server has died
 
   res.send(result);
-});
-
-router.get("/:id/info", validateObjectId, async (req, res) => {
-  /* 
-  req query: { key }    - createdAt date
-  */
-  const { key: createdAt } = req.query;
-  if (!createdAt) return res.status(400).send("The key is required.");
-
-  let order = await Order.findOne({ _id: req.params.id, createdAt })
-    .populate("cart.product", "name image release")
-    .populate("delivery.method", "name");
-
-  if (!order)
-    return res.status(404).send("The order with the given ID was not found.");
-
-  order.totalPrice = order.getTotalPrice();
-  order.delivery.price /= 100;
-  res.send(
-    _.pick(order, [
-      "_id",
-      "delivery",
-      "customer",
-      "status",
-      "cart",
-      "createdAt",
-      "totalPrice",
-    ])
-  );
 });
 
 router.put(
@@ -125,7 +120,7 @@ router.put(
     { status }
   */
     const { status } = req.body;
-    if (!statuses.includes(status))
+    if (!orderStatuses.doesExist(status))
       return res.status(400).send("Invalid status.");
 
     const order = await Order.findByIdAndUpdate(
@@ -158,13 +153,13 @@ router.post("/:id/p24Callback", validateObjectId, async (req, res) => {
     { new: true }
   ).populate("delivery.method");
 
-  if (order.status === "interrupted")
-    return res.status(400).send("Order is interrupted.");
+  if (order.status < 0) return res.status(400).send("Order is interrupted.");
 
   let result = await p24.verifyTransaction(order);
   if (_.isError(result)) return res.status(400).send();
 
   order.status = "paid";
+  await order.save();
 
   res.status(204);
 });

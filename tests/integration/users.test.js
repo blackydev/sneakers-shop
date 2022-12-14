@@ -1,8 +1,9 @@
-const mongoose = require("mongoose");
 const request = require("supertest");
 const jwt = require("jsonwebtoken");
 const config = require("config");
 const { User } = require("../../models/user");
+const { createOrders, deleteOrders } = require("../utils/orders");
+const _ = require("lodash");
 
 describe("users route", () => {
   beforeEach(() => {
@@ -95,7 +96,6 @@ describe("users route", () => {
       const res = await exec();
       let token = jwt.verify(res.text, config.get("jwtPrivateKey"));
       expect(token).toHaveProperty("_id");
-      expect(token).toHaveProperty("authNumber");
       expect(res.status).toBe(200);
     });
 
@@ -123,24 +123,76 @@ describe("users route", () => {
       expect(res.status).toBe(400);
     });
   });
-});
 
-const getAuthToken = async (isAdmin) => {
-  let user = new User({
-    email: "correctEmail@gmail.com",
-    password: "correctPassword123",
-    isAdmin: isAdmin,
+  describe("GET /orders", () => {
+    let token;
+    beforeEach(async () => {
+      const orders = await createOrders();
+      let user = new User({
+        email: "correctEmail@gmail.com",
+        password: "correctPassword123",
+        orders: [orders[0]._id, orders[1]._id],
+      });
+      user = await user.save();
+      token = user.generateAuthToken();
+    });
+
+    afterEach(async () => {
+      await deleteOrders();
+    });
+
+    const exec = async () => {
+      return await request(server)
+        .get("/api/users/orders")
+        .set("x-auth-token", token);
+    };
+
+    it("should return 200 if request is correct", async () => {
+      const res = await exec();
+      expect(res.status).toBe(200);
+    });
+
+    it("should return empty array if user does not have orders", async () => {
+      let user = await new User({
+        email: "correctEmail1@gmail.com",
+        password: "correctPassword1234",
+      }).save();
+      token = user.generateAuthToken();
+      const res = await exec();
+      expect(_.isArray(res.body)).toBeTruthy();
+      expect(res.body.length).toBe(0);
+    });
+
+    describe("should return orders if request is correct", () => {
+      it("with cart field", async () => {
+        const res = await exec();
+        const order = res.body[0];
+        expect(order).toHaveProperty("cart");
+        const properties = ["amount", "price", "product"];
+        properties.map((prop) => expect(order.cart[0]).toHaveProperty(prop));
+      });
+
+      it("with specific product field", async () => {
+        const res = await exec();
+        const cart = res.body[0].cart;
+        expect(cart[0]).toHaveProperty("product");
+        const properties = ["_id", "name", "image", "release"];
+        properties.map((prop) => expect(cart[0].product).toHaveProperty(prop));
+        expect(cart[0]).not.toHaveProperty("product.description");
+      });
+
+      it("with customer field", async () => {
+        const res = await exec();
+        const order = res.body[0];
+        expect(order).toHaveProperty("customer");
+        const properties = ["name", "phone", "zip", "city", "email", "address"];
+        properties.map((prop) => expect(order.customer).toHaveProperty(prop));
+      });
+      it("with status field", async () => {
+        const res = await exec();
+        const order = res.body[0];
+        expect(order).toHaveProperty("status");
+      });
+    });
   });
-  user = await user.save();
-  token = user.generateAuthToken();
-  return token;
-};
-
-const deleteUsers = async () => {
-  await User.deleteMany({});
-};
-
-module.exports = {
-  getAuthToken,
-  deleteUsers,
-};
+});

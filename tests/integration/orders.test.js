@@ -1,12 +1,12 @@
 const request = require("supertest");
 const mongoose = require("mongoose");
-const jwt = require("jsonwebtoken");
-const config = require("config");
-const { getAuthToken, deleteUsers } = require("./users.test");
-const { createDeliveries, deleteDeliveries } = require("./deliveries.test");
-const { createCart, deleteCarts } = require("./carts.test");
-const { createProducts } = require("./products.test");
-const { Order } = require("../../models/order");
+const _ = require("lodash");
+const { createOrders, deleteOrders } = require("../utils/orders");
+const { getAuthToken, deleteUsers } = require("../utils/users");
+const { createDeliveries } = require("../utils/deliveries");
+const { createProducts } = require("../utils/products");
+const { createCart } = require("../utils/carts");
+const { User } = require("../../models/user");
 
 describe("orders route", () => {
   let server;
@@ -48,6 +48,7 @@ describe("orders route", () => {
         ];
         for (const prop of mustHaveProps)
           expect(res.body[0]).toHaveProperty(prop);
+        expect(res.body[0]).toHaveProperty("status", "pending");
       });
 
       it("should return 200 if request is correct", async () => {
@@ -59,10 +60,18 @@ describe("orders route", () => {
         query = { status: "pending" };
         const res = await exec();
         expect(res.status).toBe(200);
+        expect(res.body[0]).toHaveProperty("status", "pending");
       });
 
       it('return orders just with "interrupted" status if request is correct', async () => {
         query = { status: "interrupted" };
+        const res = await exec();
+        expect(res.body.length).toBe(0);
+        expect(res.status).toBe(200);
+      });
+
+      it('return orders just with "interrupted" status if request is correct', async () => {
+        query = { status: -1 };
         const res = await exec();
         expect(res.body.length).toBe(0);
         expect(res.status).toBe(200);
@@ -87,23 +96,44 @@ describe("orders route", () => {
 
   describe("GET /:id", () => {
     let token;
-    let orderId;
+    let orderId, order;
 
     beforeEach(async () => {
       token = await getAuthToken(true);
       const orders = await createOrders();
       orderId = orders[0]._id;
+      order = orders[0];
     });
 
     const exec = () =>
       request(server).get(`/api/orders/${orderId}`).set("x-auth-token", token);
 
-    it("should return order if request is correct", async () => {
-      const res = await exec();
-      expect(res.body).toHaveProperty("customer");
-      expect(res.body).toHaveProperty("cart");
-      expect(res.body).toHaveProperty("status");
-      expect(res.body).toHaveProperty("delivery");
+    describe("should return order if request is correct", () => {
+      it("with customer property", async () => {
+        const { body } = await exec();
+        expect(body).toHaveProperty("customer", {
+          name: "Anna Czarnecka",
+          email: "annaCzarnecka1337@gmail.com",
+          address: "wislana 67",
+          zip: "32-532",
+          city: "Jaworzno",
+          phone: "48987654321",
+        });
+      });
+
+      it("with cart property", async () => {
+        const { body } = await exec();
+        expect(body).toHaveProperty("cart");
+        expect(body.cart.length).toBe(order.cart.length);
+      });
+      it("with status property", async () => {
+        const { body } = await exec();
+        expect(body).toHaveProperty("status", "pending");
+      });
+      it("with delivery property", async () => {
+        const { body } = await exec();
+        expect(body).toHaveProperty("delivery");
+      });
     });
 
     it("should return 200 if request is correct", async () => {
@@ -143,18 +173,6 @@ describe("orders route", () => {
       const res = await exec();
       expect(res.status).toBe(403);
     });
-
-    it("should return 400 if JWT is fake", async () => {
-      token = jwt.sign(
-        {
-          _id: mongoose.Types.ObjectId(),
-          authNumber: "19kbciesksf",
-        },
-        config.get("jwtPrivateKey")
-      );
-      const res = await exec();
-      expect(res.status).toBe(400);
-    });
   });
 
   describe("POST /", () => {
@@ -177,50 +195,158 @@ describe("orders route", () => {
       };
     });
 
-    const exec = () =>
-      request(server)
-        .post(`/api/orders`)
-        .send({ customer, cartId: cart._id, deliveryId });
+    describe("if no jwt token is provided", () => {
+      const exec = () =>
+        request(server)
+          .post(`/api/orders`)
+          .send({ customer, cartId: cart._id, deliveryId });
 
-    it("should return order if request is correct", async () => {
-      const res = await exec();
-      expect(res.body).toHaveProperty("customer");
-      expect(res.body).toHaveProperty("cart");
-      expect(res.body).toHaveProperty("status");
-      expect(res.body).toHaveProperty("delivery");
+      describe("should return order if request is correct", () => {
+        it("with customer property", async () => {
+          const { body } = await exec();
+          expect(body).toHaveProperty("customer", {
+            name: "Anna Czarnecka",
+            email: "annaCzarnecka1337@gmail.com",
+            address: "wislana 67",
+            zip: "32-532",
+            city: "Jaworzno",
+            phone: "48987654321",
+          });
+        });
+
+        it("with cart property", async () => {
+          const { body } = await exec();
+          expect(body).toHaveProperty("cart");
+          expect(body.cart.length).toBe(cart.items.length);
+        });
+        it("with status property", async () => {
+          const { body } = await exec();
+          expect(body).toHaveProperty("status", "pending");
+        });
+        it("with delivery property", async () => {
+          const { body } = await exec();
+          expect(body).toHaveProperty("delivery");
+        });
+      });
+
+      it("should return 200 if request is correct", async () => {
+        const res = await exec();
+        expect(res.status).toBe(200);
+      });
+
+      it("should return 400 if customer is invalid", async () => {
+        customer = {
+          email: "jankowalski@gmail.com",
+          address: "Wiczeslawa 97",
+          zip: "32-501",
+          city: "Chrzanow",
+          phone: "48123456789",
+        };
+        const res = await exec();
+        expect(res.status).toBe(400);
+      });
+
+      it("should return 404 if cart ID is invalid", async () => {
+        cart = mongoose.Types.ObjectId();
+        const res = await exec();
+        expect(res.status).toBe(404);
+      });
+
+      it("should return 404 if given delivery is invalid", async () => {
+        deliveryId = mongoose.Types.ObjectId();
+        const res = await exec();
+        expect(res.status).toBe(404);
+      });
     });
+    describe("if jwt token is provided", () => {
+      let token, user;
+      beforeEach(async () => {
+        user = await new User({
+          email: "correctEmail1@gmail.com",
+          password: "correctPassword1234",
+        }).save();
+        token = user.generateAuthToken();
+      });
+      const exec = () =>
+        request(server)
+          .post(`/api/orders`)
+          .send({ customer, cartId: cart._id, deliveryId })
+          .set("x-auth-token", token);
 
-    it("should return 200 if request is correct", async () => {
-      const res = await exec();
-      expect(res.status).toBe(200);
-    });
+      describe("should return order if request is correct", () => {
+        it("with customer property", async () => {
+          const { body } = await exec();
+          expect(body).toHaveProperty("customer", {
+            name: "Anna Czarnecka",
+            email: "annaCzarnecka1337@gmail.com",
+            address: "wislana 67",
+            zip: "32-532",
+            city: "Jaworzno",
+            phone: "48987654321",
+          });
+        });
 
-    it("should return 400 if customer is invalid", async () => {
-      customer = {
-        email: "jankowalski@gmail.com",
-        address: "Wiczeslawa 97",
-        zip: "32-501",
-        city: "Chrzanow",
-        phone: "48123456789",
-      };
-      const res = await exec();
-      expect(res.status).toBe(400);
-    });
+        it("with cart property", async () => {
+          const { body } = await exec();
+          expect(body).toHaveProperty("cart");
+          expect(body.cart.length).toBe(cart.items.length);
+        });
+        it("with status property", async () => {
+          const { body } = await exec();
+          expect(body).toHaveProperty("status", "pending");
+        });
+        it("with delivery property", async () => {
+          const { body } = await exec();
+          expect(body).toHaveProperty("delivery");
+        });
+      });
 
-    it("should return 404 if cart ID is invalid", async () => {
-      cart = mongoose.Types.ObjectId();
-      const res = await exec();
-      expect(res.status).toBe(404);
-    });
+      it("should save order in user property if request is correct", async () => {
+        await exec();
+        const tmp = await User.findById(user._id);
+        expect(_.isArray(tmp.orders)).toBeTruthy();
+        expect(tmp.orders.length).toBe(1);
+        expect(mongoose.Types.ObjectId.isValid(tmp.orders[0])).toBeTruthy();
+      });
 
-    it("should return 404 if given delivery is invalid", async () => {
-      deliveryId = mongoose.Types.ObjectId();
-      const res = await exec();
-      expect(res.status).toBe(404);
+      it("should return 200 if token is incorrect", async () => {
+        token = "x";
+        const res = await exec();
+        expect(res.status).toBe(200);
+      });
+
+      it("should return 200 if request is correct", async () => {
+        const res = await exec();
+        expect(res.status).toBe(200);
+      });
+
+      it("should return 400 if customer is invalid", async () => {
+        customer = {
+          email: "jankowalski@gmail.com",
+          address: "Wiczeslawa 97",
+          zip: "32-501",
+          city: "Chrzanow",
+          phone: "48123456789",
+        };
+        const res = await exec();
+        expect(res.status).toBe(400);
+      });
+
+      it("should return 404 if cart ID is invalid", async () => {
+        cart = mongoose.Types.ObjectId();
+        const res = await exec();
+        expect(res.status).toBe(404);
+      });
+
+      it("should return 404 if given delivery is invalid", async () => {
+        deliveryId = mongoose.Types.ObjectId();
+        const res = await exec();
+        expect(res.status).toBe(404);
+      });
     });
   });
 
-  describe("POST /:id/payment", () => {
+  describe("GET /:id/payment", () => {
     let orders, orderId;
 
     beforeEach(async () => {
@@ -242,47 +368,6 @@ describe("orders route", () => {
     });
   });
 
-  describe("GET /:id/info", () => {
-    let orders, orderId, key;
-
-    beforeEach(async () => {
-      orders = await createOrders();
-      orderId = orders[0]._id;
-      key = orders[0].createdAt;
-    });
-
-    const exec = () =>
-      request(server).get(`/api/orders/${orderId}/info`).query({ key });
-
-    it("should return order status if request is correct", async () => {
-      const res = await exec();
-      expect(res.body).toHaveProperty("status", orders[0].status);
-    });
-
-    it("should return 200 if request is correct", async () => {
-      const res = await exec();
-      expect(res.status).toBe(200);
-    });
-
-    it("should return 404 if ID is invalid", async () => {
-      orderId = mongoose.Types.ObjectId();
-      const res = await exec();
-      expect(res.status).toBe(404);
-    });
-
-    it("should return 400 if key is empty", async () => {
-      key = "";
-      const res = await exec();
-      expect(res.status).toBe(400);
-    });
-
-    it("should return 404 if key is incorrect", async () => {
-      key = new Date();
-      const res = await exec();
-      expect(res.status).toBe(404);
-    });
-  });
-
   describe("PUT /:id/status", () => {
     let token, orders, orderId, status;
 
@@ -290,18 +375,18 @@ describe("orders route", () => {
       token = await getAuthToken(true);
       orders = await createOrders();
       orderId = orders[0]._id;
-      status = "shipped";
+      status = 20; // accepted
     });
 
     const exec = () =>
       request(server)
         .put(`/api/orders/${orderId}/status`)
         .set("x-auth-token", token)
-        .send({ status: status });
+        .send({ status });
 
     it("should return order if request is correct", async () => {
       const res = await exec();
-      expect(res.body).toHaveProperty("status", status);
+      expect(res.body).toHaveProperty("status", "accepted");
       expect(res.body).toHaveProperty("cart");
       expect(res.body).toHaveProperty("delivery");
     });
@@ -344,69 +429,3 @@ describe("orders route", () => {
     });
   });
 });
-
-const createOrders = async (carts, deliveries, customers) => {
-  if (!deliveries) deliveries = await createDeliveries();
-
-  if (!carts) {
-    carts = [];
-    const products = await createProducts();
-    let cart = await createCart([products[0], products[2]], [1, 2]);
-    carts.push(cart);
-    cart = await createCart([products[0], products[1]], [3, 1]);
-    carts.push(cart);
-  }
-
-  if (!customers)
-    customers = [
-      {
-        name: "Anna Czarnecka",
-        email: "annaCzarnecka1337@gmail.com",
-        address: "wislana 67",
-        zip: "32-532",
-        city: "Jaworzno",
-        phone: "48987654321",
-      },
-      {
-        name: "Jan Kowalski",
-        email: "jankowalski@gmail.com",
-        address: "wiczeslawa 97",
-        zip: "32-501",
-        city: "Chrzanow",
-        phone: "48123456789",
-      },
-    ];
-
-  const result = [];
-
-  let order = new Order({
-    customer: customers[0],
-    cart: carts[0].items,
-    delivery: { method: deliveries[0]._id, price: deliveries[0].price },
-    status: "pending",
-  });
-  await order.save();
-  result.push(order);
-
-  order = new Order({
-    customer: customers[1],
-    cart: carts[1].items,
-    delivery: { method: deliveries[1]._id, price: deliveries[1].price },
-    status: "pending",
-  });
-  await order.save();
-  result.push(order);
-
-  return result;
-};
-
-const deleteOrders = async () => {
-  await deleteDeliveries();
-  await deleteCarts();
-  await Order.deleteMany({});
-};
-
-module.exports = {
-  createOrders,
-  deleteOrders,
-};

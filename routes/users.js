@@ -2,6 +2,7 @@ const bcrypt = require("bcrypt");
 const express = require("express");
 const _ = require("lodash");
 const { User, validate, validateAuth } = require("../models/user");
+const { auth } = require("../middleware/authorization");
 
 const router = express.Router();
 
@@ -35,6 +36,24 @@ router.post("/auth", async (req, res) => {
 
   const token = user.generateAuthToken();
   res.send(token);
+});
+
+router.get("/orders", auth, async (req, res) => {
+  const user = await User.findById(req.user._id).populate({
+    path: "orders",
+    select: "customer cart status delivery",
+    populate: [
+      {
+        path: "cart.product",
+        select: "name image release",
+      },
+      { path: "delivery.method", select: "name" },
+    ],
+  });
+  if (!user)
+    return res.status(404).send("The user with the given ID was not found.");
+
+  res.send(user.orders);
 });
 
 module.exports = router;

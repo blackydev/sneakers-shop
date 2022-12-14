@@ -1,20 +1,8 @@
 const request = require("supertest");
 const mongoose = require("mongoose");
-const jwt = require("jsonwebtoken");
-const config = require("config");
-const { getAuthToken, deleteUsers } = require("./users.test");
+const { getAuthToken, deleteUsers } = require("../utils/users");
 const { Delivery } = require("../../models/delivery");
-
-const deliveries = [
-  {
-    name: "personal pickup",
-    price: 0,
-  },
-  {
-    name: "carrier DPD",
-    price: 20,
-  },
-];
+const { createDeliveries, deleteDeliveries } = require("../utils/deliveries");
 
 describe("deliveries route", () => {
   let server;
@@ -48,9 +36,7 @@ describe("deliveries route", () => {
   describe("POST /", () => {
     let token, delivery;
 
-    beforeEach(async () => {
-      token = await getAuthToken(true);
-    });
+    beforeEach(async () => (token = await getAuthToken(true)));
 
     const exec = () =>
       request(server)
@@ -176,20 +162,3 @@ describe("deliveries route", () => {
     });
   });
 });
-
-const createDeliveries = async () => {
-  const result = [];
-  for (const el of deliveries) {
-    const delivery = new Delivery(el);
-    await delivery.save();
-    result.push(delivery);
-  }
-
-  return result;
-};
-
-const deleteDeliveries = async () => {
-  await Delivery.deleteMany({});
-};
-
-module.exports = { createDeliveries, deleteDeliveries };
