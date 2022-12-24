@@ -23,31 +23,29 @@ describe("users route", () => {
     });
 
     const exec = () => {
-      return request(server)
-        .post("/api/users")
-        .send({ email: email, password: password });
+      return request(server).post("/api/users").send({ email, password });
     };
 
     it("should return 400 if email is incorrect", async () => {
-      email = "uncorrectmail@com";
+      email = "incorrectmail@com";
       const res = await exec();
       expect(res.status).toBe(400);
     });
 
     it("should return 400 if password doesn't have upperCase", async () => {
-      password = "uncorrectpassword123";
+      password = "incorrectpassword123";
       const res = await exec();
       expect(res.status).toBe(400);
     });
 
     it("should return 400 if password doesn't have lowerCase", async () => {
-      password = "UNCORRECTPASSWORD123";
+      password = "INCORRECTPASSWORD123";
       const res = await exec();
       expect(res.status).toBe(400);
     });
 
     it("should return 400 if password doesn't have numbers", async () => {
-      password = "UNCORRECTPASSWORD";
+      password = "INCORRECTPASSWORD";
       const res = await exec();
       expect(res.status).toBe(400);
     });
@@ -67,11 +65,7 @@ describe("users route", () => {
 
     it("should return the user if it is valid", async () => {
       const res = await exec();
-
       expect(res.status).toBe(200);
-      expect(res.body).toHaveProperty("_id");
-      expect(res.body).toHaveProperty("email", email);
-      expect(res.header).toHaveProperty("x-auth-token");
     });
   });
 
@@ -88,7 +82,7 @@ describe("users route", () => {
 
     const exec = async () => {
       return await request(server)
-        .post("/api/users/auth")
+        .post("/api/auth")
         .send({ email: email, password: password });
     };
 

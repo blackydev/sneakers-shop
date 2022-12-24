@@ -1,6 +1,6 @@
 {
   "clientUrl": "http://localhost:4000",
   "jwtPrivateKey": "1234",
-  "db": "mongodb://localhost/damianlikus_tests",
+  "db": "mongodb://localhost/sneakers_test",
   "public": "./public/test/"
 }
