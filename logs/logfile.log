@@ -1,0 +1,6 @@
+{"level":"info","message":"Node environment: dev","timestamp":"2022-12-24T22:03:57.760Z"}
+{"level":"info","message":"Listening on port 4000...","timestamp":"2022-12-24T22:03:57.760Z"}
+{"level":"info","message":"Connected to mongodb://localhost/sneakers...","timestamp":"2022-12-24T22:03:57.767Z"}
+{"level":"info","message":"Node environment: dev","timestamp":"2022-12-24T22:05:02.798Z"}
+{"level":"info","message":"Listening on port 4000...","timestamp":"2022-12-24T22:05:02.798Z"}
+{"level":"info","message":"Connected to mongodb://localhost/sneakers...","timestamp":"2022-12-24T22:05:02.805Z"}

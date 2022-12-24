@@ -51,7 +51,7 @@ const complexityOptions = {
 
 function validateUser(user) {
   const schema = Joi.object({
-    email: joiSchemas.email.required(),
+    email: Joi.string().min(5).max(255).email().required(),
     password: passwordComplexity(complexityOptions).required(),
   });
 
@@ -60,7 +60,7 @@ function validateUser(user) {
 
 function validateAuth(user) {
   const schema = Joi.object({
-    email: Joi.string().min(5).max(255).required(),
+    email: joiSchemas.email.required(),
     password: passwordComplexity(complexityOptions),
   });
 
