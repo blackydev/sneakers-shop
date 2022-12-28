@@ -8,7 +8,7 @@ const router = express.Router();
 
 router.get("/", async (req, res) => {
   const deliveries = await Delivery.find();
-  res.status(200).send(deliveries);
+  res.send(deliveries);
 });
 
 router.post("/", [auth, isAdmin], async (req, res) => {
@@ -35,8 +35,6 @@ router.put("/:id", [validateObjectId, auth, isAdmin], async (req, res) => {
     return res
       .status(404)
       .send("The delivery with the given ID was not found.");
-
-  await delivery.save();
 
   res.send(delivery);
 });
