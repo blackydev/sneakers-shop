@@ -1,5 +1,4 @@
 const express = require("express");
-const _ = require("lodash");
 const validateObjectId = require("../middleware/validateObjectId");
 const { validate, Cart } = require("../models/cart");
 const { Product } = require("../models/product");
@@ -63,7 +62,7 @@ router.put("/:id", async (req, res) => {
 
   const product = await Product.findByIdAndDecreaseStock(productId, amount);
   if (!product)
-    return res.status(404).send("The product with the given ID was not found.");
+    return res.status(400).send("The product with the given ID was not found.");
 
   if (index === -1)
     cart.items.push({
@@ -97,7 +96,7 @@ router.delete("/:cartId/:productId", async (req, res) => {
     items[index].amount
   );
   if (!product)
-    return res.status(404).send("The product with the given ID was not found.");
+    return res.status(400).send("The product with the given ID was not found.");
 
   cart.items.splice(index, 1);
   if (cart.items.length === 0) {

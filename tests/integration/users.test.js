@@ -26,46 +26,48 @@ describe("users route", () => {
       return request(server).post("/api/users").send({ email, password });
     };
 
-    it("should return 400 if email is incorrect", async () => {
-      email = "incorrectmail@com";
-      const res = await exec();
-      expect(res.status).toBe(400);
+    it("should return 200", async () => {
+      const { status } = await exec();
+      expect(status).toBe(200);
     });
 
-    it("should return 400 if password doesn't have upperCase", async () => {
-      password = "incorrectpassword123";
-      const res = await exec();
-      expect(res.status).toBe(400);
-    });
+    describe("unsuccesful attempts", () => {
+      it("should return 400 if email is incorrect", async () => {
+        email = "incorrectmail@com";
+        const res = await exec();
+        expect(res.status).toBe(400);
+      });
 
-    it("should return 400 if password doesn't have lowerCase", async () => {
-      password = "INCORRECTPASSWORD123";
-      const res = await exec();
-      expect(res.status).toBe(400);
-    });
+      it("should return 400 if password doesn't have uppercase letter", async () => {
+        password = "incorrectpassword123";
+        const res = await exec();
+        expect(res.status).toBe(400);
+      });
 
-    it("should return 400 if password doesn't have numbers", async () => {
-      password = "INCORRECTPASSWORD";
-      const res = await exec();
-      expect(res.status).toBe(400);
-    });
+      it("should return 400 if password doesn't have lowercase letter", async () => {
+        password = "INCORRECTPASSWORD123";
+        const res = await exec();
+        expect(res.status).toBe(400);
+      });
 
-    it("should return 400 if password is less than 9 characters", async () => {
-      password = "Abcde1234";
-      const res = await exec();
-      expect(res.status).toBe(400);
-    });
+      it("should return 400 if password doesn't have numbers", async () => {
+        password = "INCORRECTPASSWORD";
+        const res = await exec();
+        expect(res.status).toBe(400);
+      });
 
-    it("should return 400 if user is already registered", async () => {
-      await exec();
-      password = "otherCorrectPassword123";
-      const res = await exec();
-      expect(res.status).toBe(400);
-    });
+      it("should return 400 if password has less than 9 chars", async () => {
+        password = "Abcde1234";
+        const res = await exec();
+        expect(res.status).toBe(400);
+      });
 
-    it("should return the user if it is valid", async () => {
-      const res = await exec();
-      expect(res.status).toBe(200);
+      it("should return 400 if user with the same name is already registered", async () => {
+        await exec();
+        password = "otherCorrectPassword123";
+        const res = await exec();
+        expect(res.status).toBe(400);
+      });
     });
   });
 
@@ -86,35 +88,38 @@ describe("users route", () => {
         .send({ email: email, password: password });
     };
 
-    it("should return token if request is correct", async () => {
-      const res = await exec();
-      let token = jwt.verify(res.text, config.get("jwtPrivateKey"));
-      expect(token).toHaveProperty("_id");
-      expect(res.status).toBe(200);
-    });
+    describe("succesful attempts", () => {
+      it("should return token", async () => {
+        const res = await exec();
+        let token = jwt.verify(res.text, config.get("jwtPrivateKey"));
+        expect(token).toHaveProperty("_id");
+        expect(res.status).toBe(200);
+      });
 
-    it("should return 200 if request is correct", async () => {
-      const res = await exec();
-      let token = jwt.verify(res.text, config.get("jwtPrivateKey"));
-      expect(res.status).toBe(200);
+      it("should return 200", async () => {
+        const res = await exec();
+        let token = jwt.verify(res.text, config.get("jwtPrivateKey"));
+        expect(res.status).toBe(200);
+      });
     });
+    describe("succesful attempts", () => {
+      it("should return 400 if email is incorrect", async () => {
+        email = "incorrectEmail";
+        const res = await exec();
+        expect(res.status).toBe(400);
+      });
 
-    it("should return 400 if email is incorrect", async () => {
-      email = "incorrectEmail";
-      const res = await exec();
-      expect(res.status).toBe(400);
-    });
+      it("should return 400 if password is incorrect", async () => {
+        password = "IncorrectPassword123";
+        const res = await exec();
+        expect(res.status).toBe(400);
+      });
 
-    it("should return 400 if password is incorrect", async () => {
-      password = "IncorrectPassword123";
-      const res = await exec();
-      expect(res.status).toBe(400);
-    });
-
-    it("should return 400 if password is empty", async () => {
-      password = "";
-      const res = await exec();
-      expect(res.status).toBe(400);
+      it("should return 400 if password is empty", async () => {
+        password = "";
+        const res = await exec();
+        expect(res.status).toBe(400);
+      });
     });
   });
 
@@ -141,7 +146,7 @@ describe("users route", () => {
         .set("x-auth-token", token);
     };
 
-    it("should return 200 if request is correct", async () => {
+    it("should return 200", async () => {
       const res = await exec();
       expect(res.status).toBe(200);
     });
@@ -157,7 +162,7 @@ describe("users route", () => {
       expect(res.body.length).toBe(0);
     });
 
-    describe("should return orders if request is correct", () => {
+    describe("should return array if user has orders", () => {
       it("with cart field", async () => {
         const res = await exec();
         const order = res.body[0];

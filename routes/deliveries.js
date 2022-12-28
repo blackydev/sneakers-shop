@@ -14,7 +14,8 @@ router.get("/", async (req, res) => {
 router.post("/", [auth, isAdmin], async (req, res) => {
   const { error } = validate(req.body);
   if (error) return res.status(400).send(error.details[0].message);
-  const delivery = new Delivery(getProperties(req.body));
+
+  const delivery = new Delivery(getProperties(req));
   await delivery.save();
 
   res.send(delivery);
@@ -26,7 +27,7 @@ router.put("/:id", [validateObjectId, auth, isAdmin], async (req, res) => {
 
   const delivery = await Delivery.findByIdAndUpdate(
     req.params.id,
-    getProperties(req.body),
+    getProperties(req),
     { new: true }
   );
 
@@ -40,8 +41,8 @@ router.put("/:id", [validateObjectId, auth, isAdmin], async (req, res) => {
   res.send(delivery);
 });
 
-const getProperties = (body) => {
-  return _.pick(body, ["name", "price"]);
+const getProperties = (req) => {
+  return _.pick(req.body, ["name", "price"]);
 };
 
 module.exports = router;

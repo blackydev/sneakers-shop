@@ -13,32 +13,29 @@ const { deleteFile } = require("../utils/deleteFile");
 const router = express.Router();
 
 router.get("/", async (req, res) => {
-  try {
-    const { select, sortBy, pageLength, pageNumber, category } = req.query;
-    if (category) var query = { category };
-    if (sortBy) var sort = sortBy;
-    else sort = "-release";
+  let { select, sortBy, pageLength, pageNumber, category } = req.query;
+  if (!sortBy) sortBy = "-release";
+  if (category) var query = { category };
 
+  try {
     const products = await Product.find(query)
       .populate("category", "name")
       .select(select) // ["_id", "name", "image", "price"]
-      .sort(sort)
+      .sort(sortBy)
       .limit(pageLength)
       .skip(pageLength * pageNumber);
 
     res.send(products);
   } catch (ex) {
-    res.status(400).send(ex.message);
+    return res.status(400).send(ex.message);
   }
 });
 
 router.get("/:id", validateObjectId, async (req, res) => {
-  let { select } = req.query;
-
-  const product = await Product.findById(req.params.id, select).populate(
-    "category",
-    "name"
-  );
+  const product = await Product.findById(
+    req.params.id,
+    req.query.select
+  ).populate("category", "name");
 
   if (!product)
     return res.status(404).send("The product with the given ID was not found.");
@@ -58,18 +55,28 @@ router.post("/", [auth, isAdmin, upload.single("image")], async (req, res) => {
   const category = await Category.findById(req.body.category);
   if (!category)
     return res
-      .status(404)
+      .status(400)
       .send("The category with the given ID was not found.");
 
-  const product = new Product(getProperties(req.body));
-  await product.save();
+  let product = new Product(
+    _.pick(req.body, [
+      "name",
+      "image",
+      "description",
+      "price",
+      "numberInStock",
+      "release",
+      "category",
+    ])
+  );
+  product = await product.save();
 
   res.send(product);
 });
 
 router.put(
   "/:id",
-  [auth, isAdmin, validateObjectId, validateProductId, upload.single("image")],
+  [validateObjectId, auth, isAdmin, validateProductId, upload.single("image")],
   async (req, res) => {
     if (req.file) req.body.image = req.file.filename;
     else req.body.image = "";
@@ -101,17 +108,5 @@ router.put(
 );
 
 const deleteImage = (image) => deleteFile(dirPath + path.basename(image));
-
-const getProperties = (productBody) => {
-  return _.pick(productBody, [
-    "name",
-    "image",
-    "description",
-    "price",
-    "numberInStock",
-    "release",
-    "category",
-  ]);
-};
 
 module.exports = router;

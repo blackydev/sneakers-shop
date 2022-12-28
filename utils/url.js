@@ -1,3 +1,1 @@
-exports.getHostURL = (req) => {
-  return req.protocol + "://" + req.get("host");
-};
+exports.getHostURL = (req) => req.protocol + "://" + req.get("host");

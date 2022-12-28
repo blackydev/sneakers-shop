@@ -20,7 +20,6 @@ describe("orders route", () => {
     await deleteOrders();
     await deleteUsers();
   });
-
   describe("GET /", () => {
     let token, query;
 
@@ -246,16 +245,16 @@ describe("orders route", () => {
         expect(res.status).toBe(400);
       });
 
-      it("should return 404 if cart ID is invalid", async () => {
+      it("should return 400 if cart ID is invalid", async () => {
         cart = mongoose.Types.ObjectId();
         const res = await exec();
-        expect(res.status).toBe(404);
+        expect(res.status).toBe(400);
       });
 
-      it("should return 404 if given delivery is invalid", async () => {
+      it("should return 400 if given delivery ID is invalid", async () => {
         deliveryId = mongoose.Types.ObjectId();
         const res = await exec();
-        expect(res.status).toBe(404);
+        expect(res.status).toBe(400);
       });
     });
     describe("if jwt token is provided", () => {
@@ -332,21 +331,21 @@ describe("orders route", () => {
         expect(res.status).toBe(400);
       });
 
-      it("should return 404 if cart ID is invalid", async () => {
+      it("should return 400 if cart ID is invalid", async () => {
         cart = mongoose.Types.ObjectId();
         const res = await exec();
-        expect(res.status).toBe(404);
+        expect(res.status).toBe(400);
       });
 
-      it("should return 404 if given delivery is invalid", async () => {
+      it("should return 400 if given delivery ID is invalid", async () => {
         deliveryId = mongoose.Types.ObjectId();
         const res = await exec();
-        expect(res.status).toBe(404);
+        expect(res.status).toBe(400);
       });
     });
   });
 
-  describe("GET /:id/payment", () => {
+  describe("GET /:id/payment (!P24 CONFIG REQUIRED!)", () => {
     let orders, orderId;
 
     beforeEach(async () => {

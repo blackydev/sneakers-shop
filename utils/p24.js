@@ -9,10 +9,7 @@ const posId = config.get("p24.posId");
 const crcKey = config.get("p24.crc");
 const raportKey = config.get("p24.raportKey");
 const currency = "PLN";
-const p24URL =
-  process.env.NODE_ENV === "production"
-    ? "https://secure.przelewy24.pl"
-    : "https://sandbox.przelewy24.pl";
+const p24URL = "https://sandbox.przelewy24.pl";
 
 const client = axios.create({
   baseURL: `${p24URL}/api/v1`,
@@ -91,29 +88,27 @@ const verifyNotification = (notificationRequest) => {
 };
 
 const verifyTransaction = async (order) => {
+  const amount = (await order.getTotalPrice()) * 100;
+
+  const hashData = {
+    sessionId: order._id,
+    orderId: order.p24Id,
+    amount,
+    currency,
+    crc: crcKey,
+  };
+  const sign = calculateSHA384(JSON.stringify(hashData));
+
+  const request = {
+    merchantId,
+    posId: posId,
+    sessionId: order._id,
+    amount,
+    currency,
+    orderId: order.p24Id,
+    sign: sign,
+  };
   try {
-    const amount = (await order.getTotalPrice()) * 100;
-
-    const hashData = {
-      sessionId: order._id,
-      orderId: order.p24Id,
-      amount,
-      currency,
-      crc: crcKey,
-    };
-
-    const sign = calculateSHA384(JSON.stringify(hashData));
-
-    const request = {
-      merchantId,
-      posId: posId,
-      sessionId: order._id,
-      amount,
-      currency,
-      orderId: order.p24Id,
-      sign: sign,
-    };
-
     const { data: result } = await client.put("/transaction/verify", request);
     return result.data.status === "success";
   } catch (error) {

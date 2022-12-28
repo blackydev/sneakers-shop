@@ -1,9 +1,12 @@
 {
-  "clientUrl": "ecommerce_clientUrl",
-  "jwtPrivateKey": "ecommerce_jwtPrivateKey",
-  "db": "ecommerce_db",
+  "clientUrl": "sneakers_clientUrl",
+  "jwtPrivateKey": "sneakers_jwtPrivateKey",
+  "db": "sneakers_db",
 
   "p24": {
-    "crc": "ecommerce_p24.crc"
+    "merchantId": "sneakers_p24_merchantId",
+    "posId": "sneakers_p24_posId",
+    "raportKey": "sneakers_p24_raportKey",
+    "crc": "sneakers_p24_crc"
   }
 }

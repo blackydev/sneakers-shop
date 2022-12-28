@@ -5,9 +5,9 @@
   "public": "./public/production/",
 
   "p24": {
-    "merchantId": 187534,
-    "posId": 187534,
-    "raportKey": "ce33570a9af0e85291c966f09c9ad973",
-    "crc": "fed5ac7ea50f655f"
+    "merchantId": "",
+    "posId": "",
+    "raportKey": "",
+    "crc": ""
   }
 }

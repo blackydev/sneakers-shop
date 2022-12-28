@@ -121,10 +121,10 @@ describe("carts route", () => {
       expect(res.status).toBe(400);
     });
 
-    it("should return 404 if product ID is invalid", async () => {
+    it("should return 400 if product ID is invalid", async () => {
       productId = new mongoose.Types.ObjectId();
       const res = await exec();
-      expect(res.status).toBe(404);
+      expect(res.status).toBe(400);
     });
 
     it("should return 400 if given amount are higher then limit", async () => {
@@ -263,10 +263,10 @@ describe("carts route", () => {
       expect(updated.numberInStock != products[0].numberInStock);
     });
 
-    it("should return 404 if product with given ID does not exist", async () => {
+    it("should return 400 if product with given ID does not exist", async () => {
       await Product.findByIdAndDelete(productId);
       const res = await exec();
-      expect(res.status).toBe(404);
+      expect(res.status).toBe(400);
     });
   });
 });

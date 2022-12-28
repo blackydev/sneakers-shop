@@ -20,12 +20,11 @@ router.get("/", [auth, isAdmin], async (req, res) => {
 
   if (status) {
     const tmp = orderStatuses.getByName(status);
-    /* if status is a string like "paid"
-     * else if status is a number like -1 or 10
-     */
-    if (tmp) {
+    if (tmp)
+      // status is a string like "paid"
       var findQuery = { status: tmp.code };
-    } else {
+    else {
+      // status is a number like 1
       const does = orderStatuses.doesExist(status);
       if (does) findQuery = { status: status };
     }
@@ -44,50 +43,48 @@ router.get("/:id", [validateObjectId, auth, isAdmin], async (req, res) => {
   const order = await Order.findById(req.params.id)
     .populate("delivery.method", "name")
     .populate("cart.product", "name image release");
+
   if (!order)
     return res.status(404).send("The order with the given ID was not found.");
 
   res.send(order);
 });
 
-router.post("/", [unrequiredAuth], async (req, res) => {
+router.post("/", unrequiredAuth, async (req, res) => {
   /*
+    headers: {
+    token (unrequired)
+    }
   request: 
   {
    cartId: `ref`, customer: {}, deliveryId: 'ref'
   }
   */
 
-  const { customer, deliveryId, cartId } = req.body;
   const { error } = validate(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
-  // GET DELIVERY PROPS
-  let delivery = await Delivery.findById(deliveryId);
-
+  const delivery = await Delivery.findById(req.body.deliveryId);
   if (!delivery)
     return res
-      .status(404)
+      .status(400)
       .send("The delivery with the given ID was not found.");
-
-  // GET CART
-  const cart = await Cart.findByIdAndRemove(cartId).select(
+  const cart = await Cart.findByIdAndRemove(req.body.cartId).select(
     "-createdAt -updatedAt -_id -__v"
   );
-
   if (!cart)
-    return res.status(404).send("The cart with the given ID was not found.");
+    return res.status(400).send("The cart with the given ID was not found.");
 
   const order = new Order({
-    customer: getCustomerProps(customer),
+    customer: getCustomerProps(req),
     cart: cart.items,
     delivery: {
       method: delivery._id,
       price: delivery.price,
     },
   });
-
   await order.save();
+
   if (req.user) {
     const user = await User.findById(req.user._id);
     if (user) {
@@ -100,8 +97,13 @@ router.post("/", [unrequiredAuth], async (req, res) => {
 
 router.get("/:id/payment", validateObjectId, async (req, res) => {
   const order = await Order.findById(req.params.id);
-  if (!order || order.status < 0)
+  if (!order)
     return res.status(404).send("The order with the given ID was not found.");
+
+  if (order.status < 0)
+    return res
+      .status(400)
+      .send("The order with the given ID has been interrupted.");
 
   const hostUrl = getHostURL(req);
 
@@ -119,14 +121,13 @@ router.put(
   request: 
     { status }
   */
-    const { status } = req.body;
-    if (!orderStatuses.doesExist(status))
+    if (!orderStatuses.doesExist(req.body.status))
       return res.status(400).send("Invalid status.");
 
     const order = await Order.findByIdAndUpdate(
       req.params.id,
       {
-        status,
+        status: req.body.status,
       },
       {
         new: true,
@@ -134,6 +135,7 @@ router.put(
     );
     if (!order)
       return res.status(404).send("The order with the given ID was not found.");
+
     res.send(order);
   }
 );
@@ -164,8 +166,8 @@ router.post("/:id/p24Callback", validateObjectId, async (req, res) => {
   res.status(204);
 });
 
-function getCustomerProps(customerBody) {
-  return _.pick(customerBody, [
+function getCustomerProps(req) {
+  return _.pick(req.body.customer, [
     "name",
     "email",
     "company",
