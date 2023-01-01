@@ -2,10 +2,9 @@ const config = require("config");
 const p24 = require("../utils/p24");
 
 function checkConfig(properties) {
-  properties.map((property) => {
+  for (const property of properties)
     if (!config.has(property))
       throw new Error(`FATAL ERROR: ${property} is not defined.`);
-  });
 }
 
 module.exports = async function async() {

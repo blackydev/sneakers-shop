@@ -82,11 +82,10 @@ describe("users route", () => {
         .send({ email: email, password: password });
     });
 
-    const exec = async () => {
-      return await request(server)
+    const exec = () =>
+      request(server)
         .post("/api/auth")
         .send({ email: email, password: password });
-    };
 
     describe("succesful attempts", () => {
       it("should return token", async () => {
@@ -140,11 +139,8 @@ describe("users route", () => {
       await deleteOrders();
     });
 
-    const exec = async () => {
-      return await request(server)
-        .get("/api/users/orders")
-        .set("x-auth-token", token);
-    };
+    const exec = () =>
+      request(server).get("/api/users/orders").set("x-auth-token", token);
 
     it("should return 200", async () => {
       const res = await exec();

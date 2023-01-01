@@ -7,7 +7,7 @@ const { Product, validate } = require("../models/product");
 const validateObjectId = require("../middleware/validateObjectId");
 const { auth, isAdmin } = require("../middleware/authorization");
 const { upload, dirPath } = require("../middleware/productUpload");
-const { validateProductId } = require("../middleware/validateObjectsId");
+const { validateProductId } = require("../middleware/validateProductId");
 const { deleteFile } = require("../utils/deleteFile");
 
 const router = express.Router();

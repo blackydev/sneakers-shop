@@ -17,9 +17,7 @@ describe("carts route", () => {
   });
 
   describe("GET /", () => {
-    const exec = () => {
-      return request(server).get(`/api/carts`);
-    };
+    const exec = () => request(server).get(`/api/carts`);
 
     it("should return new empty cart if request is correct", async () => {
       const res = await exec();

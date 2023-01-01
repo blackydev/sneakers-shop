@@ -1,0 +1,87 @@
+{"level":"info","message":"Node environment: test_priv","timestamp":"2022-12-30T17:31:43.355Z"}
+{"level":"info","message":"Listening on port 4001...","timestamp":"2022-12-30T17:31:43.356Z"}
+{"level":"info","message":"Connected to mongodb://localhost/sneakers_test...","timestamp":"2022-12-30T17:31:43.379Z"}
+{"level":"info","message":"Node environment: test_priv","timestamp":"2022-12-30T17:31:44.522Z"}
+{"level":"info","message":"Listening on port 4001...","timestamp":"2022-12-30T17:31:44.522Z"}
+{"level":"info","message":"Connected to mongodb://localhost/sneakers_test...","timestamp":"2022-12-30T17:31:44.544Z"}
+{"level":"info","message":"Node environment: test_priv","timestamp":"2022-12-30T17:31:46.244Z"}
+{"level":"info","message":"Listening on port 4001...","timestamp":"2022-12-30T17:31:46.244Z"}
+{"level":"info","message":"Connected to mongodb://localhost/sneakers_test...","timestamp":"2022-12-30T17:31:46.263Z"}
+{"level":"info","message":"Node environment: test_priv","timestamp":"2022-12-30T17:31:47.063Z"}
+{"level":"info","message":"Listening on port 4001...","timestamp":"2022-12-30T17:31:47.064Z"}
+{"level":"info","message":"Connected to mongodb://localhost/sneakers_test...","timestamp":"2022-12-30T17:31:47.096Z"}
+{"level":"info","message":"Node environment: test_priv","timestamp":"2022-12-30T17:31:48.744Z"}
+{"level":"info","message":"Listening on port 4001...","timestamp":"2022-12-30T17:31:48.744Z"}
+{"level":"info","message":"Connected to mongodb://localhost/sneakers_test...","timestamp":"2022-12-30T17:31:48.779Z"}
+{"level":"info","message":"Node environment: test_priv","timestamp":"2022-12-30T17:31:49.370Z"}
+{"level":"info","message":"Listening on port 4001...","timestamp":"2022-12-30T17:31:49.370Z"}
+{"level":"info","message":"Connected to mongodb://localhost/sneakers_test...","timestamp":"2022-12-30T17:31:49.385Z"}
+{"level":"info","message":"Node environment: test_priv","timestamp":"2022-12-30T17:31:50.243Z"}
+{"level":"info","message":"Listening on port 4001...","timestamp":"2022-12-30T17:31:50.243Z"}
+{"level":"info","message":"Connected to mongodb://localhost/sneakers_test...","timestamp":"2022-12-30T17:31:50.255Z"}
+{"level":"info","message":"Node environment: test_priv","timestamp":"2022-12-30T17:31:51.090Z"}
+{"level":"info","message":"Listening on port 4001...","timestamp":"2022-12-30T17:31:51.090Z"}
+{"level":"info","message":"Connected to mongodb://localhost/sneakers_test...","timestamp":"2022-12-30T17:31:51.106Z"}
+{"level":"info","message":"Node environment: dev_priv","timestamp":"2022-12-30T20:54:21.668Z"}
+{"level":"info","message":"Listening on port 4000...","timestamp":"2022-12-30T20:54:21.668Z"}
+{"level":"info","message":"Connected to mongodb://localhost/sneakers...","timestamp":"2022-12-30T20:54:21.680Z"}
+{"level":"info","message":"Node environment: dev_priv","timestamp":"2022-12-30T20:54:39.004Z"}
+{"level":"info","message":"Listening on port 4000...","timestamp":"2022-12-30T20:54:39.004Z"}
+{"level":"info","message":"Connected to mongodb://localhost/sneakers...","timestamp":"2022-12-30T20:54:39.027Z"}
+{"level":"info","message":"Node environment: dev_priv","timestamp":"2022-12-30T20:54:44.955Z"}
+{"level":"info","message":"Listening on port 4000...","timestamp":"2022-12-30T20:54:44.956Z"}
+{"level":"info","message":"Connected to mongodb://localhost/sneakers...","timestamp":"2022-12-30T20:54:44.968Z"}
+{"level":"info","message":"Node environment: dev_priv","timestamp":"2022-12-30T21:02:50.914Z"}
+{"level":"info","message":"Listening on port 4000...","timestamp":"2022-12-30T21:02:50.914Z"}
+{"level":"info","message":"Connected to mongodb://localhost/sneakers...","timestamp":"2022-12-30T21:02:50.941Z"}
+{"level":"info","message":"Node environment: dev_priv","timestamp":"2022-12-30T21:02:57.914Z"}
+{"level":"info","message":"Listening on port 4000...","timestamp":"2022-12-30T21:02:57.914Z"}
+{"level":"info","message":"Connected to mongodb://localhost/sneakers...","timestamp":"2022-12-30T21:02:57.936Z"}
+{"level":"info","message":"Node environment: dev_priv","timestamp":"2022-12-30T21:03:14.964Z"}
+{"level":"info","message":"Listening on port 4000...","timestamp":"2022-12-30T21:03:14.964Z"}
+{"level":"info","message":"Connected to mongodb://localhost/sneakers...","timestamp":"2022-12-30T21:03:14.979Z"}
+{"level":"info","message":"Node environment: dev_priv","timestamp":"2022-12-30T21:03:16.950Z"}
+{"level":"info","message":"Listening on port 4000...","timestamp":"2022-12-30T21:03:16.950Z"}
+{"level":"info","message":"Connected to mongodb://localhost/sneakers...","timestamp":"2022-12-30T21:03:16.961Z"}
+{"level":"info","message":"Node environment: dev_priv","timestamp":"2022-12-30T21:03:29.175Z"}
+{"level":"info","message":"Listening on port 4000...","timestamp":"2022-12-30T21:03:29.176Z"}
+{"level":"info","message":"Connected to mongodb://localhost/sneakers...","timestamp":"2022-12-30T21:03:29.188Z"}
+{"level":"info","message":"Node environment: dev_priv","timestamp":"2022-12-30T21:03:32.532Z"}
+{"level":"info","message":"Listening on port 4000...","timestamp":"2022-12-30T21:03:32.532Z"}
+{"level":"info","message":"Connected to mongodb://localhost/sneakers...","timestamp":"2022-12-30T21:03:32.543Z"}
+{"level":"info","message":"Node environment: dev_priv","timestamp":"2022-12-30T21:03:33.401Z"}
+{"level":"info","message":"Listening on port 4000...","timestamp":"2022-12-30T21:03:33.401Z"}
+{"level":"info","message":"Connected to mongodb://localhost/sneakers...","timestamp":"2022-12-30T21:03:33.417Z"}
+{"level":"info","message":"Node environment: dev_priv","timestamp":"2022-12-30T21:03:41.365Z"}
+{"level":"info","message":"Listening on port 4000...","timestamp":"2022-12-30T21:03:41.365Z"}
+{"level":"info","message":"Connected to mongodb://localhost/sneakers...","timestamp":"2022-12-30T21:03:41.376Z"}
+{"level":"info","message":"Node environment: dev_priv","timestamp":"2022-12-30T21:09:03.006Z"}
+{"level":"info","message":"Listening on port 4000...","timestamp":"2022-12-30T21:09:03.007Z"}
+{"level":"info","message":"Connected to mongodb://localhost/sneakers...","timestamp":"2022-12-30T21:09:03.033Z"}
+{"level":"info","message":"Node environment: dev_priv","timestamp":"2022-12-30T21:09:15.253Z"}
+{"level":"info","message":"Listening on port 4000...","timestamp":"2022-12-30T21:09:15.254Z"}
+{"level":"info","message":"Connected to mongodb://localhost/sneakers...","timestamp":"2022-12-30T21:09:15.265Z"}
+{"level":"info","message":"Node environment: dev_priv","timestamp":"2022-12-30T21:09:19.946Z"}
+{"level":"info","message":"Listening on port 4000...","timestamp":"2022-12-30T21:09:19.946Z"}
+{"level":"info","message":"Connected to mongodb://localhost/sneakers...","timestamp":"2022-12-30T21:09:19.958Z"}
+{"level":"info","message":"Node environment: dev_priv","timestamp":"2022-12-30T21:09:28.202Z"}
+{"level":"info","message":"Listening on port 4000...","timestamp":"2022-12-30T21:09:28.203Z"}
+{"level":"info","message":"Connected to mongodb://localhost/sneakers...","timestamp":"2022-12-30T21:09:28.216Z"}
+{"level":"info","message":"Node environment: dev_priv","timestamp":"2022-12-30T21:09:30.694Z"}
+{"level":"info","message":"Listening on port 4000...","timestamp":"2022-12-30T21:09:30.694Z"}
+{"level":"info","message":"Connected to mongodb://localhost/sneakers...","timestamp":"2022-12-30T21:09:30.705Z"}
+{"level":"info","message":"Node environment: dev_priv","timestamp":"2022-12-30T21:09:36.714Z"}
+{"level":"info","message":"Listening on port 4000...","timestamp":"2022-12-30T21:09:36.714Z"}
+{"level":"info","message":"Connected to mongodb://localhost/sneakers...","timestamp":"2022-12-30T21:09:36.727Z"}
+{"level":"info","message":"Node environment: dev_priv","timestamp":"2022-12-30T21:09:53.117Z"}
+{"level":"info","message":"Listening on port 4000...","timestamp":"2022-12-30T21:09:53.118Z"}
+{"level":"info","message":"Connected to mongodb://localhost/sneakers...","timestamp":"2022-12-30T21:09:53.129Z"}
+{"level":"info","message":"Node environment: dev_priv","timestamp":"2022-12-30T21:09:54.721Z"}
+{"level":"info","message":"Listening on port 4000...","timestamp":"2022-12-30T21:09:54.721Z"}
+{"level":"info","message":"Connected to mongodb://localhost/sneakers...","timestamp":"2022-12-30T21:09:54.732Z"}
+{"level":"info","message":"Node environment: dev_priv","timestamp":"2022-12-30T21:10:04.274Z"}
+{"level":"info","message":"Listening on port 4000...","timestamp":"2022-12-30T21:10:04.274Z"}
+{"level":"info","message":"Connected to mongodb://localhost/sneakers...","timestamp":"2022-12-30T21:10:04.286Z"}
+{"level":"info","message":"Node environment: dev_priv","timestamp":"2022-12-30T21:10:12.906Z"}
+{"level":"info","message":"Listening on port 4000...","timestamp":"2022-12-30T21:10:12.906Z"}
+{"level":"info","message":"Connected to mongodb://localhost/sneakers...","timestamp":"2022-12-30T21:10:12.919Z"}

@@ -27,15 +27,13 @@ const products = [
   },
 ];
 
-mockImg = "xyz.jpg";
-
 const createProducts = async (category) => {
   const result = [];
   if (!category) category = await createCategory();
   for (const el of products) {
     const product = new Product({
       ...el,
-      image: mockImg,
+      image: "xyz.jpg",
       category: category._id,
     });
     await product.save();

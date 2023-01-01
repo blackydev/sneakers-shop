@@ -13,10 +13,10 @@ const {
   products,
 } = require("../utils/products");
 
-pngImg = "./tests/files/star wars 1.png";
-jpgImg = "./tests/files/star wars 4.jpg";
-webpImg = "./tests/files/star wars 6.webp";
-tooBigImg = "./tests/files/tooBigImg.jpg";
+pngImg = "./test/files/star wars 1.png";
+jpgImg = "./test/files/star wars 4.jpg";
+webpImg = "./test/files/star wars 6.webp";
+tooBigImg = "./test/files/tooBigImg.jpg";
 mockImg = "xyz.jpg";
 
 imgReturnedPrefix = "/public/images/products/";
