@@ -1,6 +1,5 @@
 .DS_Store
 coverage/
 node_modules/
-!public/*/*/*/.gitkeep
-!public/production/*
+
 config/*priv.json

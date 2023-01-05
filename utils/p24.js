@@ -37,9 +37,7 @@ const createTransaction = async (order, hostURL) => {
     sessionId: order._id,
     amount,
     currency,
-    description: `${config.get("clientUrl")}/my-orders/${order._id}?key=${
-      order.createdAt
-    }`,
+    description: "Thanks for order.",
     email: customer.email,
     client: customer.name,
     address: customer.address,
@@ -65,6 +63,7 @@ const createTransaction = async (order, hostURL) => {
     const token = result.data.token;
     return `${p24URL}/trnRequest/${token}`;
   } catch (error) {
+    console.log(hashData);
     return new Error(error.message);
   }
 };
