@@ -2,7 +2,7 @@
   "clientUrl": "",
   "jwtPrivateKey": "",
   "db": "",
-  "public": "",
+  "public": "./public/production/",
 
   "p24": {
     "merchantId": "",
