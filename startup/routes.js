@@ -12,11 +12,10 @@ const categories = require("../routes/categories");
 module.exports = function (app) {
   app.use(
     cors({
-      origin: config.get("clientUrl"),
+      origin: [config.get("clientUrl"), "https://sandbox.przelewy24.pl/api/v1"],
       credentials: true,
     })
   );
-
   app.use(express.json());
 
   app.use("/api/public", express.static(config.get("public")));

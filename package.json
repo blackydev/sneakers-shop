@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "export NODE_ENV=test_priv&&export PORT=4001&&jest --verbose --coverage --forceExit --watchAll --maxWorkers=1",
-    "dev": "export NODE_ENV=dev_priv&&nodemon index.js",
+    "test": "export NODE_ENV=test&&export PORT=4001&&jest --verbose --coverage --forceExit --watchAll --maxWorkers=1",
+    "dev": "export NODE_ENV=dev&&nodemon index.js",
     "start": "node index.js"
   },
   "engines": {

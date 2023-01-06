@@ -108,7 +108,7 @@ router.get("/:id/payment", validateObjectId, async (req, res) => {
   const hostUrl = getHostURL(req);
 
   const result = await p24.createTransaction(order, hostUrl);
-  if (_.isError(result)) return res.status(400).send(result); // if server has died
+  if (_.isError(result)) return res.status(400).send("Unexpected p24 error."); // if server has died
 
   res.send(result);
 });
