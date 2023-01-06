@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import config from "../config.json";
+import apiUrl from "../services/httpService";
 import { getImgDominantColor, shadeColor } from "../utils/colorsUsage";
 import { Link } from "react-router-dom";
 
@@ -18,7 +18,7 @@ export default function HomeHeader({ product }) {
   useEffect(() => {
     async function effect() {
       const { hex, isLight } = await getImgDominantColor(
-        config.apiUrl + product.image
+        apiUrl + product.image
       );
       setColor(hex);
       if (isLight) setTextColor("black");
@@ -48,7 +48,7 @@ export default function HomeHeader({ product }) {
             </Link>
           </div>
           <img
-            src={config.apiUrl + product.image}
+            src={apiUrl + product.image}
             alt={product.name}
             className="col-8 col-md-6 col-xl-5"
           />

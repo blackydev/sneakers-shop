@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import config from "../../config.json";
+import apiUrl from "../../services/httpService";
 import { getImgDominantColor, shadeColor } from "../../utils/colorsUsage";
 
 function getGradient(color) {
@@ -14,7 +14,7 @@ export default function ProductImg({ product, rounded = 5 }) {
 
   useEffect(() => {
     async function effect() {
-      const color = await getImgDominantColor(config.apiUrl + product.image);
+      const color = await getImgDominantColor(apiUrl + product.image);
       setColor(color.hex);
     }
     effect();
@@ -30,7 +30,7 @@ export default function ProductImg({ product, rounded = 5 }) {
       >
         <img
           className="product"
-          src={config.apiUrl + product.image}
+          src={apiUrl + product.image}
           alt={`${product.name}`}
           loading="lazy"
         />
