@@ -1,7 +1,7 @@
 import axios from "axios";
 import { toast } from "react-toastify";
 
-const apiUrl = process.env.SNEAKERS_API_URL + "/api";
+export const apiUrl = process.env.REACT_APP_API_URL + "/api";
 axios.defaults.baseURL = apiUrl;
 
 axios.interceptors.response.use(null, (error) => {
@@ -23,6 +23,7 @@ const httpService = {
   put: axios.put,
   delete: axios.delete,
   setJwt,
+  apiUrl,
 };
 
 export default httpService;

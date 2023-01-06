@@ -35,6 +35,11 @@ export default function MyOrderList() {
     <main className="container">
       <h2 className="fw-bold mb-4">Orders</h2>
       <div className="row">
+        {orders.length === 0 && (
+          <h4 className="text-center text-uppercase fw-bold mt-5">
+            You do not have any orders.{" "}
+          </h4>
+        )}
         {orders.map((order) => (
           <div key={order._id} className="col-12 col-md-6 col-lg-4 col-xxl-3">
             <MyOrderCard order={order} />

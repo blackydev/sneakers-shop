@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import apiUrl from "../services/httpService";
+import { apiUrl } from "../services/httpService";
 import { getImgDominantColor, shadeColor } from "../utils/colorsUsage";
 import { Link } from "react-router-dom";
 

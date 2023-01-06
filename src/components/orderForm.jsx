@@ -70,9 +70,8 @@ export default class OrderForm extends Form {
       "company",
     ]);
     const { data: order } = await orderService.postOrder(customer, deliveryId);
-    orderService.setOrdersStorage(order._id, order.createdAt);
     cartService.removeCartId();
-    const { data: p24Link } = await orderService.payForOrder(order._id);
+    const { data: p24Link } = await orderService.pay(order._id);
     window.location.href = p24Link;
   }
 
