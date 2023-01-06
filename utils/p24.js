@@ -1,20 +1,19 @@
 const axios = require("axios").default;
 const config = require("config");
-const _ = require("lodash");
 const { calculateSHA384 } = require("./hash");
-const { paymentTimeLimit } = require("../models/order");
-
+const winston = require("winston");
 const merchantId = config.get("p24.merchantId");
-const posId = config.get("p24.posId");
+const posId = config.get("p24.posId").toString();
 const crcKey = config.get("p24.crc");
 const raportKey = config.get("p24.raportKey");
 const currency = "PLN";
 const p24URL = "https://sandbox.przelewy24.pl";
+const paymentTimeLimit = 15;
 
 const client = axios.create({
   baseURL: `${p24URL}/api/v1`,
   auth: {
-    username: posId.toString(),
+    username: posId,
     password: raportKey,
   },
 });
@@ -24,7 +23,7 @@ const createTransaction = async (order, hostURL) => {
   const { customer } = order;
   const hashData = {
     sessionId: order._id,
-    merchantId,
+    merchantId: merchantId,
     amount,
     currency,
     crc: crcKey,
@@ -32,12 +31,12 @@ const createTransaction = async (order, hostURL) => {
   const sign = calculateSHA384(JSON.stringify(hashData));
   const request = {
     channel: 16,
-    merchantId,
+    merchantId: merchantId,
     posId: posId,
     sessionId: order._id,
     amount,
     currency,
-    description: "Thanks for order.",
+    description: "Thank you for order.",
     email: customer.email,
     client: customer.name,
     address: customer.address,
@@ -50,10 +49,11 @@ const createTransaction = async (order, hostURL) => {
     urlStatus: `${hostURL}/api/orders/${order._id}/p24Callback`,
     timeLimit: paymentTimeLimit,
     waitForResult: true,
-    shipping: order.deliveryPrice * 100,
-    transferLabel: `Order`,
+    shipping: order.delivery.price * 100,
+    transferLabel: `Sneakers shop - order`,
     sign: sign,
   };
+
   try {
     const { data: result } = await client.post(
       "/transaction/register",
@@ -63,7 +63,6 @@ const createTransaction = async (order, hostURL) => {
     const token = result.data.token;
     return `${p24URL}/trnRequest/${token}`;
   } catch (error) {
-    console.log(hashData);
     return new Error(error.message);
   }
 };
