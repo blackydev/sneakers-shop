@@ -23,7 +23,7 @@ export default function ProductImg({ product, rounded = 5 }) {
   return (
     <div className={`productImg shadow-lg rounded-${rounded}`}>
       <div
-        className="position-relative"
+        className="position-relative ratio ratio-1x1"
         style={{
           background: color && getGradient(color),
         }}
