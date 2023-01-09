@@ -28,11 +28,16 @@ export default function ProductImg({ product, rounded = 5 }) {
           background: color && getGradient(color),
         }}
       >
+        <div
+          className="bg-secondary bg-gradient position-absolute"
+          style={{ width: "100%", height: "100%" }}
+        />
         <img
           className="product"
           src={apiUrl + product.image}
           alt={`${product.name}`}
           loading="lazy"
+          onerror="this.style.display='none'"
         />
       </div>
     </div>
