@@ -25,7 +25,7 @@ export default function HomeHeader({ product }) {
       else setTextColor("white");
     }
     effect();
-  });
+  }, [color, textColor]);
   if (color) var gradient = getGradient(color);
   return (
     <header

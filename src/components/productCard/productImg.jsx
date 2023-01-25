@@ -18,7 +18,7 @@ export default function ProductImg({ product, rounded = 5 }) {
       setColor(color.hex);
     }
     effect();
-  });
+  }, [color]);
 
   return (
     <div className={`productImg shadow-lg rounded-${rounded}`}>

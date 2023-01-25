@@ -53,8 +53,7 @@ export default class Form extends Component {
       <button
         disabled={this.validate()}
         className={`btn btn-${size} btn-${color}`}
-        onClick={this.handleSubmit}
-      >
+        onClick={this.handleSubmit}>
         {label}
       </button>
     );

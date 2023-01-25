@@ -6,7 +6,7 @@ const apiEndpoint = "/orders";
 async function postOrder(
   customer,
   deliveryId,
-  cartId = cartService.getCartId()
+  cartId = cartService.getCartId(),
 ) {
   return await http.post(`${apiEndpoint}`, {
     cartId,
@@ -17,7 +17,9 @@ async function postOrder(
 
 function pay(orderId) {
   return http.get(`${apiEndpoint}/${orderId}/payment`, {
-    withCredentials: true,
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+    },
   });
 }
 

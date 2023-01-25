@@ -69,10 +69,18 @@ export default class OrderForm extends Form {
       "phone",
       "company",
     ]);
-    const { data: order } = await orderService.postOrder(customer, deliveryId);
-    cartService.removeCartId();
-    const { data: p24Link } = await orderService.pay(order._id);
-    window.location.href = p24Link;
+    try {
+      const { data: order } = await orderService.postOrder(
+        customer,
+        deliveryId,
+      );
+      cartService.removeCartId();
+      const { data: p24Link } = await orderService.pay(order._id);
+      console.log(p24Link);
+      window.location.assign(p24Link);
+    } catch (ex) {
+      console.log(ex);
+    }
   }
 
   schemas = {
@@ -87,7 +95,7 @@ export default class OrderForm extends Form {
   };
 
   render() {
-    const { deliveries, data } = this.state;
+    const { deliveries, data, isDisabled } = this.state;
     const { productsPrice } = this.props;
     const currDelivery = deliveries.find(({ _id }) => data.deliveryId === _id);
     if (currDelivery) var price = currDelivery.price;
@@ -101,8 +109,7 @@ export default class OrderForm extends Form {
             return (
               <div
                 className={`col-${input.colSize} my-2 text-dark`}
-                key={input.name}
-              >
+                key={input.name}>
                 {this.renderInput(input.name, input.label, input.type)}
               </div>
             );
