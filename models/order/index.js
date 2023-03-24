@@ -1,11 +1,11 @@
 const Joi = require("joi");
 const dayjs = require("dayjs");
 const mongoose = require("mongoose");
-const { schemas } = require("../schemas");
+const { schemas } = require("../../utils/schemaProps");
 const { customerSchema, joiSchema: customerJoiSchema } = require("../customer");
-const { itemSchema: cartItemSchema } = require("../cart/index");
+const { itemSchema: cartItemSchema } = require("../cart");
 const { Product } = require("../product");
-const statuses = require("./statuses");
+const status = require("./status");
 
 const orderSchema = new mongoose.Schema(
   {
@@ -28,7 +28,11 @@ const orderSchema = new mongoose.Schema(
     status: {
       type: Number,
       default: 1,
-      get: (n) => statuses.getByNumber(n).name,
+      get: (value) => status.getByNumber(value).name,
+      set: (v) => {
+        if (typeof v === "string") return status.getByName(v);
+        else return v;
+      },
     },
 
     delivery: {
@@ -48,7 +52,7 @@ const orderSchema = new mongoose.Schema(
     toJSON: { getters: true, setters: true },
     runSettersOnQuery: true,
     timestamps: { createdAt: true, updatedAt: false },
-  }
+  },
 );
 
 orderSchema.methods.getTotalPrice = function () {
@@ -92,6 +96,6 @@ async function deleteOrdersInterval() {
 module.exports = {
   Order,
   validate,
-  orderStatuses: statuses,
+  orderStatus: status,
   deleteOrdersInterval,
 };

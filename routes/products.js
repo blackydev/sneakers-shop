@@ -13,29 +13,30 @@ const { deleteFile } = require("../utils/deleteFile");
 const router = express.Router();
 
 router.get("/", async (req, res) => {
-  let { select, sortBy, pageLength, pageNumber, category } = req.query;
-  if (!sortBy) sortBy = "-release";
-  if (category) var query = { category };
+  let { page, category } = req.query;
+
+  if (typeof page === "string") page = parseInt(page);
+  if (isNaN(page)) page = 0;
 
   try {
-    const products = await Product.find(query)
+    const products = await Product.find(category ? { category: category } : {})
       .populate("category", "name")
-      .select(select) // ["_id", "name", "image", "price"]
-      .sort(sortBy)
-      .limit(pageLength)
-      .skip(pageLength * pageNumber);
+      .select("name image price category release numberInStock")
+      .sort("-_id")
+      .limit(req.query.page ? 8 : undefined)
+      .skip(8 * page);
 
     res.send(products);
   } catch (ex) {
-    return res.status(400).send(ex.message);
+    res.status(400).send();
   }
 });
 
 router.get("/:id", validateObjectId, async (req, res) => {
-  const product = await Product.findById(
-    req.params.id,
-    req.query.select
-  ).populate("category", "name");
+  const product = await Product.findById(req.params.id).populate(
+    "category",
+    "name",
+  );
 
   if (!product)
     return res.status(404).send("The product with the given ID was not found.");
@@ -67,7 +68,7 @@ router.post("/", [auth, isAdmin, upload.single("image")], async (req, res) => {
       "numberInStock",
       "release",
       "category",
-    ])
+    ]),
   );
   product = await product.save();
 
@@ -97,14 +98,14 @@ router.put(
 
     const { image: oldImage } = await Product.findByIdAndUpdate(
       { _id: req.params.id },
-      { $set: req.body }
+      { $set: req.body },
     );
 
     const product = await Product.findById({ _id: req.params.id });
 
     if (req.file) await deleteImage(oldImage);
     res.send(product);
-  }
+  },
 );
 
 const deleteImage = (image) => deleteFile(dirPath + path.basename(image));

@@ -1,6 +1,6 @@
 const Joi = require("joi");
 const mongoose = require("mongoose");
-const { schemas, joiSchemas } = require("./schemas");
+const { schemas, joiSchemas } = require("../utils/schemaProps");
 
 const deliverySchema = new mongoose.Schema(
   {
@@ -17,7 +17,7 @@ const deliverySchema = new mongoose.Schema(
   {
     toJSON: { getters: true, setters: true },
     runSettersOnQuery: true,
-  }
+  },
 );
 
 const Delivery = mongoose.model("deliveries", deliverySchema);

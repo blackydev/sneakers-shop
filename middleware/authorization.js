@@ -22,7 +22,7 @@ async function unrequiredAuth(req, res, next) {
     const decoded = jwt.verify(token, config.get("jwtPrivateKey"));
     req.user = decoded;
   } catch (ex) {
-    return next();
+    return res.status(400).send("Invalid token.");
   }
   return next();
 }

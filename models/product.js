@@ -1,6 +1,6 @@
 const Joi = require("joi");
 const mongoose = require("mongoose");
-const { schemas, joiSchemas } = require("./schemas");
+const { schemas, joiSchemas } = require("../utils/schemaProps");
 
 const productSchema = new mongoose.Schema(
   {
@@ -12,10 +12,9 @@ const productSchema = new mongoose.Schema(
       trim: true,
     },
     image: {
-      ...schemas.filename,
-      get: (filename) => {
-        return `/public/images/products/${filename}`;
-      },
+      type: String,
+      maxlength: 260,
+      get: (filename) => `/public/images/products/${filename}`,
     },
     description: {
       type: String,
@@ -41,7 +40,7 @@ const productSchema = new mongoose.Schema(
   {
     toJSON: { getters: true, setters: true },
     runSettersOnQuery: true,
-  }
+  },
 );
 
 const Product = mongoose.model("products", productSchema);
@@ -52,7 +51,7 @@ Product.findByIdAndIncreaseStock = function (id, amount) {
     {
       $inc: { numberInStock: amount },
     },
-    { new: true }
+    { new: true },
   );
 };
 
@@ -63,7 +62,7 @@ Product.findByIdAndDecreaseStock = function (id, amount) {
 function validateProduct(product) {
   const schema = Joi.object({
     name: Joi.string().min(3).max(512).required(),
-    image: joiSchemas.filename.required(),
+    image: Joi.string().max(260).allow("").required(),
     description: Joi.string().min(32).required(),
     price: joiSchemas.price.required(),
     numberInStock: Joi.number().min(0).required(),

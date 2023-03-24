@@ -1,8 +1,8 @@
 const axios = require("axios").default;
 const config = require("config");
+const _ = require("lodash");
 const { calculateSHA384 } = require("./hash");
-const winston = require("winston");
-const merchantId = config.get("p24.merchantId");
+const merchantId = parseInt(config.get("p24.merchantId"));
 const posId = config.get("p24.posId").toString();
 const crcKey = config.get("p24.crc");
 const raportKey = config.get("p24.raportKey");
@@ -19,23 +19,23 @@ const client = axios.create({
 });
 
 const createTransaction = async (order, hostURL) => {
-  const amount = (await order.getTotalPrice()) * 100;
+  const amount = Math.round((await order.getTotalPrice()) * 100);
   const { customer } = order;
   const hashData = {
-    sessionId: order._id,
+    sessionId: order._id.toString(),
     merchantId: merchantId,
-    amount,
-    currency,
+    amount: amount,
+    currency: currency,
     crc: crcKey,
   };
-  const sign = calculateSHA384(JSON.stringify(hashData));
+  const sign = calculateSHA384(hashData);
   const request = {
     channel: 16,
     merchantId: merchantId,
     posId: posId,
-    sessionId: order._id,
-    amount,
-    currency,
+    sessionId: order._id.toString(),
+    amount: amount,
+    currency: currency,
     description: "Thank you for order.",
     email: customer.email,
     client: customer.name,
@@ -53,56 +53,57 @@ const createTransaction = async (order, hostURL) => {
     transferLabel: `Sneakers shop - order`,
     sign: sign,
   };
-
   try {
     const { data: result } = await client.post(
       "/transaction/register",
-      request
+      request,
     );
-
     const token = result.data.token;
-    return `${p24URL}/trnRequest/${token}`;
+    return token;
   } catch (error) {
     return new Error(error.message);
   }
 };
 
-const verifyNotification = (notificationRequest) => {
-  const notificationHash = {
-    merchantId: notificationRequest.merchantId,
-    posId: notificationRequest.posId,
-    sessionId: notificationRequest.sessionId,
-    amount: notificationRequest.amount,
-    originAmount: notificationRequest.originAmount,
-    currency: notificationRequest.currency,
-    orderId: notificationRequest.orderId,
-    methodId: notificationRequest.methodId,
-    statement: notificationRequest.statement,
+const verifyNotification = (req) => {
+  const notification = {
+    ..._.pick(req, [
+      "merchantId",
+      "posId",
+      "sessionId",
+      "amount",
+      "originAmount",
+      "currency",
+      "orderId",
+      "methodId",
+      "statement",
+    ]),
     crc: crcKey,
   };
 
-  const sign = calculateSHA384(JSON.stringify(notificationHash));
-  return sign === notificationRequest.sign;
+  const sign = calculateSHA384(notification);
+  return sign === req.sign;
 };
 
 const verifyTransaction = async (order) => {
   const amount = (await order.getTotalPrice()) * 100;
 
   const hashData = {
-    sessionId: order._id,
+    sessionId: order._id.toString(),
     orderId: order.p24Id,
-    amount,
-    currency,
+    amount: amount,
+    currency: currency,
     crc: crcKey,
   };
-  const sign = calculateSHA384(JSON.stringify(hashData));
+
+  const sign = calculateSHA384(hashData);
 
   const request = {
     merchantId,
     posId: posId,
-    sessionId: order._id,
-    amount,
-    currency,
+    sessionId: order._id.toString(),
+    amount: amount,
+    currency: currency,
     orderId: order.p24Id,
     sign: sign,
   };

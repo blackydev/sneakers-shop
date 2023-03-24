@@ -1,16 +1,44 @@
 const Joi = require("joi");
 const mongoose = require("mongoose");
 const dayjs = require("dayjs");
-const { Product } = require("../product");
-const { itemSchema, maxProductAmount } = require("./itemSchema");
+const { Product } = require("./product");
+const { schemas } = require("../utils/schemaProps");
+
+const maxProductAmount = 9;
+const cartItem = new mongoose.Schema(
+  {
+    _id: { id: false },
+    product: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "products",
+      required: true,
+    },
+    price: { ...schemas.price, required: true },
+    amount: {
+      type: Number,
+      min: 1,
+      max: maxProductAmount,
+      default: 1,
+      validate: {
+        validator: Number.isInteger,
+        message: `${Number} is not an integer value`,
+      },
+    },
+  },
+  {
+    toObject: { getters: true, setters: true },
+    toJSON: { getters: true, setters: true },
+    runSettersOnQuery: true,
+  },
+);
 
 const cartSchema = new mongoose.Schema(
-  { items: [itemSchema] },
+  { items: [cartItem] },
   {
     toObject: { getters: true, setters: true },
     toJSON: { getters: true, setters: true },
     timestamps: true,
-  }
+  },
 );
 
 const Cart = mongoose.model("carts", cartSchema);
@@ -26,7 +54,7 @@ function validate(cartElement) {
 
 Cart.findById = function (id) {
   return this.findByIdAndUpdate(id, { updatedAt: new Date() }).select(
-    "-createdAt -updatedAt"
+    "-createdAt -updatedAt",
   );
 };
 
@@ -48,7 +76,7 @@ async function deleteCartsInterval() {
     const limit = dayjs().subtract(20, "minute");
     const carts = await Cart.find({ updatedAt: { $lt: limit } });
     await deleteCarts(carts);
-  }, 5 * minute);
+  }, 10 * minute);
 
   setInterval(async function () {
     // deletion deprecated carts
@@ -60,7 +88,7 @@ async function deleteCartsInterval() {
 
 module.exports = {
   validate,
-  itemSchema,
+  itemSchema: cartItem,
   Cart,
   deleteCart,
   deleteCartsInterval,

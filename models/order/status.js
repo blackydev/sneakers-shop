@@ -1,4 +1,4 @@
-const statuses = {
+const status = {
   data: [
     {
       code: -10,
@@ -7,7 +7,6 @@ const statuses = {
     {
       code: -1,
       name: "interrupted",
-      // description: "The order was terminated because it was not paid in time",
     },
     {
       code: 1,
@@ -43,4 +42,4 @@ const statuses = {
   },
 };
 
-module.exports = statuses;
+module.exports = status;

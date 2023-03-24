@@ -1,0 +1,13 @@
+[{
+  "_id": {
+    "$oid": "641defcaa51cb4176481fcf4"
+  },
+  "name": "Self-pickup",
+  "price": 0
+},{
+  "_id": {
+    "$oid": "641deff9a51cb4176481fcf5"
+  },
+  "name": "Carrier",
+  "price": 1500
+}]
