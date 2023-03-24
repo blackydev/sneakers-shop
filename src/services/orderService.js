@@ -18,7 +18,7 @@ async function postOrder(
 function pay(orderId) {
   return http.get(`${apiEndpoint}/${orderId}/payment`, {
     headers: {
-      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Origin": "https://sandbox-go.przelewy24.pl",
     },
   });
 }
