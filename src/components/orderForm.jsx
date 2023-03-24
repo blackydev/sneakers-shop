@@ -10,6 +10,7 @@ export default class OrderForm extends Form {
     data: {},
     errors: {},
     deliveries: [],
+    redirect: null,
   };
 
   inputs = [
@@ -77,7 +78,7 @@ export default class OrderForm extends Form {
       cartService.removeCartId();
       const { data: p24Link } = await orderService.pay(order._id);
       console.log(p24Link);
-      window.location.assign(p24Link);
+      this.setState({ redirect: p24Link });
     } catch (ex) {
       console.log(ex);
     }
@@ -95,7 +96,7 @@ export default class OrderForm extends Form {
   };
 
   render() {
-    const { deliveries, data, isDisabled } = this.state;
+    const { deliveries, data, redirect } = this.state;
     const { productsPrice } = this.props;
     const currDelivery = deliveries.find(({ _id }) => data.deliveryId === _id);
     if (currDelivery) var price = currDelivery.price;
@@ -128,6 +129,7 @@ export default class OrderForm extends Form {
             color: "dark",
           })}
         </div>
+        {redirect && <Navigate to={redirect} replace={true} />}
       </>
     );
   }
