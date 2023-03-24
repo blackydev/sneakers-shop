@@ -28,7 +28,7 @@ router.put("/:id", [validateObjectId, auth, isAdmin], async (req, res) => {
   const delivery = await Delivery.findByIdAndUpdate(
     req.params.id,
     getProperties(req),
-    { new: true }
+    { new: true },
   );
 
   if (!delivery)

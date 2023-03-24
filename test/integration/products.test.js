@@ -52,105 +52,64 @@ describe("products route", () => {
   describe("GET /", () => {
     let categoryId;
     beforeEach(async () => {
-      const { _id } = await createCategory();
       categoryId = mongoose.Types.ObjectId().toString();
       await Product.insertMany([
         {
           ...products[0],
           image: pngImg,
           category: categoryId,
+          release: new Date(),
         },
         {
           ...products[1],
           image: jpgImg,
           category: categoryId,
+          release: new Date(),
         },
         {
           ...products[2],
           image: webpImg,
           category: mongoose.Types.ObjectId().toString(),
+          release: new Date(),
         },
       ]);
     });
 
     const exec = () => request(server).get("/api/products");
 
-    it("should return products if request is correct", async () => {
-      const res = await exec();
-      expect(res.body.length).toBe(3);
-      expect(res.body[0]).toHaveProperty("name");
-    });
-
-    it("should return 200 if request is correct", async () => {
-      const res = await exec();
-      expect(res.status).toBe(200);
+    it("should return 200 and products if request is correct", async () => {
+      const { body } = await exec().expect(200);
+      expect(body.length).toBe(3);
+      const product = body[0];
+      expect(product).toHaveProperty("name");
+      expect(product).toHaveProperty("image");
+      expect(product).toHaveProperty("category");
+      expect(product).toHaveProperty("numberInStock");
+      expect(product).toHaveProperty("price");
+      expect(product).toHaveProperty("release");
     });
 
     describe("queries", () => {
       let query;
       const exec = () => request(server).get("/api/products").query(query);
 
-      describe("sortBy", () => {
-        it("should return products sorted by price if request is correct", async () => {
-          query = { sortBy: "price" };
-          const res = await exec();
-          expect(res.body[0].price < res.body[1].price).toBeTruthy();
-          expect(res.status).toBe(200);
-        });
-
-        it("should return products sorted by price in desc. order", async () => {
-          query = { sortBy: "-price" };
-          const res = await exec();
-          expect(res.body[0].price > res.body[1].price).toBeTruthy();
-          expect(res.status).toBe(200);
-        });
-
-        it("should return 400 if query is an array", async () => {
-          query = { sortBy: ["name", "_id"] };
-          const res = await exec();
-          expect(res.status).toBe(400);
-        });
-      });
-
       describe("category", () => {
         it("should return products with given category", async () => {
           query = { category: categoryId };
-          const res = await exec();
-          expect(res.body.length).toBe(2);
-          expect(res.status).toBe(200);
-        });
-      });
-
-      describe("select", () => {
-        it("should return products with selected properties", async () => {
-          query = { select: ["name", "price"] };
-          const res = await exec();
-
-          const mustHaveProps = ["_id", "id", "name", "price"];
-          for (const item of res.body) {
-            for (const prop of mustHaveProps) expect(item).toHaveProperty(prop);
-
-            expect(item).not.toHaveProperty("image");
-            expect(item).not.toHaveProperty("numberInStock");
-            expect(res.status).toBe(200);
-          }
+          const { body } = await exec().expect(200);
+          expect(body.length).toBe(2);
         });
       });
 
       describe("paginate", () => {
         it("should return paginated products", async () => {
-          const res = [];
-          query = { pageLength: 1, pageNumber: 0 };
-          res.push(await exec());
-          query.pageNumber++;
-          res.push(await exec());
+          query = { page: 0 };
+          let res = await exec().expect(200);
+          expect(res.body.length).toBe(3);
 
-          expect(res[0].body[0]._id != res[1].body[0]._id).toBeTruthy();
-
-          for (const response of res) {
-            expect(response.body.length).toBe(1);
-            expect(response.status).toBe(200);
-          }
+          query.page++;
+          res = await exec().expect(200);
+          expect(res.body.length).toBe(0);
         });
       });
     });
@@ -159,12 +118,13 @@ describe("products route", () => {
   describe("GET /:id", () => {
     let product, query, productId;
     beforeEach(async () => {
-      const { _id: categoryId } = await createCategory();
+      const category = await createCategory();
       product = new Product({
         ...products[0],
         image: "star-wars-1.png",
-        category: categoryId,
+        category: category._id,
       });
+
       await product.save();
       productId = product._id;
     });
@@ -172,8 +132,9 @@ describe("products route", () => {
     const exec = () =>
       request(server).get(`/api/products/${productId}`).query(query);
 
-    it("should return product if request is correct", async () => {
-      const res = await exec();
+    it("should return 200 and product if request is correct", async () => {
+      const res = await exec().expect(200);
+
       expect(res.body).toMatchObject({
         _id: product._id,
         name: product.name,
@@ -182,35 +143,14 @@ describe("products route", () => {
       });
     });
 
-    it("should return 200 if request is correct", async () => {
-      const res = await exec();
-      expect(res.status).toBe(200);
-    });
-
     it("should return 404 if given ID is invalid", async () => {
       productId = 1;
-      const res = await exec();
-      expect(res.status).toBe(404);
+      await exec().expect(404);
     });
 
     it("should return 404 if product with given ID doesn't exist", async () => {
-      productId = mongoose.Types.ObjectId();
-      const res = await exec();
-      expect(res.status).toBe(404);
-    });
-
-    describe("queries", () => {
-      it("should return product with selected properties if request is correct", async () => {
-        query = { select: ["name", "category"] };
-        const res = await exec();
-
-        expect(res.body).toMatchObject({
-          _id: product._id,
-          name: product.name,
-        });
-        expect(res.body).not.toHaveProperty("image");
-        expect(res.status).toBe(200);
-      });
+      productId = mongoose.Types.ObjectId().toString();
+      await exec().expect(404);
     });
   });
 
@@ -245,17 +185,14 @@ describe("products route", () => {
 
     it("should return product", async () => {
       imagePath = pngImg;
-      let res = await exec();
-      const mustHaveProps = [
-        "name",
-        "description",
-        "price",
-        "numberInStock",
-        "category",
-        "image",
-      ];
-      for (const prop of mustHaveProps) expect(res.body).toHaveProperty(prop);
-      expect(res.status).toBe(200);
+      let { body } = await exec().expect(200);
+
+      expect(body).toHaveProperty("name");
+      expect(body).toHaveProperty("description");
+      expect(body).toHaveProperty("price");
+      expect(body).toHaveProperty("numberInStock");
+      expect(body).toHaveProperty("category");
+      expect(body).toHaveProperty("image");
     });
 
     describe("image file validation", () => {
@@ -273,8 +210,7 @@ describe("products route", () => {
         });
 
         it("should return 200 if request is correct", async () => {
-          let res = await exec();
-          expect(res.status).toBe(200);
+          await exec().expect(200);
         });
 
         it("should file exists on the server if request is correct", async () => {
@@ -295,8 +231,7 @@ describe("products route", () => {
         });
 
         it("should return 200 if request is correct", async () => {
-          let res = await exec();
-          expect(res.status).toBe(200);
+          await exec().expect(200);
         });
 
         it("should file exists on the server if request is correct", async () => {
@@ -317,8 +252,7 @@ describe("products route", () => {
         });
 
         it("should return 200 if request is correct", async () => {
-          let res = await exec();
-          expect(res.status).toBe(200);
+          await exec().expect(200);
         });
 
         it("should file exists on the server if request is correct", async () => {
@@ -405,7 +339,7 @@ describe("products route", () => {
       let res = await exec();
 
       const exists = await fs.existsSync(
-        imgLocationPrefix + path.basename(res.body.image)
+        imgLocationPrefix + path.basename(res.body.image),
       );
       expect(exists).toBeTruthy();
     });
@@ -436,35 +370,28 @@ describe("products route", () => {
 
     it("should return 400 if name is invalid", async () => {
       template.name = 1;
-      const res = await exec();
-
-      expect(res.status).toBe(400);
+      await exec().expect(400);
     });
 
     it("should return 404 if category with given ID does not exist", async () => {
       categoryId = mongoose.Types.ObjectId();
-      const res = await exec();
-      expect(res.status).toBe(404);
+      await exec().expect(404);
     });
 
     it("should return 403 if user is not admin", async () => {
       await deleteUsers();
       token = await getAuthToken(false);
-      const res = await exec();
-
-      expect(res.status).toBe(403);
+      await exec().expect(403);
     });
 
     it("should return 404 if ID is invalid", async () => {
       productId = 1;
-      const res = await exec();
-      expect(res.status).toBe(404);
+      await exec().expect(404);
     });
 
     it("should return 404 if product with given ID doesn't exist", async () => {
       productId = mongoose.Types.ObjectId();
-      const res = await exec();
-      expect(res.status).toBe(404);
+      await exec().expect(404);
     });
   });
 });

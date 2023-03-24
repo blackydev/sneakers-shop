@@ -7,14 +7,16 @@
 "description": "The adidas TRX Vintage is a retro-inspired sneaker with a classic look and modern comfort. It features a suede and nylon upper, a cushioned insole, and a durable rubber outsole for traction and support.",
 "price": 39900,
 "numberInStock": 2147483646,
-"category": "641ddf1f0e27775b77161bfd"
+"category": {
+    "$oid":"641ddf1f0e27775b77161bfd"}
 },      {
         "name": "nike dunk high retro",
         "image": "nike-dunk-high-retro-6471wr7.webp",
         "description": "The Nike Dunk High Retro is a stylish and versatile shoe with a classic design. It features a leather upper for durability and support, and a rubber outsole for traction on a variety of surfaces.",
         "price": 50000,
         "numberInStock": 2147483646,
-        "category": "641ddf230e27775b77161bff",
+        "category": {
+    "$oid":"641ddf230e27775b77161bff"}
     }, 
 {
 "name": "air jordan 7 retro q",
@@ -22,7 +24,8 @@
 "description": "The Air Jordan 7 Retro Q is a classic basketball shoe with a sleek design and superior performance. It features a leather and synthetic upper, a full-length Air-Sole unit for cushioning, and a rubber outsole for traction.",
 "price": 69900,
 "numberInStock": 2147483646,
-"category": "641ddf1a0e27775b77161bfb"
+"category": {
+    "$oid":"641ddf1a0e27775b77161bfb"}
 }, 
 {
 "name": "adidas adizero adios pro 3.0",
@@ -30,14 +33,16 @@
 "description": "The adidas adizero adios pro 3.0 is a high-performance running shoe designed for speed and efficiency. It features a lightweight construction, responsive cushioning, and a carbon fiber plate for added support and stability.",
 "price": 49900,
 "numberInStock": 2147483646,
-"category": "641ddf1f0e27775b77161bfd"
+"category": {
+    "$oid":"641ddf1f0e27775b77161bfd"}
 },{
         "name": "puma x ray2 square SD",
         "image": "puma-x-ray2-square-SD-646n19n.webp",
         "description": "Puma X-Ray2 Square SD: A casual sneaker with a chunky silhouette and a retro-inspired design, featuring a durable leather and mesh upper and a comfortable SoftFoam+ insole for all-day cushioning. The shoe also features Puma branding and a square toe design.",
         "price": 50000,
         "numberInStock": 2147483646,
-        "category": "641ddf260e27775b77161c01",
+        "category": {
+    "$oid":"641ddf260e27775b77161c01"}
     },
       {
         "name": "jordan vachetta tan",
@@ -45,7 +50,8 @@
         "description": "The Jordan Vachetta Tan is a premium sneaker with a stylish and sleek design. It features a leather upper with perforations for breathability, and a rubber outsole for durability and traction.",
         "price": 44900,
         "numberInStock": 2147483646,
-        "category": "641ddf1a0e27775b77161bfb",
+        "category": {
+    "$oid":"641ddf1a0e27775b77161bfb"}
     },
     {
 "name": "adidas forum mid parley",
@@ -53,7 +59,8 @@
 "description": "The adidas Forum Mid Parley is a stylish and eco-friendly sneaker made from recycled ocean plastic. It features a classic design with modern materials, including a breathable mesh upper and a comfortable EVA midsole.",
 "price": 59900,
 "numberInStock": 2147483646,
-"category": "641ddf1f0e27775b77161bfd"
+"category": {
+    "$oid":"641ddf1f0e27775b77161bfd"}
 },
    
         {
@@ -62,7 +69,8 @@
         "description": "The Jordan Zoom Separate is a high-performance basketball shoe designed for speed and agility on the court. It features a lightweight and breathable upper, responsive Zoom Air cushioning, and a durable rubber outsole.",
         "price": 50000,
         "numberInStock": 2147483646,
-        "category": "641ddf1a0e27775b77161bfb",
+        "category": {
+    "$oid":"641ddf1a0e27775b77161bfb"}
     },
         {
         "name": "nike dunk high 1985",
@@ -70,7 +78,8 @@
         "description": "The Nike Dunk High 1985 is a retro basketball shoe with a classic design. It features a leather and synthetic upper for durability and support, and a rubber outsole for traction on the court.",
         "price": 50000,
         "numberInStock": 2147483646,
-        "category": "641ddf230e27775b77161bff",
+        "category": {
+    "$oid":"641ddf230e27775b77161bff"}
     },
         {
         "name": "jordan series mid",
@@ -78,7 +87,8 @@
         "description": "The Jordan Series Mid is a stylish and comfortable shoe with the iconic Jumpman logo on the side. It features a leather and synthetic upper for durability and support, while the Air-Sole unit in the heel provides cushioning.",
         "price": 34900,
         "numberInStock": 2147483646,
-        "category": "641ddf1a0e27775b77161bfb",
+        "category": {
+    "$oid":"641ddf1a0e27775b77161bfb"}
     },
             {
         "name": "nike lebron 9 low",
@@ -86,7 +96,8 @@
         "description": "The Nike LeBron 9 Low is a high-performance basketball shoe designed for LeBron James' signature style of play. It features a Flywire-infused upper for lightweight support and a Max Air unit in the heel for cushioning.",
         "price": 49900,
         "numberInStock": 0,
-        "category": "641ddf230e27775b77161bff",
+        "category": {
+    "$oid":"641ddf230e27775b77161bff"}
     },
         {
         "name": "nike pegasus turbo next nature",
@@ -94,7 +105,8 @@
         "description": "The Nike Pegasus Turbo Next Nature is a high-performance running shoe with a sleek and stylish design. It features a lightweight and breathable upper, responsive ZoomX foam cushioning, and a durable rubber outsole.",
         "price": 69900,
         "numberInStock": 2147483646,
-        "category": "641ddf230e27775b77161bff",
+        "category": {
+    "$oid":"641ddf230e27775b77161bff"}
     },        
          {
         "name": "puma softride enzo NXT",
@@ -102,7 +114,8 @@
         "description":"Puma Softride Enzo NXT: A versatile training shoe with a softfoam midsole and a breathable mesh upper for maximum comfort and support during any workout. The shoe also features Puma branding and a stylish design.",
         "price": 39900,
         "numberInStock": 2147483646,
-        "category": "641ddf260e27775b77161c01",
+        "category": {
+    "$oid":"641ddf260e27775b77161c01"}
     },
     {
         "name": "nike sb dunk high pro",
@@ -110,7 +123,8 @@
         "description": "Nike SB Dunk High Pro: A high-top sneaker with a classic design, featuring a durable leather upper and a rubber outsole for excellent grip and traction. The Nike SB Dunk High Pro is a favorite among skateboarders and sneaker enthusiasts alike.",
         "price": 39900,
         "numberInStock": 2147483646,
-        "category": "641ddf230e27775b77161bff",
+        "category": {
+    "$oid":"641ddf230e27775b77161bff"}
     },
         {
         "name": "nike zoom freak 4",
@@ -118,7 +132,8 @@
         "description": "Nike Zoom Freak 4: A basketball shoe designed for Milwaukee Bucks superstar Giannis Antetokounmpo, featuring a responsive Zoom Air unit and a durable rubber outsole for excellent traction on the court. The shoe also features a unique design inspired by Giannis' Greek heritage.",
         "price": 49900,
         "numberInStock": 2147483646,
-        "category": "641ddf230e27775b77161bff",
+        "category": {
+    "$oid":"641ddf230e27775b77161bff"}
     },        
 
    
@@ -129,7 +144,8 @@
         "description": "Puma Anzarun Lite Bold: A lightweight running shoe with a breathable mesh upper and a cushioned midsole for all-day comfort. The shoe also features bold Puma branding and a sleek, modern design.",
         "price": 59900,
         "numberInStock": 2147483646,
-        "category": "641ddf260e27775b77161c01",
-        "release":"2050-01-01T00:00:00.000Z",
+        "category": {
+    "$oid":"641ddf260e27775b77161c01"},
+        "release":"2050-01-01T00:00:00.000Z"
     }
 ]

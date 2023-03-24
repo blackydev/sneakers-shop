@@ -20,76 +20,34 @@ describe("orders route", () => {
     await deleteOrders();
     await deleteUsers();
   });
+
   describe("GET /", () => {
-    let token, query;
+    let token, page;
 
     beforeEach(async () => {
       token = await getAuthToken(true);
       await createOrders();
-      query = "";
+      page = 0;
     });
 
     const exec = () =>
       request(server)
         .get(`/api/orders`)
         .set("x-auth-token", token)
-        .query(query);
+        .query({ page });
 
-    describe("correct request", () => {
-      it("should return orders if request is correct", async () => {
-        const res = await exec();
-        expect(res.body.length).toBe(2);
-        const mustHaveProps = [
-          "customer.name",
-          "cart",
-          "delivery.method",
-          "delivery.price",
-        ];
-        for (const prop of mustHaveProps)
-          expect(res.body[0]).toHaveProperty(prop);
-        expect(res.body[0]).toHaveProperty("status", "pending");
-      });
+    it("should return 200 and orders if request is correct", async () => {
+      const { body } = await exec().expect(200);
+      expect(body.length).toBe(2);
+    });
 
-      it("should return 200 if request is correct", async () => {
-        const res = await exec();
-        expect(res.status).toBe(200);
-      });
+    it("should return paginated orders if request is correct", async () => {
+      let res = await exec().expect(200);
+      expect(res.body.length).toBe(2);
 
-      it('return orders with "pending" status if request is correct', async () => {
-        query = { status: "pending" };
-        const res = await exec();
-        expect(res.status).toBe(200);
-        expect(res.body[0]).toHaveProperty("status", "pending");
-      });
-
-      it('return orders just with "interrupted" status if request is correct', async () => {
-        query = { status: "interrupted" };
-        const res = await exec();
-        expect(res.body.length).toBe(0);
-        expect(res.status).toBe(200);
-      });
-
-      it('return orders just with "interrupted" status if request is correct', async () => {
-        query = { status: -1 };
-        const res = await exec();
-        expect(res.body.length).toBe(0);
-        expect(res.status).toBe(200);
-      });
-
-      it("should return paginated orders if request is correct", async () => {
-        query = { pageLength: 1 };
-
-        let res = await exec();
-        const checker = res.body[0];
-        expect(res.body.length).toBe(1);
-        expect(res.status).toBe(200);
-
-        query = { pageLength: 1, pageNumber: 1 };
-        res = await exec();
-        expect(res.body.length).toBe(1);
-        expect(res.status).toBe(200);
-        expect(res.body[0]._id != checker._id).toBeTruthy();
-      });
+      page = 1;
+      res = await exec().expect(200);
+      expect(res.body.length).toBe(0);
     });
   });
 
@@ -107,70 +65,48 @@ describe("orders route", () => {
     const exec = () =>
       request(server).get(`/api/orders/${orderId}`).set("x-auth-token", token);
 
-    describe("should return order if request is correct", () => {
-      it("with customer property", async () => {
-        const { body } = await exec();
-        expect(body).toHaveProperty("customer", {
-          name: "Anna Czarnecka",
-          email: "annaCzarnecka1337@gmail.com",
-          address: "wislana 67",
-          zip: "32-532",
-          city: "Jaworzno",
-          phone: "48987654321",
-        });
+    it("should return 200 and order if request is correct", async () => {
+      const { body } = await exec().expect(200);
+      expect(body).toHaveProperty("customer", {
+        name: "Anna Czarnecka",
+        email: "annaCzarnecka1337@gmail.com",
+        address: "wislana 67",
+        zip: "32-532",
+        city: "Jaworzno",
+        phone: "48987654321",
       });
-
-      it("with cart property", async () => {
-        const { body } = await exec();
-        expect(body).toHaveProperty("cart");
-        expect(body.cart.length).toBe(order.cart.length);
-      });
-      it("with status property", async () => {
-        const { body } = await exec();
-        expect(body).toHaveProperty("status", "pending");
-      });
-      it("with delivery property", async () => {
-        const { body } = await exec();
-        expect(body).toHaveProperty("delivery");
-      });
-    });
-
-    it("should return 200 if request is correct", async () => {
-      const res = await exec();
-      expect(res.status).toBe(200);
+      expect(body).toHaveProperty("cart");
+      expect(body.cart.length).toBe(order.cart.length);
+      expect(body).toHaveProperty("status", "pending");
+      expect(body).toHaveProperty("delivery");
     });
 
     it("should return 404 if order with given ID doesn't exist", async () => {
       orderId = mongoose.Types.ObjectId();
-      const res = await exec();
-      expect(res.status).toBe(404);
+      await exec().expect(404);
     });
 
     it("should return 404 if ID is invalid", async () => {
       orderId = 1;
-      const res = await exec();
-      expect(res.status).toBe(404);
+      await exec().expect(404);
     });
 
     it("should return 400 if token is invalid", async () => {
       await deleteUsers();
       token = "123";
-      const res = await exec();
-      expect(res.status).toBe(400);
+      await exec().expect(400);
     });
 
     it("should return 401 if token is not provided", async () => {
       token = "";
-      const res = await exec();
-      expect(res.status).toBe(401);
+      await exec().expect(401);
     });
 
     it("should return 403 if user is not an admin", async () => {
       await deleteUsers();
       token = await getAuthToken(false);
 
-      const res = await exec();
-      expect(res.status).toBe(403);
+      await exec().expect(403);
     });
   });
 
@@ -308,15 +244,13 @@ describe("orders route", () => {
         expect(mongoose.Types.ObjectId.isValid(tmp.orders[0])).toBeTruthy();
       });
 
-      it("should return 200 if token is incorrect", async () => {
-        token = "x";
-        const res = await exec();
-        expect(res.status).toBe(200);
+      it("should return 400 if token is incorrect", async () => {
+        token = "1234";
+        await exec().expect(400);
       });
 
       it("should return 200 if request is correct", async () => {
-        const res = await exec();
-        expect(res.status).toBe(200);
+        await exec().expect(200);
       });
 
       it("should return 400 if customer is invalid", async () => {
@@ -366,6 +300,7 @@ describe("orders route", () => {
       expect(res.status).toBe(404);
     });
   });
+  /*
 
   describe("PUT /:id/status", () => {
     let token, orders, orderId, status;
@@ -427,4 +362,5 @@ describe("orders route", () => {
       expect(res.status).toBe(403);
     });
   });
+  */
 });

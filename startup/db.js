@@ -4,5 +4,8 @@ const config = require("config");
 
 module.exports = function () {
   const db = config.get("db");
-  mongoose.connect(db).then(() => winston.info(`Connected to mongodb...`));
+  mongoose
+    .set("strictQuery", true)
+    .connect(db)
+    .then(() => winston.info(`Connected to mongodb...`));
 };

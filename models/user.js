@@ -3,8 +3,7 @@ const passwordComplexity = require("joi-password-complexity");
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 const config = require("config");
-const { Order } = require("./order");
-const { schemas, joiSchemas } = require("./schemas");
+const { schemas, joiSchemas } = require("../utils/schemaProps");
 
 const userSchema = new mongoose.Schema({
   email: { ...schemas.email, required: true, unique: true },
@@ -34,7 +33,7 @@ userSchema.methods.generateAuthToken = function () {
       _id: this._id,
       isAdmin: this.isAdmin,
     },
-    config.get("jwtPrivateKey")
+    config.get("jwtPrivateKey"),
   );
 };
 
