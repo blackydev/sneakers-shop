@@ -1,18 +1,15 @@
 import React from "react";
 import Joi from "joi-browser";
-import { Navigate } from "react-router-dom";
 import _ from "lodash";
 import Form from "./common/form";
 import orderService from "../services/orderService";
 import cartService from "../services/cartService";
 import deliveryService from "../services/deliveryService";
-
 export default class OrderForm extends Form {
   state = {
     data: {},
     errors: {},
     deliveries: [],
-    redirect: null,
   };
 
   inputs = [
@@ -80,7 +77,7 @@ export default class OrderForm extends Form {
       cartService.removeCartId();
       const { data: p24Link } = await orderService.pay(order._id);
       console.log(p24Link);
-      this.setState({ redirect: p24Link });
+      window.location.assign(p24Link);
     } catch (ex) {
       console.log(ex);
     }
@@ -98,7 +95,7 @@ export default class OrderForm extends Form {
   };
 
   render() {
-    const { deliveries, data, redirect } = this.state;
+    const { deliveries, data, isDisabled } = this.state;
     const { productsPrice } = this.props;
     const currDelivery = deliveries.find(({ _id }) => data.deliveryId === _id);
     if (currDelivery) var price = currDelivery.price;
@@ -131,7 +128,6 @@ export default class OrderForm extends Form {
             color: "dark",
           })}
         </div>
-        {redirect && <Navigate to={redirect} replace={true} />}
       </>
     );
   }
