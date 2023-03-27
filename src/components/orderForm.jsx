@@ -124,7 +124,7 @@ export default class OrderForm extends Form {
         </div>
         <div className="d-flex justify-content-center my-3">
           {this.renderButton({
-            label: `${productsPrice + price} zł`,
+            label: `${Math.round((productsPrice + price) * 100) / 100} zł`,
             size: "lg",
             color: "dark",
           })}
