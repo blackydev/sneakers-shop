@@ -75,10 +75,8 @@ export default class OrderForm extends Form {
         deliveryId,
       );
       cartService.removeCartId();
-      const { data: p24Link } = await orderService.pay(order._id);
-      window.location.assign(
-        "https://sandbox.przelewy24.pl" + "/trnRequest/" + p24Link,
-      );
+      const { data: p24Token } = await orderService.pay(order._id);
+      window.location.assign(orderService.paymentURL(p24Token));
     } catch (ex) {
       console.log(ex);
     }

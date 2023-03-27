@@ -4,14 +4,15 @@ import Products from "../components/products/horizontal";
 import orderService from "../services/orderService";
 
 async function pay(orderId) {
-  const { data: p24Link } = await orderService.pay(orderId);
-  window.location.href = p24Link;
+  const { data: p24Token } = await orderService.pay(orderId);
+  window.location.assign(orderService.paymentURL(p24Token));
 }
 
 export default function MyOrder() {
   const { orders, params } = useLoaderData();
   const order = orders.find((order) => order._id === params.id);
-  const { customer: c, delivery } = order;
+  if (!order) return null;
+  const { customer, delivery } = order;
 
   const products = [];
   order.cart.map((item) =>
@@ -19,7 +20,7 @@ export default function MyOrder() {
       ...item,
       ...item.product,
       product: undefined,
-    })
+    }),
   );
 
   return (
@@ -35,19 +36,18 @@ export default function MyOrder() {
       <div className="col-12 row bg-dark text-light shadow p-4 rounded-4 mx-auto mb-5">
         <section
           id="customer"
-          className="col-12 col-md-4 py-1 py-md-0 d-flex justify-content-start justify-content-md-start"
-        >
+          className="col-12 col-md-4 py-1 py-md-0 d-flex justify-content-start justify-content-md-start">
           <div>
             <h4 className="fw-bold">Customer</h4>
             <p>
-              Name: {c.name} <br />
-              Email: {c.email} <br />
-              Address: {c.zip} {c.address} <br />
-              City: {c.city} <br />
-              Phone: {c.phone}
-              {c.company && (
+              Name: {customer.name} <br />
+              Email: {customer.email} <br />
+              Address: {customer.zip} {customer.address} <br />
+              City: {customer.city} <br />
+              Phone: {customer.phone}
+              {customer.company && (
                 <>
-                  <br /> Company: {c.company}
+                  <br /> Company: {customer.company}
                 </>
               )}
             </p>
@@ -55,8 +55,7 @@ export default function MyOrder() {
         </section>
         <section
           id="delivery"
-          className="col-12 col-md-4 py-1 py-md-0 d-flex justify-content-start justify-content-md-center"
-        >
+          className="col-12 col-md-4 py-1 py-md-0 d-flex justify-content-start justify-content-md-center">
           <div>
             <h4 className="fw-bold">Delivery</h4>
             <p>
@@ -67,8 +66,7 @@ export default function MyOrder() {
         </section>
         <section
           id="other"
-          className="col-12 col-md-4 py-1 py-md-0 d-flex justify-content-start justify-content-md-end"
-        >
+          className="col-12 col-md-4 py-1 py-md-0 d-flex justify-content-start justify-content-md-end">
           <div className="">
             <h4 className="fw-bold">Other</h4>
             <p>
@@ -81,8 +79,7 @@ export default function MyOrder() {
           <div className="d-flex justify-content-center">
             <button
               className="btn btn-light mt-3 px-3 fs-5 rounded-3"
-              onClick={() => pay(order._id)}
-            >
+              onClick={() => pay(order._id)}>
               PAY
             </button>
           </div>

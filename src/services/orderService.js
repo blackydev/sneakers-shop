@@ -23,9 +23,14 @@ function pay(orderId) {
   });
 }
 
+function paymentURL(token) {
+  return "https://sandbox.przelewy24.pl" + "/trnRequest/" + token;
+}
+
 const orderService = {
   postOrder,
   pay,
+  paymentURL,
 };
 
 export default orderService;
