@@ -76,8 +76,9 @@ export default class OrderForm extends Form {
       );
       cartService.removeCartId();
       const { data: p24Link } = await orderService.pay(order._id);
-      console.log(p24Link);
-      window.location.assign(p24Link);
+      window.location.assign(
+        "https://sandbox.przelewy24.pl" + "/trnRequest/" + p24Link,
+      );
     } catch (ex) {
       console.log(ex);
     }
@@ -95,7 +96,7 @@ export default class OrderForm extends Form {
   };
 
   render() {
-    const { deliveries, data, isDisabled } = this.state;
+    const { deliveries, data } = this.state;
     const { productsPrice } = this.props;
     const currDelivery = deliveries.find(({ _id }) => data.deliveryId === _id);
     if (currDelivery) var price = currDelivery.price;
