@@ -6,16 +6,11 @@ import Products from "../components/products";
 import ButtonGroup from "../components/common/buttonGroup";
 import HomeHeader from "../components/homeHeader";
 
-const params = {
-  sortBy: "-_id",
-  select: ["name", "image", "price", "category", "release", "numberInStock"],
-};
-
 export async function loader() {
   try {
-    const { data: products } = await productService.getProducts({ params });
+    const { data: products } = await productService.getProducts();
     const { data: categories } = await categoryService.getCategories();
-    return { products, categories, newestProduct: products[0] };
+    return { products, categories };
   } catch (ex) {
     throw new Response("", {
       status: 503,
@@ -26,26 +21,24 @@ export async function loader() {
 
 export default function Home() {
   const rootState = useOutletContext();
-  const { products: allProducts, categories, newestProduct } = useLoaderData();
-  const [products, setProducts] = useState(allProducts);
-  const [selectedCategory, selectCategory] = useState(false);
+  const loader = useLoaderData();
+  const [products, setProducts] = useState(loader.products);
+  const [selectedCategory, selectCategory] = useState();
 
-  const handleCategorySelect = async ({ _id: id }) => {
-    if (id === selectedCategory) id = null;
-    selectCategory(id);
-    const { data: products } = await productService.getProducts({
-      params: { ...params, category: id },
-    });
+  const handleCategorySelect = async ({ _id: categoryId }) => {
+    if (categoryId === selectedCategory) categoryId = undefined;
+    selectCategory(categoryId);
+    const { data: products } = await productService.getProducts(categoryId);
     setProducts(products);
   };
 
   return (
     <>
-      <HomeHeader product={newestProduct} />
+      <HomeHeader product={loader.products[0]} />
       <main className="home container">
         <section className="d-flex justify-content-center my-1" id="categories">
           <ButtonGroup
-            items={categories}
+            items={loader.categories}
             selectedItem={selectedCategory}
             size={"lg"}
             onItemSelect={handleCategorySelect}

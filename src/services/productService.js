@@ -2,21 +2,10 @@ import http from "./httpService";
 
 const apiEndpoint = "/products";
 
-function getProducts(options) {
-  return http.get(apiEndpoint, options);
-}
-
-async function getNewestProduct() {
-  const res = await http.get(`${apiEndpoint}?pageLength=1&sortBy=-_id`, {
-    params: {
-      pageLength: "1",
-      sortBy: "-_id",
-    },
+function getProducts(categoryId) {
+  return http.get(apiEndpoint, {
+    params: { category: categoryId },
   });
-  return {
-    ...res,
-    data: res.data[0],
-  };
 }
 
 function getProduct(id) {
@@ -29,7 +18,6 @@ function isPreorder(product) {
 
 const productService = {
   getProducts,
-  getNewestProduct,
   getProduct,
   isPreorder,
 };
